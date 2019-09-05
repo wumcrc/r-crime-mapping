@@ -70,8 +70,6 @@ july19 <- crimes %>%
 
 ### Time Code Data
 
-
-
 ```{r}
 july19$date <- as.Date(july19$date, "%m/%d/%Y")
 july19$time <- strptime(july19$time, tz = "America/Chicago", "%H:%M")
@@ -79,3 +77,8 @@ july19$tod <- format(july19$time, format = "%H%M%S")
 
 july19 <- mutate(july19, daynight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day"))
 ```
+
+### Filter Crimes by District
+
+### Export data 
+
