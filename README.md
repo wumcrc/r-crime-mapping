@@ -8,7 +8,7 @@ In it's original form the St. Louis Metropolitan Police Department (SLMPD) crime
 
 ## Acknowledgements
 
-`compstatr` was developed by[Christopher Prener, Ph.D.](https://chris-prener.github.io/) & the [SLU Data Science Seminar openGIS Project](https://github.com/slu-openGIS). This automation would not be possible without the `compstatr` package.
+[`compstatr`](https://slu-opengis.github.io/compstatr/index.html) was developed by [Christopher Prener, Ph.D.](https://chris-prener.github.io/) & the [SLU Data Science Seminar openGIS Project](https://github.com/slu-openGIS). This automation would not be possible without the `compstatr` package.
 
 ## Repository Contents
 
