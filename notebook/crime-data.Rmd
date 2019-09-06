@@ -63,7 +63,17 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 ```{r}
 july19 <- crimes %>% 
   cs_filter_count(var = count) %>%
-  cs_crime_cat(., var = crime, name, "string") %>%
+  cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
+  cs_crime_cat(., var = crime, crimeCatName, "string") %>%
+  cs_crime(., var = crime, violent, "violent") %>%
+  separate(., date_occur, c("date", "time"), " ", remove = FALSE)
+```
+
+```{r}
+july19_v2 <- crimes %>% 
+  cs_filter_count(var = count) %>%
+  cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
+  cs_crime_cat(., var = crime, crimeCatName, "string") %>%
   cs_crime(., var = crime, violent, "violent") %>%
   separate(., date_occur, c("date", "time"), " ", remove = FALSE)
 ```
@@ -79,6 +89,20 @@ july19 <- mutate(july19, daynight = ifelse(tod >= "180000" & tod < "600000", "Ni
 ```
 
 ### Filter Crimes by District
+
+```{r}
+july19_clean <- july19 %>%
+  select(-date, -time, -tod) %>%
+  filter(., district == 2 | district == 5)
+```
+
+### Check for Missing Data 
+
+```{r}
+july19_clean <- cs_missingXY(july19_clean, varX = x_coord, varY = y_coord, newVar = missing)
+table(july19_clean$missing)
+```
+
 
 ### Export data 
 
