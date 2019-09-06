@@ -74,11 +74,14 @@ july19 <- crimes %>%
 
 ```{r}
 july19$date <- as.Date(july19$date, "%m/%d/%Y")
-
 july19$time <- strptime(july19$time, tz = "America/Chicago", "%H:%M")
 july19$tod <- format(july19$time, format = "%H%M%S")
 
-july19 <- mutate(july19, daynight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day"))
+july19$dom <- format(july19$date, format = "%m%d%Y")
+
+july19 <- select(july19, -time) %>%
+  filter(., dom >= "07002019" & dom < "08002019") %>%
+  mutate(., daynight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day"))
 ```
 
 ### Filter Crimes by District
@@ -95,7 +98,6 @@ july19_clean <- july19 %>%
 july19_clean <- cs_missingXY(july19_clean, varX = x_coord, varY = y_coord, newVar = missing)
 table(july19_clean$missing)
 ```
-
 
 ### Export data 
 
