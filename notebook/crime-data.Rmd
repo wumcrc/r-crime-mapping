@@ -62,16 +62,8 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 
 ```{r}
 july19 <- crimes %>% 
-  cs_filter_count(var = count) %>%
-  cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
-  cs_crime_cat(., var = crime, crimeCatName, "string") %>%
-  cs_crime(., var = crime, violent, "violent") %>%
-  separate(., date_occur, c("date", "time"), " ", remove = FALSE)
-```
-
-```{r}
-july19_v2 <- crimes %>% 
-  cs_filter_count(var = count) %>%
+  cs_filter_count(., var = count) %>%
+  cs_filter_crime(., var = crime, "part 1") %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
   cs_crime_cat(., var = crime, crimeCatName, "string") %>%
   cs_crime(., var = crime, violent, "violent") %>%
@@ -82,6 +74,7 @@ july19_v2 <- crimes %>%
 
 ```{r}
 july19$date <- as.Date(july19$date, "%m/%d/%Y")
+
 july19$time <- strptime(july19$time, tz = "America/Chicago", "%H:%M")
 july19$tod <- format(july19$time, format = "%H%M%S")
 
