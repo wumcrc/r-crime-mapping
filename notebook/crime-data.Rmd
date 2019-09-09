@@ -109,7 +109,7 @@ tidyCrimes$tod <- format(tidyCrimes$tod, format = "%H%M%S")
 
 tidyCrimes <- tidyCrimes %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
-  select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup) %>% 
+  select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
 
 NBHD <- c(39,28,38,51,53,54,58,46,47,48,48
           )
