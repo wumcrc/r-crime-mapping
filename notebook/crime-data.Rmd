@@ -136,7 +136,7 @@ tidyCrimes19 <- tidyCrimes19 %>%
 i <- cs_create_index()
 ```
 
-### Download Current Month
+### Download Last Year's Month
 
 ```{r}
 yearList18 <- cs_get_data(year = 2018, index = i)
@@ -155,20 +155,6 @@ crimes18 <- cs_extract_month(yearList18, month = "August")
 
 ### Clean & Categorize Data 
 
-`cs_filter_count` removes negative counts. Negative counts, -1, in the count column means that the crime, or charge in this specific observation has either been deemed unfounded, or the crime has been up coded. We do not want to map this data. 
-
-Many of the analyses we conduct include comparisons between violent & non-violent crime, comparisons on the amount of crimes happening in each crime cateogy over time, and if crimes occur during the day or at night. The following code ceates variables to conduct these analyses. 
-
-`cs_crime_cat` creates a variable with the names of the crime. 
-
-`cs_crime` creates a logic variable and codes violent crimes as `TRUE` and non-violent crimes as `FALSE`
-
-`cs_parse_date` creates two columns separating the `Date Occur` variable. The two colums are as follows: one contains the date - month, date, and year, and the other contains the hour and minute. This is used because crimes coded in the most recent month, can contain dates that occured, in previous months or years & in this report we only want to map the crimes that occured in the past month. 
-
-`filter` is a `dplyr` function that filters out any dates that occur before the our selected date, and also filters out crimes that did not happen in either District 2 or district 5. 
-
-`mutate` adds a variable that codes and labels the days of the week for each crime that occurred, and creates another time of day variable 
-
 ```{r}
 tidyCrimes18 <- crimes18 %>% 
   cs_filter_count(., var = count) %>%
@@ -182,17 +168,7 @@ tidyCrimes18 <- crimes18 %>%
   filter(district == 2 | district == 5) %>%
   mutate(weekday = wday(dateOcc, label = TRUE)) %>%
   mutate(tod = timeOcc)
-```
 
-`strptime` and `format` takes the new time variable and formats it to a character so that we can determine if the crime occured at day or at night, and creates a second coded variable that labels each observations as day or night based on the newly formated time variable. 
-
-`select` drops the unneeded variables. 
-
-`cs_missing_XY` determines what data does not have x & y coordinates, and therefore cannot be accurately mapped. 
-
-`cs_replace0` replaces missing x & y coordinates with `NA`, and drops the missing data. 
-
-```{r}
 tidyCrimes18$tod <- strptime(tidyCrimes18$tod, tz = "America/Chicago", "%H:%M")
 tidyCrimes18$tod <- format(tidyCrimes18$tod, format = "%H%M%S")
 
