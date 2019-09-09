@@ -51,7 +51,13 @@ yearList <- cs_get_data(year = c_year, index = i)
 
 ```{r}
 cs_validate(yearList, year = 2019)
+
 ```
+
+```{r}
+crimes <- cs_collapse(yearList)
+```
+
 
 ```{r}
 print(c_month)
@@ -59,7 +65,7 @@ print(c_month)
 
 
 ```{r}
-crimes <- cs_extract_month(yearList, month = "August")
+augustCrimes <- cs_extract_month(yearList, month = "August")
 ```
 
 
@@ -76,36 +82,17 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 `separate` from the `tidyr` package creates multiple columns from the data in one column. In this case we use `separate` to split the date and time from the `date_occur` variable into two seperate `date` & `time` variables. 
 
 ```{r}
-August19 <- crimes %>% 
+augustTidy <- augustCrimes %>% 
   cs_filter_count(., var = count) %>%
   cs_filter_crime(., var = crime, "part 1") %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
   cs_crime_cat(., var = crime, crimeCatName, "string") %>%
   cs_crime(., var = crime, violent, "violent") %>%
-  separate(., date_occur, c("date", "time"), " ", remove = FALSE)
+  cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
+  filter(dateOcc >= as.Date("2019-08-01")) %>%
+  filter(district == 2 | district == 5)
 ```
 
-### Time Code Data
-
-```{r}
-july19$date <- as.Date(july19$date, "%m/%d/%Y")
-july19$time <- strptime(july19$time, tz = "America/Chicago", "%H:%M")
-july19$tod <- format(july19$time, format = "%H%M%S")
-
-july19$dom <- format(july19$date, format = "%m%d%Y")
-
-july19 <- select(july19, -time) %>%
-  filter(., dom >= "07002019" & dom < "08002019") %>%
-  mutate(., daynight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day"))
-```
-
-### Filter Crimes by District
-
-```{r}
-july19_clean <- july19 %>%
-  select(-date, -time, -tod) %>%
-  filter(., district == 2 | district == 5)
-```
 
 ### Check for Missing Data 
 
