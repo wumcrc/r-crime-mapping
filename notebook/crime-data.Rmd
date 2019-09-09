@@ -54,7 +54,6 @@ yearList19 <- cs_get_data(year = c_year, index = i)
 
 ```{r}
 cs_validate(yearList19, year = 2019)
-
 ```
 
 ```{r}
