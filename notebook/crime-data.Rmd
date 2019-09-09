@@ -95,6 +95,7 @@ tidyCrimes19 <- crimes19 %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
   cs_crime_cat(., var = crime, crimeCatName, "string") %>%
   cs_crime(., var = crime, violent, "violent") %>%
+  cs_crime(., var = crime, property, "property") %>%
   cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
   filter(dateOcc >= as.Date("2019-08-01")) %>%
   filter(district == 2 | district == 5) %>%
@@ -175,6 +176,7 @@ tidyCrimes18 <- crimes18 %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
   cs_crime_cat(., var = crime, crimeCatName, "string") %>%
   cs_crime(., var = crime, violent, "violent") %>%
+  cs_crime(., var = crime, property, "property") %>%
   cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
   filter(dateOcc >= as.Date("2018-08-01") & dateOcc <= as.Date("2018-08-31")) %>%
   filter(district == 2 | district == 5) %>%
