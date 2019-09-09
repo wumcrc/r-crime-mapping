@@ -1,0 +1,42 @@
+---
+title: "Saint Louis City Crime Data - Analysis"
+author: "Jes Stevens, M.A."
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output:
+  github_document: default
+  html_notebook: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction 
+
+[Washington University Medical Center Redevelopment Corporation](http://wumcrc.com) is a partnership between BJC Health Care and Washington University School of Medicine and works to improve the quality of life for the neighborhoods surrounding the medical campus. In order to achieve this goal in Forest Park Southeast and the Central West End , WUMCRC has invested millions of dollars toward regenerating the market for private investment in businesses and real estate, enhancing human and social service opportunities, and improving the level of physical and personal security.
+
+One way we work to improve the level of physical & personal security is the analysis and distribution of data. The original source of this crime data is <http://slmpd.org/crimereports.shtml>. This notebook uses primarily `compstatr` to access and clean the crime data. 
+
+## R Markdown
+
+```{r Load Dependencies, include = FALSE, echo = FALSE}
+library(compstatr)
+library(ggplot2)
+library(magrittr)
+library(mapview)
+library(stringr)
+library(tidyr)
+library(chron)
+library(lubridate)
+library(dplyr)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

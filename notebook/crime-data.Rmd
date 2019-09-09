@@ -1,5 +1,5 @@
 ---
-title: "Saint Louis City Crime Data"
+title: "Saint Louis City Crime Data - Tidying"
 author: "Jes Stevens, M.A."
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
@@ -55,7 +55,7 @@ cs_validate(yearList, year = 2019)
 ```
 
 ```{r}
-crimes <- cs_collapse(yearList)
+totalCrimes <- cs_collapse(yearList)
 ```
 
 
@@ -65,7 +65,7 @@ print(c_month)
 
 
 ```{r}
-augustCrimes <- cs_extract_month(yearList, month = "August")
+crimes <- cs_extract_month(yearList, month = "August")
 ```
 
 
@@ -86,7 +86,7 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 `mutate` adds a variable that codes and labels the days of the week for each crime that occurred, and creates another time of day variable 
 
 ```{r}
-augustTidy <- augustCrimes %>% 
+tidyCrimes <- crimes %>% 
   cs_filter_count(., var = count) %>%
   cs_filter_crime(., var = crime, "part 1") %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
@@ -94,7 +94,7 @@ augustTidy <- augustCrimes %>%
   cs_crime(., var = crime, violent, "violent") %>%
   cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
   filter(dateOcc >= as.Date("2019-08-01")) %>%
-  filter(district == 2 | district == 5)
+  filter(district == 2 | district == 5) %>%
   mutate(weekday = wday(dateOcc, label = TRUE)) %>%
   mutate(tod = timeOcc)
 ```
@@ -104,10 +104,10 @@ augustTidy <- augustCrimes %>%
 `select` drops the unneeded variables. 
 
 ```{r}
-augustTidy$tod <- strptime(augustTidy$tod, tz = "America/Chicago", "%H:%M")
-augustTidy$tod <- format(augustTidy$tod, format = "%H%M%S")
+tidyCrimes$tod <- strptime(tidyCrimes$tod, tz = "America/Chicago", "%H:%M")
+tidyCrimes$tod <- format(tidyCrimes$tod, format = "%H%M%S")
 
-augustTidy <- augustTidy %>%
+tidyCrimes <- tidyCrimes %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
   select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
 ```
@@ -119,12 +119,49 @@ augustTidy <- augustTidy %>%
 `cs_replace0` replaces missing x & y coordinates with `NA`, and drops the missing data. 
 
 ```{r}
-augustTidy <- cs_missingXY(augustTidy, varX = x_coord, varY = y_coord, newVar = missing)
-table(augustTidy$missing)
+tidyCrimes <- cs_missingXY(tidyCrimes, varX = x_coord, varY = y_coord, newVar = missing)
+table(tidyCrimes$missing)
 
-augustTidy <- augustTidy %>% 
+tidyCrimes <- tidyCrimes %>% 
   cs_replace0(., var = x_coord) %>%
   cs_replace0(., var = y_coord) %>% 
   filter(., missing == FALSE)
+```
+
+### Filter by Neighborhood
+
+```{r}
+FPSE <- tidyCrimes %>% 
+  filter(., neighborhood == 39)
+
+BOT <- tidyCrimes %>% 
+  filter(., neighborhood == 28)
+
+CWE <- tidyCrimes %>% 
+  filter(., neighborhood == 38)
+
+AC <- tidyCrimes %>% 
+  filter(., neighborhood == 51)
+
+FP <- tidyCrimes %>% 
+  filter(., neighborhood == 53)
+
+LP <- tidyCrimes %>% 
+  filter(., neighborhood == 54)
+
+VD <- tidyCrimes%>% 
+  filter(., neighborhood == 58)
+
+SDB <- tidyCrimes %>% 
+  filter(., neighborhood == 46)
+
+DBP <- tidyCrimes %>% 
+  filter(., neighborhood == 47)
+
+WE <- tidyCrimes %>% 
+  filter(., neighborhood == 48)
+
+VP <- tidyCrimes %>% 
+  filter(., neighborhood == 49)
 ```
 
