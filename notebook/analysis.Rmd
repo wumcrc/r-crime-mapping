@@ -29,14 +29,20 @@ library(tidyr)
 library(chron)
 library(lubridate)
 library(dplyr)
+library(here)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+### Prep for Data by Neighborhood
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+serviceArea <- c(39,28,38,51,53,54,58,46,47,48,48)
+dst2 <- c(7:15,27:39,40:45,81,82,87,88)
+dst5 <- c(34,46:58,78)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+tidyCrimes19SA <- tidyCrimes19 %>%
+  filter(., neighborhood %in% serviceArea)
+```
+
