@@ -79,7 +79,11 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 
 `cs_crime` creates a logic variable and codes violent crimes as `TRUE` and non-violent crimes as `FALSE`
 
-`separate` from the `tidyr` package creates multiple columns from the data in one column. In this case we use `separate` to split the date and time from the `date_occur` variable into two seperate `date` & `time` variables. 
+`cs_parse_date` creates two columns separating the `Date Occur` variable. The two colums are as follows: one contains the date - month, date, and year, and the other contains the hour and minute. This is used because crimes coded in the most recent month, can contain dates that occured, in previous months or years & in this report we only want to map the crimes that occured in the past month. 
+
+`filter` is a `dplyr` function that filters out any dates that occur before the our selected date, and also filters out crimes that did not happen in either District 2 or district 5. 
+
+`mutate` adds a variable that codes and labels the days of the week for each crime that occurred, and creates another time of day variable 
 
 ```{r}
 augustTidy <- augustCrimes %>% 
@@ -91,15 +95,36 @@ augustTidy <- augustCrimes %>%
   cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
   filter(dateOcc >= as.Date("2019-08-01")) %>%
   filter(district == 2 | district == 5)
+  mutate(weekday = wday(dateOcc, label = TRUE)) %>%
+  mutate(tod = timeOcc)
 ```
 
+`strptime` and `format` takes the new time variable and formats it to a character so that we can determine if the crime occured at day or at night, and creates a second coded variable that labels each observations as day or night based on the newly formated time variable. 
 
-### Check for Missing Data 
+`select` drops the unneeded variables. 
 
 ```{r}
-july19_clean <- cs_missingXY(july19_clean, varX = x_coord, varY = y_coord, newVar = missing)
-table(july19_clean$missing)
+augustTidy$tod <- strptime(augustTidy$tod, tz = "America/Chicago", "%H:%M")
+augustTidy$tod <- format(augustTidy$tod, format = "%H%M%S")
+
+augustTidy <- augustTidy %>%
+  mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
+  select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
 ```
 
-### Export data 
+### Check for Missing Data
+
+`cs_missing_XY` determines what data does not have x & y coordinates, and therefore cannot be accurately mapped. 
+
+`cs_replace0` replaces missing x & y coordinates with `NA`, and drops the missing data. 
+
+```{r}
+augustTidy <- cs_missingXY(augustTidy, varX = x_coord, varY = y_coord, newVar = missing)
+table(augustTidy$missing)
+
+augustTidy <- augustTidy %>% 
+  cs_replace0(., var = x_coord) %>%
+  cs_replace0(., var = y_coord) %>% 
+  filter(., missing == FALSE)
+```
 
