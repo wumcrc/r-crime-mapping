@@ -31,6 +31,8 @@ library(lubridate)
 library(dplyr)
 ```
 
+## 2019
+
 ### Create an Index
 
 ```{r}
@@ -44,18 +46,18 @@ update <- cs_last_update()
 update <- strsplit(update, " ")[[1]]
 c_month <- update[[1]]
 c_year <- as.numeric(update[[2]])
-yearList <- cs_get_data(year = c_year, index = i)
+yearList19 <- cs_get_data(year = c_year, index = i)
 ```
 
 ### Data Preperation
 
 ```{r}
-cs_validate(yearList, year = 2019)
+cs_validate(yearList19, year = 2019)
 
 ```
 
 ```{r}
-totalCrimes <- cs_collapse(yearList)
+totalCrimes19 <- cs_collapse(yearList19)
 ```
 
 
@@ -65,7 +67,7 @@ print(c_month)
 
 
 ```{r}
-crimes <- cs_extract_month(yearList, month = "August")
+crimes19 <- cs_extract_month(yearList19, month = "August")
 ```
 
 
@@ -86,7 +88,7 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 `mutate` adds a variable that codes and labels the days of the week for each crime that occurred, and creates another time of day variable 
 
 ```{r}
-tidyCrimes <- crimes %>% 
+tidyCrimes19 <- crimes19 %>% 
   cs_filter_count(., var = count) %>%
   cs_filter_crime(., var = crime, "part 1") %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
@@ -103,72 +105,111 @@ tidyCrimes <- crimes %>%
 
 `select` drops the unneeded variables. 
 
-```{r}
-tidyCrimes$tod <- strptime(tidyCrimes$tod, tz = "America/Chicago", "%H:%M")
-tidyCrimes$tod <- format(tidyCrimes$tod, format = "%H%M%S")
+`cs_missing_XY` determines what data does not have x & y coordinates, and therefore cannot be accurately mapped. 
 
-tidyCrimes <- tidyCrimes %>%
+`cs_replace0` replaces missing x & y coordinates with `NA`, and drops the missing data. 
+
+```{r}
+tidyCrimes19$tod <- strptime(tidyCrimes19$tod, tz = "America/Chicago", "%H:%M")
+tidyCrimes19$tod <- format(tidyCrimes19$tod, format = "%H%M%S")
+
+tidyCrimes19 <- tidyCrimes19 %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
   select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
 
-NBHD <- c(39,28,38,51,53,54,58,46,47,48,48)
-dst2 <- c(7:15,27:39,40:45,81,82,87,88)
-dst5 <- c(34,46:58,78)
+tidyCrimes19 <- cs_missingXY(tidyCrimes19, varX = x_coord, varY = y_coord, newVar = missing)
+table(tidyCrimes19$missing)
 
-tidyCrimesNBHD <- tidyCrimes %>%
-  filter(., neighborhood %in% NBHD)
+tidyCrimes19 <- tidyCrimes19 %>% 
+  cs_replace0(., var = x_coord) %>%
+  cs_replace0(., var = y_coord) %>% 
+  filter(., missing == FALSE)
 ```
 
-### Check for Missing Data
+## 2018 
+
+### Create an Index
+
+```{r}
+i <- cs_create_index()
+```
+
+### Download Current Month
+
+```{r}
+yearList18 <- cs_get_data(year = 2018, index = i)
+```
+
+### Data Preperation
+
+```{r}
+cs_validate(yearList18, year = 2018)
+```
+
+```{r}
+totalCrimes18 <- cs_collapse(yearList18)
+crimes18 <- cs_extract_month(yearList18, month = "August")
+```
+
+### Clean & Categorize Data 
+
+`cs_filter_count` removes negative counts. Negative counts, -1, in the count column means that the crime, or charge in this specific observation has either been deemed unfounded, or the crime has been up coded. We do not want to map this data. 
+
+Many of the analyses we conduct include comparisons between violent & non-violent crime, comparisons on the amount of crimes happening in each crime cateogy over time, and if crimes occur during the day or at night. The following code ceates variables to conduct these analyses. 
+
+`cs_crime_cat` creates a variable with the names of the crime. 
+
+`cs_crime` creates a logic variable and codes violent crimes as `TRUE` and non-violent crimes as `FALSE`
+
+`cs_parse_date` creates two columns separating the `Date Occur` variable. The two colums are as follows: one contains the date - month, date, and year, and the other contains the hour and minute. This is used because crimes coded in the most recent month, can contain dates that occured, in previous months or years & in this report we only want to map the crimes that occured in the past month. 
+
+`filter` is a `dplyr` function that filters out any dates that occur before the our selected date, and also filters out crimes that did not happen in either District 2 or district 5. 
+
+`mutate` adds a variable that codes and labels the days of the week for each crime that occurred, and creates another time of day variable 
+
+```{r}
+tidyCrimes18 <- crimes18 %>% 
+  cs_filter_count(., var = count) %>%
+  cs_filter_crime(., var = crime, "part 1") %>%
+  cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
+  cs_crime_cat(., var = crime, crimeCatName, "string") %>%
+  cs_crime(., var = crime, violent, "violent") %>%
+  cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
+  filter(dateOcc >= as.Date("2018-08-01") & dateOcc <= as.Date("2018-08-31")) %>%
+  filter(district == 2 | district == 5) %>%
+  mutate(weekday = wday(dateOcc, label = TRUE)) %>%
+  mutate(tod = timeOcc)
+```
+
+`strptime` and `format` takes the new time variable and formats it to a character so that we can determine if the crime occured at day or at night, and creates a second coded variable that labels each observations as day or night based on the newly formated time variable. 
+
+`select` drops the unneeded variables. 
 
 `cs_missing_XY` determines what data does not have x & y coordinates, and therefore cannot be accurately mapped. 
 
 `cs_replace0` replaces missing x & y coordinates with `NA`, and drops the missing data. 
 
 ```{r}
-tidyCrimes <- cs_missingXY(tidyCrimes, varX = x_coord, varY = y_coord, newVar = missing)
-table(tidyCrimes$missing)
+tidyCrimes18$tod <- strptime(tidyCrimes18$tod, tz = "America/Chicago", "%H:%M")
+tidyCrimes18$tod <- format(tidyCrimes18$tod, format = "%H%M%S")
 
-tidyCrimes <- tidyCrimes %>% 
+tidyCrimes18 <- tidyCrimes18 %>%
+  mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
+  select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
+
+tidyCrimes18 <- cs_missingXY(tidyCrimes18, varX = x_coord, varY = y_coord, newVar = missing)
+table(tidyCrimes18$missing)
+
+tidyCrimes18 <- tidyCrimes18 %>% 
   cs_replace0(., var = x_coord) %>%
   cs_replace0(., var = y_coord) %>% 
   filter(., missing == FALSE)
 ```
 
-### Filter by Neighborhood
+
+## Combine 2018 & 2019 
 
 ```{r}
-FPSE <- tidyCrimes %>% 
-  filter(., neighborhood == 39)
-
-BOT <- tidyCrimes %>% 
-  filter(., neighborhood == 28)
-
-CWE <- tidyCrimes %>% 
-  filter(., neighborhood == 38)
-
-AC <- tidyCrimes %>% 
-  filter(., neighborhood == 51)
-
-FP <- tidyCrimes %>% 
-  filter(., neighborhood == 53)
-
-LP <- tidyCrimes %>% 
-  filter(., neighborhood == 54)
-
-VD <- tidyCrimes%>% 
-  filter(., neighborhood == 58)
-
-SDB <- tidyCrimes %>% 
-  filter(., neighborhood == 46)
-
-DBP <- tidyCrimes %>% 
-  filter(., neighborhood == 47)
-
-WE <- tidyCrimes %>% 
-  filter(., neighborhood == 48)
-
-VP <- tidyCrimes %>% 
-  filter(., neighborhood == 49)
+augustCrimes <- rbind(tidyCrimes18, tidyCrimes19)
 ```
 
