@@ -44,7 +44,22 @@ update <- cs_last_update()
 update <- strsplit(update, " ")[[1]]
 c_month <- update[[1]]
 c_year <- as.numeric(update[[2]])
-crimes <- cs_get_data(year = c_year, month = c_month, index = i)
+yearList <- cs_get_data(year = c_year, index = i)
+```
+
+### Data Preperation
+
+```{r}
+cs_validate(yearList, year = 2019)
+```
+
+```{r}
+print(c_month)
+```
+
+
+```{r}
+crimes <- cs_extract_month(yearList, month = "August")
 ```
 
 
@@ -61,7 +76,7 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 `separate` from the `tidyr` package creates multiple columns from the data in one column. In this case we use `separate` to split the date and time from the `date_occur` variable into two seperate `date` & `time` variables. 
 
 ```{r}
-july19 <- crimes %>% 
+August19 <- crimes %>% 
   cs_filter_count(., var = count) %>%
   cs_filter_crime(., var = crime, "part 1") %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
