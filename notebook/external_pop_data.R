@@ -6,7 +6,7 @@ library(here)
 # Read in Neighborhood Population Data
 
 here()
-nbhd_pop10 <- read_xlsx(here("data/nbhd_pop10.xlsx"))
+nbhd_pop10 <- read_xlsx(here("data/external/nbhd_pop10.xlsx"))
 
 #Save as R Data File
 

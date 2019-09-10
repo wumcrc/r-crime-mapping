@@ -5,8 +5,14 @@ library(compstatr)
 library(ggplot2)
 library(magrittr)
 library(mapview)
+library(stringr)
+library(tidyr)
+library(chron)
+library(lubridate)
+library(dplyr)
 library(here)
-library(xlsx)
+library(readr)
+library(readxl)
 
 here()
 
@@ -26,8 +32,9 @@ testCrimes <- rbind(crimes18, crimes19)
 causeNums <- c("18-059543", "19-010109", "19-005195", "19-006878", "19-005008")
 
 casesTracked <- testCrimes %>% 
-  cs_filter_count(., var = count) %>%
-  filter(., complaint %in% causeNums) 
+  cs_filter_count(., var = count)
+
+casesTracked <- filter(casesTracked, complaint %in% causeNums) 
 
 casesTrackedClean <- cs_missingXY(casesTracked, varX = x_coord, varY = y_coord, newVar = missing)
 table(casesTrackedClean$missing)
@@ -44,9 +51,9 @@ casesTrackedClean_sf <- cs_projectXY(casesTrackedClean, varX = x_coord, varY = y
 casesMap <- mapview(casesTrackedClean_sf)
 
 # export image
-mapshot(casesMap, file = here("notebook/cases_test.jpeg"), 
+mapshot(casesMap, file = here("data/results/cases_test.jpeg"), 
         remove_controls = c("zoomControl", "layersControl", "homeButton",
                             "scaleBar"))
 
 # export cases
-write.xlsx(casesTrackedClean, here("notebook/sample_cases.xlsx"))
+write_csv(casesTrackedClean, here("data/results/sample_cases.csv"), col_names = TRUE)
