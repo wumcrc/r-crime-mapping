@@ -32,7 +32,8 @@ testCrimes <- rbind(crimes18, crimes19)
 causeNums <- c("18-059543", "19-010109", "19-005195", "19-006878", "19-005008")
 
 casesTracked <- testCrimes %>% 
-  cs_filter_count(., var = count)
+  cs_filter_count(., var = count) %>%
+  filter(., complaint %in% causeNums)
 
 casesTracked <- filter(casesTracked, complaint %in% causeNums) 
 
