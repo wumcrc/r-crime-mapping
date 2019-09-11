@@ -48,18 +48,21 @@ sa_sf <- nhoods_sf %>%
 ## FPSE, BOT, CWE, MC 
 
 ```{r}
-augustCrimes %>% 
+fpse_total <- crimes19_sf %>% 
   filter(., neighborhood == 39) %>% 
   tm_shape() +
-    tm_bubbles(size = 3, col = "crimeCatName")
-```
+    tm_bubbles(size = .5, col = "crimeCatName")
 
-```{r}
-nhoods_sf %>% 
+fpse <- nhoods_sf %>% 
   filter(., NHD_NUM == 39) %>%
   tm_shape() +
     tm_fill(col = "#9ecae1", alpha = .5) +
     tm_borders(col = "black", lwd = 2, lty = "dashed") +
     tm_basemap("OpenStreetMap")
+```
+
+```{r}
+tm_shape(fpse_total) + 
+  tm_shape(nhoods_sf)
 ```
 

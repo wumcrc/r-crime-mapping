@@ -203,8 +203,8 @@ augustCrimes <- rbind(tidyCrimes18, tidyCrimes19)
 ## Create Spatial Objects
 
 ```{r}
-crimes18_sf <- cs_projectXY(crimes18, varX = x_coord, varY = y_coord)
-crimes19_sf <- cs_projectXY(crimes19, varX = x_coord, varY = y_coord)
+crimes18_sf <- cs_projectXY(tidyCrimes18, varX = x_coord, varY = y_coord)
+crimes19_sf <- cs_projectXY(tidyCrimes19, varX = x_coord, varY = y_coord)
 augustCrimes_sf <- cs_projectXY(augustCrimes, varX = x_coord, varY = y_coord)
 ```
 
