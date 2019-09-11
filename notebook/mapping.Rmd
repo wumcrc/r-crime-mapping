@@ -1,0 +1,65 @@
+---
+title: "Saint Louis City Crime Data - Mapping"
+author: "Jes Stevens, M.A."
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output:
+  github_document: default
+  html_notebook: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction 
+
+[Washington University Medical Center Redevelopment Corporation](http://wumcrc.com) is a partnership between BJC Health Care and Washington University School of Medicine and works to improve the quality of life for the neighborhoods surrounding the medical campus. In order to achieve this goal in Forest Park Southeast and the Central West End , WUMCRC has invested millions of dollars toward regenerating the market for private investment in businesses and real estate, enhancing human and social service opportunities, and improving the level of physical and personal security.
+
+## Mapping 
+
+One way we work to improve the level of physical & personal security is the analysis and distribution of crime data and statistics. The original source of this crime data is <http://slmpd.org/crimereports.shtml>. This notebook takes the data that was previously cleaned and maps the data.  
+
+## R Markdown
+
+```{r Load Dependencies, include = FALSE, echo = FALSE}
+# tidyverse packages
+library(ggplot2)      # plotting data
+
+# spatial packages
+library(mapview)      # preview spatial data
+library(tmap)         # map layouts
+library(sf)           # spatial data tools
+
+# other packages
+library(here)         # file path management
+library(RColorBrewer) # color palettes
+library(viridis)      # color palettes
+library(gateway)      # Data from the City of St. Louis
+```
+
+## Load Spatial Data 
+
+```{r}
+nhoods_sf <- gw_get_data("Neighborhoods", "sf")
+sa_sf <- nhoods_sf %>% 
+  filter(., NHD_NUM %in% sa)
+```
+
+## FPSE, BOT, CWE, MC 
+
+```{r}
+augustCrimes %>% 
+  filter(., neighborhood == 39) %>% 
+  tm_shape() +
+    tm_bubbles(size = 3, col = "crimeCatName")
+```
+
+```{r}
+nhoods_sf %>% 
+  filter(., NHD_NUM == 39) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1", alpha = .5) +
+    tm_borders(col = "black", lwd = 2, lty = "dashed") +
+    tm_basemap("OpenStreetMap")
+```
+
