@@ -1,0 +1,43 @@
+---
+title: "mapping-tests"
+author: "Jes Stevens, MA"
+date: "9/11/2019"
+output: html_document
+---
+
+Example
+This complete example gets tiled imagery that we can use as real data.
+
+The code here
+
+generates a bounding box in longitude-latitude
+uses slippymath to find sensible tiles for the region
+downloads them to a local cache
+georeferences them and merges the tiles into a sensible raster object
+
+```{r}
+library(ceramic)
+## a point in longlat, and a buffer with in metres
+pt <- cbind(136, -34)
+im <- cc_location(pt, buffer = c(1e6, 5e5), type = "mapbox.satellite")
+#> Preparing to download: 12 tiles at zoom = 6 from 
+#> https://api.mapbox.com/v4/mapbox.satellite/
+library(raster)
+#> Loading required package: sp
+plotRGB(im)
+```
+
+## get the matching tiles (zoom is magic here, it's all wrapped - needs thought)
+
+```{r}
+tiles <- ceramic_tiles(zoom = 6, type = "mapbox.satellite")
+library(sf)
+plot(st_geometry(ceramic:::tiles_to_polygon(tiles)), add = TRUE)
+middle <- function(x, y) {
+  x + (y - x)/2
+}
+text(middle(tiles$xmin, tiles$xmax), middle(tiles$ymin, tiles$ymax), lab = sprintf("[%i,%i]", tiles$tile_x, tiles$tile_y), 
+     col = "firebrick")
+```
+
+

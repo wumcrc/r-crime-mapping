@@ -38,6 +38,7 @@ library(here)         # file path management
 library(RColorBrewer) # color palettes
 library(viridis)      # color palettes
 library(gateway)      # Data from the City of St. Louis
+Sys.setenv(MAPBOX_API_KEY="sk.eyJ1IjoiamVzbnN0ZXZlbnMiLCJhIjoiY2swZnF0dGlmMDJ2NzNubHA5bnI0ZWUweSJ9.d2w0qYamltz_8ngzaiW6tQ")
 ```
 
 ## Load Spatial Data 
@@ -47,26 +48,27 @@ ll_stl <- getbb("saint louis")
 ll_stl
 ```
 
+xmin, xmax, ymin, ymax
+
 ```{r}
 library(ceramic)
-roi <- raster::extent(100, 160, -50, 10)
-im <- cc_location(roi)
+stl <- raster::extent(-90.32065, -90.16629, 38.53232, 38.77434)
+tiles <- cc_location(stl, type = "mapbox.streets")
 #> Preparing to download: 16 tiles at zoom = 4 from 
 #> https://api.mapbox.com/v4/mapbox.satellite/
 
-raster::plotRGB(im)
+
 ```
 
 
 ```{r}
-stlcord <- c(-90.32065, 38.53232)
-stl_tiles <- get_tiles(stlcord, buffer = 40000, type = "mapbox.streets", max_tiles = 20)
+#stlcord <- c(-90.32065, 38.53232)
+#stl_tiles <- get_tiles(stlcord, buffer = 40000, type = "mapbox.streets", max_tiles = 20)
 
 
-stl_tiles_sf <- tiles_to_polygon(stl_tiles)
+#stl_tiles_sf <- tiles_to_polygon(stl_tiles)
 
-
-tm_shape(stl_tiles) +
+tm_shape(tiles) +
   tm_rgb()
 ```
 , buffer = 15000 , crop_to_buffer = TRUE
@@ -86,7 +88,7 @@ sa_sf <- nhoods_sf %>%
 ```{r}
 # tmap_mode("view")
 
-fpse_total <- tm_shape(stl_tiles) +
+fpse_total <- tm_shape(tiles) +
   tm_rgb() +
   nhoods_sf %>%
   filter(., NHD_NUM == 39) %>% 
