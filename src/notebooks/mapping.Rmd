@@ -38,7 +38,6 @@ library(here)         # file path management
 library(RColorBrewer) # color palettes
 library(viridis)      # color palettes
 library(gateway)      # Data from the City of St. Louis
-Sys.setenv(MAPBOX_API_KEY="sk.eyJ1IjoiamVzbnN0ZXZlbnMiLCJhIjoiY2swZnF0dGlmMDJ2NzNubHA5bnI0ZWUweSJ9.d2w0qYamltz_8ngzaiW6tQ")
 ```
 
 ## Load Spatial Data 
