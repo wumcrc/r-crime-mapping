@@ -29,6 +29,7 @@ library(ggplot2)      # plotting data
 library(mapview)      # preview spatial data
 library(tmap)         # map layouts
 library(sf)           # spatial data tools
+library(osmdata)
 
 # other packages
 library(here)         # file path management
@@ -48,18 +49,22 @@ sa_sf <- nhoods_sf %>%
 ## FPSE, BOT, CWE, MC 
 
 ```{r}
-fpse_total <- crimes19_sf %>% 
-  filter(., neighborhood == 39) %>% 
-  tm_shape() +
-    tm_bubbles(size = .5, col = "crimeCatName")
+tmap_mode("view")
 
-fpse <- nhoods_sf %>% 
-  filter(., NHD_NUM == 39) %>%
+fpse_total <- nhoods_sf %>%
+  filter(., NHD_NUM == 39) %>% 
   tm_shape() +
     tm_fill(col = "#9ecae1", alpha = .5) +
     tm_borders(col = "black", lwd = 2, lty = "dashed") +
-    tm_basemap("OpenStreetMap")
+    tm_basemap("OpenStreetMap") +
+  filter(crimes19_sf, neighborhood == 39) %>%
+  tm_shape() +
+    tm_bubbles(size = .5, col = "crimeCatName", palette = "Set1")
+  
+
+fpse_total
 ```
+
 
 ```{r}
 tm_shape(fpse_total) + 
