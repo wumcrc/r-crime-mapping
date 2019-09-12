@@ -42,35 +42,45 @@ library(gateway)      # Data from the City of St. Louis
 
 ## Load Spatial Data 
 
-```{r}
-ll_stl <- getbb("saint louis")
-ll_stl
-```
-
-xmin, xmax, ymin, ymax
+### Open Street Map from Mapbox - Basemap Tile Imagery
 
 ```{r}
-library(ceramic)
-stl <- raster::extent(-90.32065, -90.16629, 38.53232, 38.77434)
-tiles <- cc_location(stl, type = "mapbox.streets")
-#> Preparing to download: 16 tiles at zoom = 4 from 
-#> https://api.mapbox.com/v4/mapbox.satellite/
+fpse_tiles <- raster::extent(xyfpse) %>%
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
 
+cwe_tiles <- raster::extent(xycwe) %>% 
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
 
+bot_tiles <- raster::extent(xybot) %>%
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
+
+dbp_tiles <- raster::extent(xydbp) %>% 
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
+
+sdb_tiles <- raster::extent(xysdb) %>%
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
+
+we_tiles <- raster::extent(xywe) %>% 
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
+
+vp_tiles <- raster::extent(xyvp) %>%
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
+
+ac_tiles <- raster::extent(xyac) %>% 
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
+
+fp_tiles <- raster::extent(xyfp) %>% 
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
+
+lp_tiles <- raster::extent(xylp) %>%
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
+
+vd_tiles <- raster::extent(xyvd) %>% 
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
 ```
 
+### Spatial Data from the City Of St. Louis
 
-```{r}
-#stlcord <- c(-90.32065, 38.53232)
-#stl_tiles <- get_tiles(stlcord, buffer = 40000, type = "mapbox.streets", max_tiles = 20)
-
-
-#stl_tiles_sf <- tiles_to_polygon(stl_tiles)
-
-tm_shape(tiles) +
-  tm_rgb()
-```
-, buffer = 15000 , crop_to_buffer = TRUE
 ```{r}
 nhoods_sf <- gw_get_data("Neighborhoods", "sf")
 sa_sf <- nhoods_sf %>% 
@@ -79,47 +89,121 @@ sa_sf <- nhoods_sf %>%
 
 ## FPSE, BOT, CWE, MC 
 
-```{r}
+### Map Creation
 
-```
+#### FPSE
 
-
-```{r}
-# tmap_mode("view")
-
-fpse_total <- tm_shape(tiles) +
+```{r FPSE Total Crime}
+fpse_total <- tm_shape(fpse_tiles) +
   tm_rgb() +
   nhoods_sf %>%
   filter(., NHD_NUM == 39) %>% 
   tm_shape() +
-    tm_fill(col = "#9ecae1", alpha = .5) +
-    tm_borders(col = "black", lwd = 2, lty = "dashed") +
-  filter(crimes19_sf, neighborhood == 39) %>%
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(crimes19_sf, 
+         neighborhood == 39) %>%
   tm_shape() +
-    tm_bubbles(size = .5, col = "crimeCatName", palette = "Set1")
-
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = FALSE,
+    legend.position = c("right", "bottom"))
 
 fpse_total
-
-# tmap_save(fpse_total, file = "fpse_total_crimes.jpeg", dpi = 500)
 ``` 
 
 
+```{r FPSE Day & Night}
+fpse_dn <- tm_shape(fpse_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., NHD_NUM == 39) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(crimes19_sf, 
+         neighborhood == 39) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "dayNight", 
+               palette = "-RdBu", 
+               title.col = "Time of Crimes") +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = FALSE,
+    legend.position = c("right", "bottom"))
 
+fpse_dn
+```
 
+```{r FPSE Crimes Against Persons}
+fpse_vlnt <- tm_shape(fpse_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., NHD_NUM == 39) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(crimes19_sf, 
+         neighborhood == 39) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "violent", 
+               palette = "Reds", 
+               title.col = "Violent") +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = FALSE,
+    legend.position = c("right", "bottom"))
 
+fpse_vlnt
+```
 
-
+#### CWE
 
 ```{r}
-lf <- tmap_leaflet(fpse_total)
+cwe_total <- tm_shape(cwe_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., NHD_NUM == 38) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", alpha = .5) +
+    tm_borders(col = "black", lwd = 2, lty = "dashed") +
+  filter(crimes19_sf, neighborhood == 38) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, col = "crimeCatName", palette = "Set1")
 
-# mapshot(casesMap, file = here("data/results/cases_test.jpeg"), 
-#         remove_controls = c("zoomControl", "layersControl", "homeButton",
-#                             "scaleBar"))
 
-mapshot(lf, file = "fpse_total_crimes.jpeg",
-        remove_controls = c("zoomControl", "layersControl", "homeButton",
-                            "scaleBar"), dpi = 500)
+cwe_total
+
+tmap_save(cwe_total, file = "cwe_total_crimes.jpeg", dpi = 500)
 ```
+
+
+### Save Maps
+
+```{r}
+tmap_save(fpse_total, file = "fpse_total_crimes.jpeg", dpi = 500)
+tmap_save(fpse_dn, file = "fpse_day_night.jpeg", dpi = 500)
+```
+
 

@@ -5,31 +5,30 @@ date: "9/11/2019"
 output: html_document
 ---
 
-Example
+# tmap example 
+
+[Example](https://github.com/hypertidy/ceramic)
+
 This complete example gets tiled imagery that we can use as real data.
 
 The code here
 
-generates a bounding box in longitude-latitude
-uses slippymath to find sensible tiles for the region
-downloads them to a local cache
-georeferences them and merges the tiles into a sensible raster object
+* generates a bounding box in longitude-latitude
+* uses slippymath to find sensible tiles for the region
+* downloads them to a local cache
+* georeferences them and merges the tiles into a sensible raster object
 
 ```{r}
 library(ceramic)
-## a point in longlat, and a buffer with in metres
-pt <- cbind(136, -34)
-im <- cc_location(pt, buffer = c(1e6, 5e5), type = "mapbox.satellite")
-#> Preparing to download: 12 tiles at zoom = 6 from 
-#> https://api.mapbox.com/v4/mapbox.satellite/
 library(raster)
-#> Loading required package: sp
+
+pt <- cbind(-90.2717, 38.6180)
+im <- cc_location(pt, buffer = 8000, type = "mapbox.streets")
 plotRGB(im)
-```
 
 ## get the matching tiles (zoom is magic here, it's all wrapped - needs thought)
 
-```{r}
+
 tiles <- ceramic_tiles(zoom = 6, type = "mapbox.satellite")
 library(sf)
 plot(st_geometry(ceramic:::tiles_to_polygon(tiles)), add = TRUE)
@@ -40,4 +39,26 @@ text(middle(tiles$xmin, tiles$xmax), middle(tiles$ymin, tiles$ymax), lab = sprin
      col = "firebrick")
 ```
 
+# tmap example 2
+
+[Example 2 - Page 22](https://cran.r-project.org/web/packages/tmap/tmap.pdf)
+
+```{r}
+# world choropleth/bubble map of the world
+
+data(World, metro)
+
+metro$growth <- (metro$pop2020 - metro$pop2010) / (metro$pop2010 * 10) * 100
+
+map1 <- tm_shape(metro) +
+  tm_bubbles("pop2010", col = "growth",
+  border.col = "black", border.alpha = .5,
+  style="fixed", breaks=c(-Inf, seq(0, 6, by=2), Inf),
+  palette="-RdYlBu", contrast=1,
+  title.size="Metro population",
+  title.col="Growth rate (%)", id="name") +
+  tm_layout(legend.bg.color = "grey90", legend.bg.alpha=.5, legend.frame=TRUE)
+
+map1
+```
 
