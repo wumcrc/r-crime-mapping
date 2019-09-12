@@ -48,6 +48,17 @@ ll_stl
 ```
 
 ```{r}
+library(ceramic)
+roi <- raster::extent(100, 160, -50, 10)
+im <- cc_location(roi)
+#> Preparing to download: 16 tiles at zoom = 4 from 
+#> https://api.mapbox.com/v4/mapbox.satellite/
+
+raster::plotRGB(im)
+```
+
+
+```{r}
 stlcord <- c(-90.32065, 38.53232)
 stl_tiles <- get_tiles(stlcord, buffer = 40000, type = "mapbox.streets", max_tiles = 20)
 
