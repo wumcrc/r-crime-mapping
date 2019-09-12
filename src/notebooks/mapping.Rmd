@@ -28,8 +28,10 @@ library(ggplot2)      # plotting data
 # spatial packages
 library(mapview)      # preview spatial data
 library(tmap)         # map layouts
+library(tmaptools)
 library(sf)           # spatial data tools
 library(osmdata)
+library(ceramic)
 
 # other packages
 library(here)         # file path management
@@ -41,6 +43,23 @@ library(gateway)      # Data from the City of St. Louis
 ## Load Spatial Data 
 
 ```{r}
+ll_stl <- getbb("saint louis")
+ll_stl
+```
+
+```{r}
+stlcord <- c(-90.32065, 38.53232)
+stl_tiles <- get_tiles(stlcord, buffer = 40000, type = "mapbox.streets", max_tiles = 20)
+
+
+stl_tiles_sf <- tiles_to_polygon(stl_tiles)
+
+
+tm_shape(stl_tiles) +
+  tm_rgb()
+```
+, buffer = 15000 , crop_to_buffer = TRUE
+```{r}
 nhoods_sf <- gw_get_data("Neighborhoods", "sf")
 sa_sf <- nhoods_sf %>% 
   filter(., NHD_NUM %in% sa)
@@ -49,25 +68,46 @@ sa_sf <- nhoods_sf %>%
 ## FPSE, BOT, CWE, MC 
 
 ```{r}
-tmap_mode("view")
 
-fpse_total <- nhoods_sf %>%
-  filter(., NHD_NUM == 39) %>% 
-  tm_shape() +
-    tm_fill(col = "#9ecae1", alpha = .5) +
-    tm_borders(col = "black", lwd = 2, lty = "dashed") +
-    tm_basemap("OpenStreetMap") +
-  filter(crimes19_sf, neighborhood == 39) %>%
-  tm_shape() +
-    tm_bubbles(size = .5, col = "crimeCatName", palette = "Set1")
-  
-
-fpse_total
 ```
 
 
 ```{r}
-tm_shape(fpse_total) + 
-  tm_shape(nhoods_sf)
+# tmap_mode("view")
+
+fpse_total <- tm_shape(stl_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., NHD_NUM == 39) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", alpha = .5) +
+    tm_borders(col = "black", lwd = 2, lty = "dashed") +
+  filter(crimes19_sf, neighborhood == 39) %>%
+  tm_shape() +
+    tm_bubbles(size = .5, col = "crimeCatName", palette = "Set1")
+
+
+fpse_total
+
+# tmap_save(fpse_total, file = "fpse_total_crimes.jpeg", dpi = 500)
+``` 
+
+
+
+
+
+
+
+
+```{r}
+lf <- tmap_leaflet(fpse_total)
+
+# mapshot(casesMap, file = here("data/results/cases_test.jpeg"), 
+#         remove_controls = c("zoomControl", "layersControl", "homeButton",
+#                             "scaleBar"))
+
+mapshot(lf, file = "fpse_total_crimes.jpeg",
+        remove_controls = c("zoomControl", "layersControl", "homeButton",
+                            "scaleBar"), dpi = 500)
 ```
 
