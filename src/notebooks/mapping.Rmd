@@ -42,6 +42,24 @@ library(gateway)      # Data from the City of St. Louis
 
 ## Load Spatial Data 
 
+## Coordinates
+
+```{r}
+# Service Area Neighborhood Coordinates 
+xyfpse <- c(-90.2679, -90.2423, 38.6176, 38.6334)
+xycwe <- c(-90.2759, -90.2368, 38.6286, 38.6552)
+xybot <- c(-90.2596, -90.2359, 38.6165, 38.6291)
+xydbp <- c(-90.2869, -90.2726, 38.6433, 38.6566)
+xysdb <- c(-90.3026, -90.2827, 38.6456, 38.6571)
+xywe <- c(-90.3020, -90.2712, 38.6517, 38.6710)
+xyvp <- c(-90.2803, -90.2712, 38.6517, 38.6622)
+xyac <- c(-90.2744, -90.2609, 38.6505, 38.6661)
+xyfp <- c(-90.2648, -90.2543, 38.6493, 38.6655)
+xylp <- c(-90.2588, -90.2437, 38.6481, 38.6624)
+xyvd <- c(-90.2520, -90.2304, 38.6426, 38.6585)
+```
+
+
 ### Open Street Map from Mapbox - Basemap Tile Imagery
 
 ```{r}
@@ -181,6 +199,8 @@ fpse_vlnt
 #### CWE
 
 ```{r}
+# This Code is incomplete
+
 cwe_total <- tm_shape(cwe_tiles) +
   tm_rgb() +
   nhoods_sf %>%
@@ -198,12 +218,12 @@ cwe_total
 tmap_save(cwe_total, file = "cwe_total_crimes.jpeg", dpi = 500)
 ```
 
-
 ### Save Maps
 
 ```{r}
-tmap_save(fpse_total, file = "fpse_total_crimes.jpeg", dpi = 500)
-tmap_save(fpse_dn, file = "fpse_day_night.jpeg", dpi = 500)
+tmap_save(fpse_total, file = here("data/results/2019/august/fpse/fpse_total_crimes.jpeg"), dpi = 500)
+tmap_save(fpse_dn, file = here("data/results/2019/august/fpse/fpse_day_night.jpeg"), dpi = 500)
+tmap_save(fpse_vlnt, file = here("data/results/2019/august/fpse/fpse_vlnt.jpeg"), dpi = 500)
 ```
 
 

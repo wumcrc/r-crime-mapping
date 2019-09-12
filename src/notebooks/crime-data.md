@@ -1,7 +1,7 @@
 Saint Louis City Crime Data - Tidying
 ================
 Jes Stevens, M.A.
-(September 11, 2019)
+(September 12, 2019)
 
 Introduction
 ------------
