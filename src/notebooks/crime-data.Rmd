@@ -27,6 +27,7 @@ library(tidyr)         # tidy data
 library(dplyr)         # data manipulation
 library(magrittr)      # pipe operator
 library(readxl)        # read & write excel files
+library(lubridate)
 
 # spatial packages
 library(tmap)         # map layouts
@@ -126,7 +127,7 @@ tidyCrimes19$tod <- format(tidyCrimes19$tod, format = "%H%M%S")
 
 tidyCrimes19 <- tidyCrimes19 %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
-  select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
+  dplyr::select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
 
 tidyCrimes19 <- cs_missingXY(tidyCrimes19, varX = x_coord, varY = y_coord, newVar = missing)
 table(tidyCrimes19$missing)
@@ -176,7 +177,7 @@ tidyCrimes18$tod <- format(tidyCrimes18$tod, format = "%H%M%S")
 
 tidyCrimes18 <- tidyCrimes18 %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
-  select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
+  dplyr::select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
 
 tidyCrimes18 <- cs_missingXY(tidyCrimes18, varX = x_coord, varY = y_coord, newVar = missing)
 table(tidyCrimes18$missing)
@@ -277,6 +278,19 @@ vd_tiles <- raster::extent(xyvd) %>%
 nhoods_sf <- gw_get_data("Neighborhoods", "sf")
 sa_sf <- nhoods_sf %>% 
   filter(., NHD_NUM %in% sa)
+
+
+fpse_bound <- nhoods_sf %>% filter(., NHD_NUM == 38 )
+cwe_bound <- nhoods_sf %>% filter(., NHD_NUM == 39 )
+bot_bound <- nhoods_sf %>% filter(., NHD_NUM == 28 )
+dbp_bound <- nhoods_sf %>% filter(., NHD_NUM == 47 )
+sdb_bound <- nhoods_sf %>% filter(., NHD_NUM == 46 )
+we_bound <- nhoods_sf %>% filter(., NHD_NUM == 48 )
+vp_bound <- nhoods_sf %>% filter(., NHD_NUM == 49 )
+ac_bound <- nhoods_sf %>% filter(., NHD_NUM == 51 )
+fp_bound <- nhoods_sf %>% filter(., NHD_NUM == 53 )
+lp_bound <- nhoods_sf %>% filter(., NHD_NUM == 54 )
+vd_bound <- nhoods_sf %>% filter(., NHD_NUM == 58 )
 ```
 
 ### FPSE, BOT, CWE, MC 
@@ -369,27 +383,157 @@ fpse_vlnt_tm <- tm_shape(fpse_tiles) +
 
 fpse_vlnt_tm
 ```
+```{r FPSE Density Map SF}
+fpse_densities <- crimes19_sf %>%
+  filter(neighborhood == 39) %>%
+  smooth_map(., bandwidth = 0.5, style = "pretty",
+  cover = fpse)
+```
+
+
+```{r FPSE Density Map Output}
+fpse_den_tm <- tm_shape(fpse_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., NHD_NUM == 39) %>% 
+  tm_shape() +
+    tm_fill(col = NA, 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  tm_shape(fpse_densities$polygons) +
+  tm_fill(col = "level", palette = "BuPu", alpha = .75, 
+    title = expression("Crimes per " * km^2)) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = FALSE,
+    legend.position = c("right", "bottom"))
+
+fpse_den_tm
+```
+
 
 ##### CWE
 
-```{r}
-# This Code is incomplete
 
+```{r CWE Total Crime}
 cwe_total_tm <- tm_shape(cwe_tiles) +
   tm_rgb() +
   nhoods_sf %>%
   filter(., NHD_NUM == 38) %>% 
   tm_shape() +
-    tm_fill(col = "#9ecae1", alpha = .5) +
-    tm_borders(col = "black", lwd = 2, lty = "dashed") +
-  filter(crimes19_sf, neighborhood == 38) %>%
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(crimes19_sf, 
+         neighborhood == 38) %>%
   tm_shape() +
-    tm_bubbles(size = .25, col = "crimeCatName", palette = "Set1")
-
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = FALSE,
+    legend.position = c("right", "bottom"))
 
 cwe_total_tm
+``` 
 
-# tmap_save(cwe_total_tm, file = "cwe_total_crimes.jpeg", dpi = 500)
+
+```{r cwe Day & Night}
+cwe_dn_tm <- tm_shape(cwe_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., NHD_NUM == 38) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(crimes19_sf, 
+         neighborhood == 38) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "dayNight", 
+               palette = "-RdBu", 
+               title.col = "Time of Crimes") +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = FALSE,
+    legend.position = c("right", "bottom"))
+
+cwe_dn_tm
+```
+
+```{r CWE Crimes Against Persons}
+cwe_vlnt_tm <- tm_shape(cwe_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., NHD_NUM == 38) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(crimes19_sf, 
+         neighborhood == 38) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "violent", 
+               palette = "Reds", 
+               title.col = "Violent") +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = FALSE,
+    legend.position = c("right", "bottom"))
+
+cwe_vlnt_tm
+```
+
+```{r CWE Density Map SF}
+cwe_densities <- crimes19_sf %>%
+  filter(neighborhood == 38) %>%
+  smooth_map(., bandwidth = 0.5, style = "pretty",
+  cover = fpse)
+```
+
+
+```{r FPSE Density Map Output}
+fpse_den_tm <- tm_shape(fpse_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., NHD_NUM == 39) %>% 
+  tm_shape() +
+    tm_fill(col = NA, 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  tm_shape(fpse_densities$polygons) +
+  tm_fill(col = "level", palette = "BuPu", alpha = .75, 
+    title = expression("Crimes per " * km^2)) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = FALSE,
+    legend.position = c("right", "bottom"))
+
+fpse_den_tm
 ```
 
 ### Save Maps
