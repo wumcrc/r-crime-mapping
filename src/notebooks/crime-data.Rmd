@@ -32,6 +32,7 @@ library(lubridate)
 # spatial packages
 library(tmap)         # map layouts
 library(tmaptools)    # tools for handeling spatial 
+library(oldtmaptools)
 library(sf)           # spatial data tools
 library(ceramic)      # download online imagery tiles
 library(compstatr)    # tools for STL crime data
@@ -280,17 +281,17 @@ sa_sf <- nhoods_sf %>%
   filter(., NHD_NUM %in% sa)
 
 
-fpsebound <- filter(nhoods_sf, NHD_NUM == 38 )
-cwebound <- filter(nhoods_sf, NHD_NUM == 39 )
-botbound <- filter(nhoods_sf, NHD_NUM == 28 )
-dbpbound <- filter(nhoods_sf, NHD_NUM == 47 )
-sdbbound <- filter(nhoods_sf, NHD_NUM == 46 )
-webound <- filter(nhoods_sf, NHD_NUM == 48 )
-vpbound <- filter(nhoods_sf, NHD_NUM == 49 )
-acbound <- filter(nhoods_sf, NHD_NUM == 51 )
-fpbound <- filter(nhoods_sf, NHD_NUM == 53 )
-lpbound <- filter(nhoods_sf, NHD_NUM == 54 )
-vdbound <- filter(nhoods_sf,NHD_NUM == 58 )
+fpse <- filter(nhoods_sf, NHD_NUM == 39 )
+cwe <- filter(nhoods_sf, NHD_NUM == 38 )
+bot <- filter(nhoods_sf, NHD_NUM == 28 )
+dbp <- filter(nhoods_sf, NHD_NUM == 47 )
+sdb <- filter(nhoods_sf, NHD_NUM == 46 )
+we <- filter(nhoods_sf, NHD_NUM == 48 )
+vp <- filter(nhoods_sf, NHD_NUM == 49 )
+ac <- filter(nhoods_sf, NHD_NUM == 51 )
+fp <- filter(nhoods_sf, NHD_NUM == 53 )
+lp <- filter(nhoods_sf, NHD_NUM == 54 )
+vd <- filter(nhoods_sf,NHD_NUM == 58 )
 ```
 
 ### FPSE, BOT, CWE, MC 
@@ -384,10 +385,10 @@ fpse_vlnt_tm <- tm_shape(fpse_tiles) +
 fpse_vlnt_tm
 ```
 ```{r FPSE Density Map SF}
-fpse_densities <- crimes19_sf %>%
+crimes19_sf %>%
   filter(neighborhood == 39) %>%
   smooth_map(., bandwidth = 0.5, style = "pretty",
-  cover = fpsebound)
+  cover = fpse) -> fpse_densities
 ```
 
 
@@ -403,7 +404,7 @@ fpse_den_tm <- tm_shape(fpse_tiles) +
                lwd = 2, 
                lty = "dashed") +
   tm_shape(fpse_densities$polygons) +
-  tm_fill(col = "level", palette = "BuPu", alpha = .75, 
+  tm_fill(col = "level", palette = "BuPu", alpha = .60, 
     title = expression("Crimes per " * km^2)) +
   tm_layout(
     frame = FALSE,
@@ -508,7 +509,7 @@ cwe_vlnt_tm
 cwe_densities <- crimes19_sf %>%
   filter(neighborhood == 38) %>%
   smooth_map(., bandwidth = 0.5, style = "pretty",
-  cover = cwe_bound)
+  cover = cwe)
 ```
 
 
@@ -524,7 +525,7 @@ cwe_den_tm <- tm_shape(cwe_tiles) +
                lwd = 2, 
                lty = "dashed") +
   tm_shape(cwe_densities$polygons) +
-  tm_fill(col = "level", palette = "BuPu", alpha = .75, 
+  tm_fill(col = "level", palette = "BuPu", alpha = .60, 
     title = expression("Crimes per " * km^2)) +
   tm_layout(
     frame = FALSE,
@@ -535,6 +536,11 @@ cwe_den_tm <- tm_shape(cwe_tiles) +
 
 cwe_den_tm
 ```
+
+```{r}
+kable(head(mtcars), format = "rst", row.names = FALSE)
+```
+
 
 ### Save Maps
 

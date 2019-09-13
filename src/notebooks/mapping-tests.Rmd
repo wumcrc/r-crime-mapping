@@ -211,14 +211,13 @@ fpse <- filter(nhoods_sf, NHD_NUM == 39)
 
 
 ```{r}
-fpse_densities <- crimes19_sf %>%
-  filter(neighborhood == 39) %>%
-  smooth_map(., bandwidth = 0.5, style = "pretty",
-  cover = fpse)
+fpse_crimes <- rasterize(filter(crimes19_sf, neighborhood == 39))
+  
+fpseden <- smooth_map(fpse_crimes, bandwidth = 0.5, style = "pretty", cover = fpse)
 ```
 
 ```{r}
-tm_shape(fpse_densities$polygons) +
+tm_shape(fpsedens$polygons) +
   tm_fill(col = "level", palette = "BuPu", alpha = .75, 
     title = expression("Crimes per " * km^2)) + 
   tm_shape(fpse) + 
