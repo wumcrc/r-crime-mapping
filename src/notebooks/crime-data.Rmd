@@ -387,7 +387,7 @@ fpse_vlnt_tm
 fpse_densities <- crimes19_sf %>%
   filter(neighborhood == 39) %>%
   smooth_map(., bandwidth = 0.5, style = "pretty",
-  cover = fpse)
+  cover = fpse_bound)
 ```
 
 
@@ -508,22 +508,22 @@ cwe_vlnt_tm
 cwe_densities <- crimes19_sf %>%
   filter(neighborhood == 38) %>%
   smooth_map(., bandwidth = 0.5, style = "pretty",
-  cover = fpse)
+  cover = cwe_bound)
 ```
 
 
-```{r FPSE Density Map Output}
-fpse_den_tm <- tm_shape(fpse_tiles) +
+```{r CWE Density Map Output}
+cwe_den_tm <- tm_shape(cwe_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 39) %>% 
+  filter(., NHD_NUM == 38) %>% 
   tm_shape() +
     tm_fill(col = NA, 
             alpha = .5) +
     tm_borders(col = "black", 
                lwd = 2, 
                lty = "dashed") +
-  tm_shape(fpse_densities$polygons) +
+  tm_shape(cwe_densities$polygons) +
   tm_fill(col = "level", palette = "BuPu", alpha = .75, 
     title = expression("Crimes per " * km^2)) +
   tm_layout(
@@ -533,7 +533,7 @@ fpse_den_tm <- tm_shape(fpse_tiles) +
     legend.outside = FALSE,
     legend.position = c("right", "bottom"))
 
-fpse_den_tm
+cwe_den_tm
 ```
 
 ### Save Maps
