@@ -280,17 +280,17 @@ sa_sf <- nhoods_sf %>%
   filter(., NHD_NUM %in% sa)
 
 
-fpse_bound <- nhoods_sf %>% filter(., NHD_NUM == 38 )
-cwe_bound <- nhoods_sf %>% filter(., NHD_NUM == 39 )
-bot_bound <- nhoods_sf %>% filter(., NHD_NUM == 28 )
-dbp_bound <- nhoods_sf %>% filter(., NHD_NUM == 47 )
-sdb_bound <- nhoods_sf %>% filter(., NHD_NUM == 46 )
-we_bound <- nhoods_sf %>% filter(., NHD_NUM == 48 )
-vp_bound <- nhoods_sf %>% filter(., NHD_NUM == 49 )
-ac_bound <- nhoods_sf %>% filter(., NHD_NUM == 51 )
-fp_bound <- nhoods_sf %>% filter(., NHD_NUM == 53 )
-lp_bound <- nhoods_sf %>% filter(., NHD_NUM == 54 )
-vd_bound <- nhoods_sf %>% filter(., NHD_NUM == 58 )
+fpsebound <- filter(nhoods_sf, NHD_NUM == 38 )
+cwebound <- filter(nhoods_sf, NHD_NUM == 39 )
+botbound <- filter(nhoods_sf, NHD_NUM == 28 )
+dbpbound <- filter(nhoods_sf, NHD_NUM == 47 )
+sdbbound <- filter(nhoods_sf, NHD_NUM == 46 )
+webound <- filter(nhoods_sf, NHD_NUM == 48 )
+vpbound <- filter(nhoods_sf, NHD_NUM == 49 )
+acbound <- filter(nhoods_sf, NHD_NUM == 51 )
+fpbound <- filter(nhoods_sf, NHD_NUM == 53 )
+lpbound <- filter(nhoods_sf, NHD_NUM == 54 )
+vdbound <- filter(nhoods_sf,NHD_NUM == 58 )
 ```
 
 ### FPSE, BOT, CWE, MC 
@@ -387,7 +387,7 @@ fpse_vlnt_tm
 fpse_densities <- crimes19_sf %>%
   filter(neighborhood == 39) %>%
   smooth_map(., bandwidth = 0.5, style = "pretty",
-  cover = fpse_bound)
+  cover = fpsebound)
 ```
 
 
