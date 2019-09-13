@@ -293,6 +293,18 @@ fp <- filter(nhoods_sf, NHD_NUM == 53 )
 lp <- filter(nhoods_sf, NHD_NUM == 54 )
 vd <- filter(nhoods_sf,NHD_NUM == 58 )
 ```
+### Load External Spatial Data 
+
+```{r load shapefiles, include=FALSE}
+st_read(here("data", "external", "med-campus", "medcampus.shp")) %>%
+  st_transform(crs = 102696) -> med_campus
+
+st_read(here("data", "external", "cortex-boundary", "CORTEX BOUNDARY.shp")) %>%
+  st_transform(crs = 102696) -> cortex
+
+st_read(here("data", "external", "grove-cid", "grovecid.shp")) %>%
+  st_transform(crs = 102696) -> grove_cid
+```
 
 ### FPSE, BOT, CWE, MC 
 
@@ -415,6 +427,11 @@ fpse_den_tm <- tm_shape(fpse_tiles) +
 
 fpse_den_tm
 ```
+###### Grove CID 
+
+```{r}
+
+```
 
 
 ##### CWE
@@ -532,13 +549,20 @@ cwe_den_tm <- tm_shape(cwe_tiles) +
     legend.bg.color = "white", 
     legend.frame=TRUE,
     legend.outside = FALSE,
-    legend.position = c("right", "bottom"))
+    legend.position = c("right", "top"))
 
 cwe_den_tm
 ```
+###### Medical Campus
 
 ```{r}
-kable(head(mtcars), format = "rst", row.names = FALSE)
+
+```
+
+##### Botanical Heights
+
+```{r}
+
 ```
 
 
