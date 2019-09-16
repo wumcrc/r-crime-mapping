@@ -7,7 +7,7 @@ output:
   html_notebook: default
 ---
 
-```{r setup, include=FALSE}
+```{r Setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -49,13 +49,13 @@ library(gateway)      # aata from the City of St. Louis
 
 ### Create an Index
 
-```{r}
+```{r Create Crime Index}
 i <- cs_create_index()
 ```
 
 ### Get Data - 2019
 
-```{r}
+```{r Pull 2019 Data}
 update <- cs_last_update()
 update <- strsplit(update, " ")[[1]]
 c_month <- update[[1]]
@@ -65,11 +65,11 @@ yearList19 <- cs_get_data(year = c_year, index = i)
 
 ### Download Current Month
 
-```{r}
+```{r Validate 2019 Data}
 cs_validate(yearList19, year = 2019)
 ```
 
-```{r}
+```{r Standardize 2019 Data}
 totalCrimes19 <- cs_collapse(yearList19)
 ```
 
@@ -79,7 +79,7 @@ print(c_month)
 ```
 
 
-```{r}
+```{r Extract August 2019 Data}
 crimes19 <- cs_extract_month(yearList19, month = "August")
 ```
 
@@ -99,7 +99,7 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 
 `mutate` adds a variable that codes and labels the days of the week for each crime that occurred, and creates another time of day variable 
 
-```{r}
+```{r Creates 2019 Categorized Tidy Crime File}
 tidyCrimes19 <- crimes19 %>% 
   cs_filter_count(., var = count) %>%
   cs_filter_crime(., var = crime, "part 1") %>%
@@ -122,7 +122,7 @@ tidyCrimes19 <- crimes19 %>%
 
 `cs_replace0` replaces missing x & y coordinates with `NA`, and drops the missing data. 
 
-```{r}
+```{r Cleans 2019 Time Data & Missing Spatial Data}
 tidyCrimes19$tod <- strptime(tidyCrimes19$tod, tz = "America/Chicago", "%H:%M")
 tidyCrimes19$tod <- format(tidyCrimes19$tod, format = "%H%M%S")
 
@@ -141,25 +141,25 @@ tidyCrimes19 <- tidyCrimes19 %>%
 
 ### Get Data - 2018
 
-```{r}
+```{r Download 2018 Data}
 yearList18 <- cs_get_data(year = 2018, index = i)
 ```
 
 ### Data Preperation
 
-```{r}
+```{r Validate 2018 Data}
 cs_validate(yearList18, year = 2018)
 ```
 
 ### Download Last Year's Month
-```{r}
+```{r Extract Last Years Crime Data For Current Month}
 totalCrimes18 <- cs_collapse(yearList18)
 crimes18 <- cs_extract_month(yearList18, month = "August")
 ```
 
 ### Clean & Categorize Data - 2018
 
-```{r}
+```{r Filter & Categorize 2018 Data}
 tidyCrimes18 <- crimes18 %>% 
   cs_filter_count(., var = count) %>%
   cs_filter_crime(., var = crime, "part 1") %>%
@@ -192,13 +192,13 @@ tidyCrimes18 <- tidyCrimes18 %>%
 
 ### Combine 2018 & 2019 
 
-```{r}
+```{r Join Previous Years Crimes}
 augustCrimes <- rbind(tidyCrimes18, tidyCrimes19)
 ```
 
 ### Create Spatial Objects
 
-```{r}
+```{r Create SF objects for 2018 & 2019 Crimes}
 crimes18_sf <- cs_projectXY(tidyCrimes18, varX = x_coord, varY = y_coord, crs = 102696)
 crimes19_sf <- cs_projectXY(tidyCrimes19, varX = x_coord, varY = y_coord, crs = 102696)
 augustCrimes_sf <- cs_projectXY(augustCrimes, varX = x_coord, varY = y_coord, crs = 102696)
@@ -206,7 +206,7 @@ augustCrimes_sf <- cs_projectXY(augustCrimes, varX = x_coord, varY = y_coord, cr
 
 ### Prep for Data by Neighborhood
 
-```{r}
+```{r Neighborhood Number Lists}
 sa <- c(39,28,38,51,53,54,58,46,47,48,48)
 dst2 <- c(7:15,27:39,40:45,81,82,87,88)
 dst5 <- c(34,46:58,78)
@@ -220,7 +220,7 @@ One way we work to improve the level of physical & personal security is the anal
 
 ### Coordinates
 
-```{r Service Area Neighborhood Coordinates }
+```{r Service Area Neighborhood Coordinates}
 xyfpse <- c(-90.2679, -90.2423, 38.6176, 38.6334)
 xycwe <- c(-90.2759, -90.2368, 38.6286, 38.6552)
 xybot <- c(-90.2619, -90.2409, 38.6165, 38.6296)
@@ -240,7 +240,7 @@ xygrv <- c(-90.2662, -90.2440, 38.6238, 38.6318)
 
 ### Open Street Map from Mapbox - Basemap Tile Imagery
 
-```{r, include=FALSE}
+```{r Obtain Basemap Tiles, include=FALSE}
 fpse_tiles <- raster::extent(xyfpse) %>%
   cc_location(., type = "mapbox.streets", max_tiles = 15)
 
@@ -442,7 +442,7 @@ fpse_den_tm
 ```
 ###### Grove CID 
 
-```{r}
+```{r Grove CID Total Crime}
 grove_crimes <- st_intersection(crimes19_sf, grove_cid)
 
 fpse_grove_tm <- tm_shape(grv_tiles) +
@@ -595,7 +595,7 @@ cwe_den_tm
 ```
 ###### Medical Campus
 
-```{r}
+```{r Medical Campus Total Crime}
 mc_crimes <- st_intersection(crimes19_sf, med_campus)
 
 cwe_mc_tm <- tm_shape(mc_tiles) +
@@ -626,9 +626,9 @@ cwe_mc_tm <- tm_shape(mc_tiles) +
 
 cwe_mc_tm
 ```
-###### Medical Campus
+###### Cortex
 
-```{r}
+```{r Cortex Total Crime}
 ctx_crimes <- st_intersection(crimes19_sf, cortex)
 
 cwe_ctx_tm <- tm_shape(ctx_tiles) +
@@ -663,7 +663,7 @@ cwe_ctx_tm
 
 ##### Botanical Heights
 
-```{r}
+```{r Botanical Heights Total Crime}
 bot_total_tm <- tm_shape(bot_tiles) +
   tm_rgb() +
   nhoods_sf %>%
@@ -686,7 +686,7 @@ bot_total_tm <- tm_shape(bot_tiles) +
     legend.bg.color = "white", 
     legend.frame=TRUE,
     legend.outside = FALSE,
-    legend.position = c("right", "bottom"))
+    legend.position = c("left", "top"))
 
 bot_total_tm
 ```
