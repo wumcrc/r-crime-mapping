@@ -694,8 +694,23 @@ bot_total_tm
 
 ### Save Maps
 
-```{r, echo = FALSE, include = FALSE}
-tmap_save(fpse_total_tm, file = here("data/results/2019/august/fpse/fpse_total_crimes.jpeg"), dpi = 500)
-tmap_save(fpse_dn_tm, file = here("data/results/2019/august/fpse/fpse_day_night.jpeg"), dpi = 500)
-tmap_save(fpse_vlnt_tm, file = here("data/results/2019/august/fpse/fpse_vlnt.jpeg"), dpi = 500)
+```{r Save FPSE Maps, echo = FALSE, include = FALSE}
+tmap_save(fpse_total_tm, file = here("data/results/fpse/2019/august/fpse_total_crimes.jpeg"), dpi = 500)
+tmap_save(fpse_dn_tm, file = here("data/results/fpse/2019/august/fpse_day_night.jpeg"), dpi = 500)
+tmap_save(fpse_vlnt_tm, file = here("data/results/fpse/2019/august/fpse_vlnt.jpeg"), dpi = 500)
+tmap_save(fpse_den_tm, file = here("data/results/fpse/2019/august/fpse_density.jpeg"), dpi = 500)
+tmap_save(fpse_grove_tm, file = here("data/results/fpse/2019/august/fpse_grove.jpeg"), dpi = 500)
+```
+
+```{r Save CWE Maps, echo = FALSE, include = FALSE}
+tmap_save(cwe_total_tm, file = here("data/results/cwe/2019/august/cwe_total_crimes.jpeg"), dpi = 500)
+tmap_save(cwe_dn_tm, file = here("data/results/cwe/2019/august/cwe_day_night.jpeg"), dpi = 500)
+tmap_save(cwe_vlnt_tm, file = here("data/results/cwe/2019/august/cwe_vlnt.jpeg"), dpi = 500)
+tmap_save(cwe_den_tm, file = here("data/results/cwe/2019/august/cwe_den.jpeg"), dpi = 500)
+tmap_save(cwe_mc_tm, file = here("data/results/cwe/2019/august/cwe_mc.jpeg"), dpi = 500)
+tmap_save(cwe_ctx_tm, file = here("data/results/cwe/2019/august/cwe_ctx.jpeg"), dpi = 500)
+```
+
+```{r Save BOT Map, echo = FALSE, include = FALSE}
+tmap_save(cwe_total_tm, file = here("data/results/bot/2019/bot_aug_total.jpeg"), dpi = 500)
 ```
