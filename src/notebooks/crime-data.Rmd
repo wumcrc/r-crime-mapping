@@ -37,13 +37,13 @@ library(sf)           # spatial data tools
 library(ceramic)      # download online imagery tiles
 library(compstatr)    # tools for STL crime data
 library(raster)       # geograpic data analysis & modeling
-library(mapview)
 
 # other packages
 library(here)         # file path management
 library(RColorBrewer) # cynthia brewer color palettes
 library(viridis)      # color palettes
 library(gateway)      # aata from the City of St. Louis
+library(kableExtra)
 ```
 
 ## Tidy data
@@ -306,7 +306,7 @@ nhoods_sf <- gw_get_data("Neighborhoods", "sf") %>%
    rename(neighborhood = NHD_NUM)
 
 sa_sf <- nhoods_sf %>% 
-  filter(., neighborhood %in% sa) %>% 
+  filter(., neighborhood %in% sa) 
 
 
 
