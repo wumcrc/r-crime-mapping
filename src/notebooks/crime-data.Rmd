@@ -223,7 +223,7 @@ One way we work to improve the level of physical & personal security is the anal
 ```{r Service Area Neighborhood Coordinates }
 xyfpse <- c(-90.2679, -90.2423, 38.6176, 38.6334)
 xycwe <- c(-90.2759, -90.2368, 38.6286, 38.6552)
-xybot <- c(-90.2596, -90.2359, 38.6165, 38.6291)
+xybot <- c(-90.2619, -90.2409, 38.6165, 38.6296)
 xydbp <- c(-90.2869, -90.2726, 38.6433, 38.6566)
 xysdb <- c(-90.3026, -90.2827, 38.6456, 38.6571)
 xywe <- c(-90.3020, -90.2712, 38.6517, 38.6710)
@@ -626,11 +626,69 @@ cwe_mc_tm <- tm_shape(mc_tiles) +
 
 cwe_mc_tm
 ```
+###### Medical Campus
+
+```{r}
+ctx_crimes <- st_intersection(crimes19_sf, cortex)
+
+cwe_ctx_tm <- tm_shape(ctx_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., NHD_NUM == 38) %>% 
+  tm_shape() +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  tm_shape(cortex) +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 1, 
+               lty = "solid") +
+  tm_shape(ctx_crimes) +
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = FALSE,
+    legend.position = c("right", "top"))
+
+cwe_ctx_tm
+```
+
 
 ##### Botanical Heights
 
 ```{r}
+bot_total_tm <- tm_shape(bot_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., NHD_NUM == 28) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(crimes19_sf, 
+         neighborhood == 28) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = FALSE,
+    legend.position = c("right", "bottom"))
 
+bot_total_tm
 ```
 
 
