@@ -343,7 +343,9 @@ fpse_total_tm <- tm_shape(fpse_tiles) +
                col = "crimeCatName", 
                palette = "Set1", 
                title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "FPSE Total Crime - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -372,7 +374,9 @@ fpse_dn_tm <- tm_shape(fpse_tiles) +
                col = "dayNight", 
                palette = "-RdBu", 
                title.col = "Time of Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "FPSE Time of Crimes - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -400,7 +404,9 @@ fpse_vlnt_tm <- tm_shape(fpse_tiles) +
                col = "violent", 
                palette = "Reds", 
                title.col = "Violent") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "FPSE Violent Crime - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -431,7 +437,9 @@ fpse_den_tm <- tm_shape(fpse_tiles) +
   tm_shape(fpse_densities$polygons) +
   tm_fill(col = "level", palette = "BuPu", alpha = .60, 
     title = expression("Crimes per " * km^2)) +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "FPSE Crime Density - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -464,7 +472,9 @@ fpse_grove_tm <- tm_shape(grv_tiles) +
                col = "crimeCatName", 
                palette = "Set1", 
                title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "Grove CID Total Crime - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -495,7 +505,9 @@ cwe_total_tm <- tm_shape(cwe_tiles) +
                col = "crimeCatName", 
                palette = "Set1", 
                title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "CWE Total Crime - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -524,7 +536,9 @@ cwe_dn_tm <- tm_shape(cwe_tiles) +
                col = "dayNight", 
                palette = "-RdBu", 
                title.col = "Time of Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "CWE Total Crime - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -552,7 +566,9 @@ cwe_vlnt_tm <- tm_shape(cwe_tiles) +
                col = "violent", 
                palette = "Reds", 
                title.col = "Violent") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "CWE Time of Crimes - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -584,7 +600,9 @@ cwe_den_tm <- tm_shape(cwe_tiles) +
   tm_shape(cwe_densities$polygons) +
   tm_fill(col = "level", palette = "BuPu", alpha = .60, 
     title = expression("Crimes per " * km^2)) +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "CWE Crime Density- August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -617,7 +635,9 @@ cwe_mc_tm <- tm_shape(mc_tiles) +
                col = "crimeCatName", 
                palette = "Set1", 
                title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "Med. Campus Total Crime - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -650,7 +670,9 @@ cwe_ctx_tm <- tm_shape(ctx_tiles) +
                col = "crimeCatName", 
                palette = "Set1", 
                title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "Cortex Total Crime - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -681,7 +703,9 @@ bot_total_tm <- tm_shape(bot_tiles) +
                col = "crimeCatName", 
                palette = "Set1", 
                title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
+    main.title = "Botanical Heights Total Crime - August 2019",
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
@@ -695,22 +719,29 @@ bot_total_tm
 ### Save Maps
 
 ```{r Save FPSE Maps, echo = FALSE, include = FALSE}
-tmap_save(fpse_total_tm, file = here("data/results/fpse/2019/august/fpse_total_crimes.jpeg"), dpi = 500)
-tmap_save(fpse_dn_tm, file = here("data/results/fpse/2019/august/fpse_day_night.jpeg"), dpi = 500)
-tmap_save(fpse_vlnt_tm, file = here("data/results/fpse/2019/august/fpse_vlnt.jpeg"), dpi = 500)
-tmap_save(fpse_den_tm, file = here("data/results/fpse/2019/august/fpse_density.jpeg"), dpi = 500)
-tmap_save(fpse_grove_tm, file = here("data/results/fpse/2019/august/fpse_grove.jpeg"), dpi = 500)
+tmap_save(fpse_total_tm, file = here("results/fpse/2019/august/fpse_total_crimes.jpeg"), dpi = 500)
+tmap_save(fpse_dn_tm, file = here("results/fpse/2019/august/fpse_day_night.jpeg"), dpi = 500)
+tmap_save(fpse_vlnt_tm, file = here("results/fpse/2019/august/fpse_vlnt.jpeg"), dpi = 500)
+tmap_save(fpse_den_tm, file = here("results/fpse/2019/august/fpse_density.jpeg"), dpi = 500)
+tmap_save(fpse_grove_tm, file = here("results/fpse/2019/august/fpse_grove.jpeg"), dpi = 500)
 ```
 
 ```{r Save CWE Maps, echo = FALSE, include = FALSE}
-tmap_save(cwe_total_tm, file = here("data/results/cwe/2019/august/cwe_total_crimes.jpeg"), dpi = 500)
-tmap_save(cwe_dn_tm, file = here("data/results/cwe/2019/august/cwe_day_night.jpeg"), dpi = 500)
-tmap_save(cwe_vlnt_tm, file = here("data/results/cwe/2019/august/cwe_vlnt.jpeg"), dpi = 500)
-tmap_save(cwe_den_tm, file = here("data/results/cwe/2019/august/cwe_den.jpeg"), dpi = 500)
-tmap_save(cwe_mc_tm, file = here("data/results/cwe/2019/august/cwe_mc.jpeg"), dpi = 500)
-tmap_save(cwe_ctx_tm, file = here("data/results/cwe/2019/august/cwe_ctx.jpeg"), dpi = 500)
+tmap_save(cwe_total_tm, file = here("results/cwe/2019/august/cwe_total_crimes.jpeg"), dpi = 500)
+tmap_save(cwe_dn_tm, file = here("results/cwe/2019/august/cwe_day_night.jpeg"), dpi = 500)
+tmap_save(cwe_vlnt_tm, file = here("results/cwe/2019/august/cwe_vlnt.jpeg"), dpi = 500)
+tmap_save(cwe_den_tm, file = here("results/cwe/2019/august/cwe_den.jpeg"), dpi = 500)
+tmap_save(cwe_mc_tm, file = here("results/cwe/2019/august/cwe_mc.jpeg"), dpi = 500)
+tmap_save(cwe_ctx_tm, file = here("results/cwe/2019/august/cwe_ctx.jpeg"), dpi = 500)
 ```
 
 ```{r Save BOT Map, echo = FALSE, include = FALSE}
-tmap_save(cwe_total_tm, file = here("data/results/bot/2019/bot_aug_total.jpeg"), dpi = 500)
+tmap_save(cwe_total_tm, file = here("results/bot/2019/bot_aug_total.jpeg"), dpi = 500)
 ```
+
+### Clean Workspace 
+
+```{r Remove Objects from Environment}
+rm(fpse_total_tm, fpse_dn_tm, fpse_vlnt_tm, fpse_den_tm, fpse_grove_tm, cwe_total_tm, cwe_dn_tm, cwe_vlnt_tm, cwe_den_tm, cwe_mc_tm, cwe_ctx_tm, bot_total_tm, fpse_tiles, cwe_tiles, bot_tiles, dbp_tiles, sdb_tiles, we_tiles, vp_tiles, ac_tiles, fp_tiles, lp_tiles, vd_tiles, mc_tiles, ctx_tiles, grv_tiles)
+```
+
