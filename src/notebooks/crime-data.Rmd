@@ -37,6 +37,7 @@ library(sf)           # spatial data tools
 library(ceramic)      # download online imagery tiles
 library(compstatr)    # tools for STL crime data
 library(raster)       # geograpic data analysis & modeling
+library(mapview)
 
 # other packages
 library(here)         # file path management
@@ -74,7 +75,7 @@ totalCrimes19 <- cs_collapse(yearList19)
 ```
 
 
-```{r}
+```{r Print Current Month}
 print(c_month)
 ```
 
@@ -112,6 +113,8 @@ tidyCrimes19 <- crimes19 %>%
   filter(district == 2 | district == 5) %>%
   mutate(weekday = wday(dateOcc, label = TRUE)) %>%
   mutate(tod = timeOcc)
+
+tidyCrimes19$neighborhood <- as.numeric(tidyCrimes19$neighborhood)
 ```
 
 `strptime` and `format` takes the new time variable and formats it to a character so that we can determine if the crime occured at day or at night, and creates a second coded variable that labels each observations as day or night based on the newly formated time variable. 
@@ -136,7 +139,7 @@ table(tidyCrimes19$missing)
 tidyCrimes19 <- tidyCrimes19 %>% 
   cs_replace0(., var = x_coord) %>%
   cs_replace0(., var = y_coord) %>% 
-  filter(., missing == FALSE)
+  filter(., missing == FALSE) 
 ```
 
 ### Get Data - 2018
@@ -173,6 +176,8 @@ tidyCrimes18 <- crimes18 %>%
   mutate(weekday = wday(dateOcc, label = TRUE)) %>%
   mutate(tod = timeOcc)
 
+tidyCrimes18$neighborhood <- as.numeric(tidyCrimes18$neighborhood)
+
 tidyCrimes18$tod <- strptime(tidyCrimes18$tod, tz = "America/Chicago", "%H:%M")
 tidyCrimes18$tod <- format(tidyCrimes18$tod, format = "%H%M%S")
 
@@ -208,8 +213,8 @@ augustCrimes_sf <- cs_projectXY(augustCrimes, varX = x_coord, varY = y_coord, cr
 
 ```{r Neighborhood Number Lists}
 sa <- c(39,28,38,51,53,54,58,46,47,48,48)
-dst2 <- c(7:15,27:39,40:45,81,82,87,88)
-dst5 <- c(34,46:58,78)
+dst2 <- c(7:15,27:29, 39:45,81,82,87,88)
+dst5 <- c(38,46:58,78)
 ```
 
 ## Mapping 
@@ -235,6 +240,8 @@ xyvd <- c(-90.2520, -90.2304, 38.6426, 38.6585)
 xymc <- c(-90.2678, -90.2515, 38.6305, 38.6411)
 xyctx <- c(-90.2581, -90.2419, 38.6299, 38.6386)
 xygrv <- c(-90.2662, -90.2440, 38.6238, 38.6318)
+xydst2 <- c(-90.3203, -90.2297, 38.5613, 38.6493)
+xydst5 <- c(-90.3080, -90.2132, 38.6273, 38.6962)
 ```
 
 
@@ -283,30 +290,48 @@ ctx_tiles <- raster::extent(xyctx) %>%
 grv_tiles <- raster::extent(xygrv) %>% 
   cc_location(., type = "mapbox.streets", max_tiles = 15)
 
-rm(xyfpse, xycwe, xybot, xydbp, xysdb, xywe, xyvp, xyac, xyfp, xylp, xyvd, xymc, xyctx, xygrv)
+dst2_tiles <- raster::extent(xydst2) %>% 
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
+
+dst5_tiles <- raster::extent(xydst5) %>% 
+  cc_location(., type = "mapbox.streets", max_tiles = 15)
+
+rm(xyfpse, xycwe, xybot, xydbp, xysdb, xywe, xyvp, xyac, xyfp, xylp, xyvd, xymc, xyctx, xygrv, xydst2, xydst5)
 ```
 
 ### Spatial Data from the City Of St. Louis
 
 ```{r}
-nhoods_sf <- gw_get_data("Neighborhoods", "sf")
+nhoods_sf <- gw_get_data("Neighborhoods", "sf") %>% 
+   rename(neighborhood = NHD_NUM)
+
 sa_sf <- nhoods_sf %>% 
-  filter(., NHD_NUM %in% sa)
+  filter(., neighborhood %in% sa) %>% 
 
 
-fpse <- filter(nhoods_sf, NHD_NUM == 39 )
-cwe <- filter(nhoods_sf, NHD_NUM == 38 )
-bot <- filter(nhoods_sf, NHD_NUM == 28 )
-dbp <- filter(nhoods_sf, NHD_NUM == 47 )
-sdb <- filter(nhoods_sf, NHD_NUM == 46 )
-we <- filter(nhoods_sf, NHD_NUM == 48 )
-vp <- filter(nhoods_sf, NHD_NUM == 49 )
-ac <- filter(nhoods_sf, NHD_NUM == 51 )
-fp <- filter(nhoods_sf, NHD_NUM == 53 )
-lp <- filter(nhoods_sf, NHD_NUM == 54 )
-vd <- filter(nhoods_sf,NHD_NUM == 58 )
+
+fpse <- filter(nhoods_sf, neighborhood == 39 )
+cwe <- filter(nhoods_sf, neighborhood == 38 )
+bot <- filter(nhoods_sf, neighborhood == 28 )
+dbp <- filter(nhoods_sf, neighborhood == 47 )
+sdb <- filter(nhoods_sf, neighborhood == 46 )
+we <- filter(nhoods_sf, neighborhood == 48 )
+vp <- filter(nhoods_sf, neighborhood == 49 )
+ac <- filter(nhoods_sf, neighborhood == 51 )
+fp <- filter(nhoods_sf, neighborhood == 53 )
+lp <- filter(nhoods_sf, neighborhood == 54 )
+vd <- filter(nhoods_sf, neighborhood == 58 )
 ```
-### Load External Spatial Data 
+### Load External Data
+
+#### Population Data 
+
+```{r}
+load(here("data/nbhd_pop10.rda"))
+```
+
+
+#### Spatial 
 
 ```{r load shapefiles, include=FALSE}
 st_read(here("data", "external", "med-campus", "medcampus.shp")) %>%
@@ -319,6 +344,46 @@ st_read(here("data", "external", "grove-cid", "grovecid.shp")) %>%
   st_transform(crs = 102696) -> grove_cid
 ```
 
+### Combine Population & Neighborhood Spatial Data by Police District
+
+#### Oganize & Filter Crime Data by Neighborhood 
+
+```{r Crime Rates - District 2}
+dst_2 <- tidyCrimes19 %>% 
+  filter(., neighborhood %in% dst2) %>% 
+  group_by(., neighborhood) %>%
+  count() %>% 
+  rename(crimeTotal = n) %>%
+  left_join(nbhd_pop10, by = "neighborhood") %>% 
+  mutate(., crimeRate = (crimeTotal/pop10)*1000) %>% 
+  drop_na()
+```
+
+```{r Crime Rates - District 5}
+dst_5 <- tidyCrimes19 %>% 
+  filter(., neighborhood %in% dst5) %>% 
+  group_by(., neighborhood) %>%
+  count() %>% 
+  rename(crimeTotal = n) %>%
+  left_join(nbhd_pop10, by = "neighborhood") %>% 
+  mutate(., crimeRate = (crimeTotal/pop10)*1000) %>% 
+  drop_na()
+```
+
+```{r Join Rates & Neighborhoods - District 2}
+dst_2_pop <- left_join(nhoods_sf, dst_2, by = "neighborhood") %>% 
+  st_transform(crs = 102696) %>%
+  drop_na() %>% 
+  subset(., neighborhood != 88)
+```
+
+```{r Join Rates & Neighborhoods - District 5}
+dst_5_pop <- left_join(nhoods_sf, dst_5, by = "neighborhood") %>% 
+  st_transform(crs = 102696) %>%
+  drop_na()
+```
+
+
 ### FPSE, BOT, CWE, MC 
 
 #### Map Creation
@@ -329,7 +394,7 @@ st_read(here("data", "external", "grove-cid", "grovecid.shp")) %>%
 fpse_total_tm <- tm_shape(fpse_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 39) %>% 
+  filter(., neighborhood == 39) %>% 
   tm_shape() +
     tm_fill(col = "#9ecae1", 
             alpha = .5) +
@@ -349,8 +414,8 @@ fpse_total_tm <- tm_shape(fpse_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "bottom"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 fpse_total_tm
 ``` 
@@ -360,7 +425,7 @@ fpse_total_tm
 fpse_dn_tm <- tm_shape(fpse_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 39) %>% 
+  filter(., neighborhood == 39) %>% 
   tm_shape() +
     tm_fill(col = "#9ecae1", 
             alpha = .5) +
@@ -380,8 +445,8 @@ fpse_dn_tm <- tm_shape(fpse_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "bottom"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 fpse_dn_tm
 ```
@@ -390,7 +455,7 @@ fpse_dn_tm
 fpse_vlnt_tm <- tm_shape(fpse_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 39) %>% 
+  filter(., neighborhood == 39) %>% 
   tm_shape() +
     tm_fill(col = "#9ecae1", 
             alpha = .5) +
@@ -410,8 +475,8 @@ fpse_vlnt_tm <- tm_shape(fpse_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "bottom"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 fpse_vlnt_tm
 ```
@@ -427,7 +492,7 @@ crimes19_sf %>%
 fpse_den_tm <- tm_shape(fpse_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 39) %>% 
+  filter(., neighborhood == 39) %>% 
   tm_shape() +
     tm_fill(col = NA, 
             alpha = .5) +
@@ -443,8 +508,8 @@ fpse_den_tm <- tm_shape(fpse_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "bottom"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 fpse_den_tm
 ```
@@ -456,7 +521,7 @@ grove_crimes <- st_intersection(crimes19_sf, grove_cid)
 fpse_grove_tm <- tm_shape(grv_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 39) %>% 
+  filter(., neighborhood == 39) %>% 
   tm_shape() +
     tm_borders(col = "black", 
                lwd = 2, 
@@ -478,8 +543,8 @@ fpse_grove_tm <- tm_shape(grv_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "bottom"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 fpse_grove_tm
 ```
@@ -491,7 +556,7 @@ fpse_grove_tm
 cwe_total_tm <- tm_shape(cwe_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 38) %>% 
+  filter(., neighborhood == 38) %>% 
   tm_shape() +
     tm_fill(col = "#9ecae1", 
             alpha = .5) +
@@ -511,8 +576,8 @@ cwe_total_tm <- tm_shape(cwe_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "bottom"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 cwe_total_tm
 ``` 
@@ -522,7 +587,7 @@ cwe_total_tm
 cwe_dn_tm <- tm_shape(cwe_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 38) %>% 
+  filter(., neighborhood == 38) %>% 
   tm_shape() +
     tm_fill(col = "#9ecae1", 
             alpha = .5) +
@@ -542,8 +607,8 @@ cwe_dn_tm <- tm_shape(cwe_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "bottom"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 cwe_dn_tm
 ```
@@ -552,7 +617,7 @@ cwe_dn_tm
 cwe_vlnt_tm <- tm_shape(cwe_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 38) %>% 
+  filter(., neighborhood == 38) %>% 
   tm_shape() +
     tm_fill(col = "#9ecae1", 
             alpha = .5) +
@@ -572,8 +637,8 @@ cwe_vlnt_tm <- tm_shape(cwe_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "bottom"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 cwe_vlnt_tm
 ```
@@ -590,7 +655,7 @@ cwe_densities <- crimes19_sf %>%
 cwe_den_tm <- tm_shape(cwe_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 38) %>% 
+  filter(., neighborhood == 38) %>% 
   tm_shape() +
     tm_fill(col = NA, 
             alpha = .5) +
@@ -606,8 +671,8 @@ cwe_den_tm <- tm_shape(cwe_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "top"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 cwe_den_tm
 ```
@@ -619,7 +684,7 @@ mc_crimes <- st_intersection(crimes19_sf, med_campus)
 cwe_mc_tm <- tm_shape(mc_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 38) %>% 
+  filter(., neighborhood == 38) %>% 
   tm_shape() +
     tm_borders(col = "black", 
                lwd = 2, 
@@ -641,8 +706,8 @@ cwe_mc_tm <- tm_shape(mc_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "top"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 cwe_mc_tm
 ```
@@ -654,7 +719,7 @@ ctx_crimes <- st_intersection(crimes19_sf, cortex)
 cwe_ctx_tm <- tm_shape(ctx_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 38) %>% 
+  filter(., neighborhood == 38) %>% 
   tm_shape() +
     tm_borders(col = "black", 
                lwd = 2, 
@@ -676,8 +741,8 @@ cwe_ctx_tm <- tm_shape(ctx_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("right", "top"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 cwe_ctx_tm
 ```
@@ -689,7 +754,7 @@ cwe_ctx_tm
 bot_total_tm <- tm_shape(bot_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., NHD_NUM == 28) %>% 
+  filter(., neighborhood == 28) %>% 
   tm_shape() +
     tm_fill(col = "#9ecae1", 
             alpha = .5) +
@@ -709,11 +774,54 @@ bot_total_tm <- tm_shape(bot_tiles) +
     frame = FALSE,
     legend.bg.color = "white", 
     legend.frame=TRUE,
-    legend.outside = FALSE,
-    legend.position = c("left", "top"))
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
 
 bot_total_tm
 ```
+
+
+##### District 2 Density Maps
+```{r Generate District 2 Density Maps}
+dst2_rateMap <- tm_shape(dst2_tiles) +
+  tm_rgb() +
+  tm_shape(dst_2_pop) +
+  tm_polygons(col = "crimeRate",
+              palette = "BuPu",
+              style = "jenks",
+              title = "Crimes per 1,000 Residents") +
+  tm_text("neighborhood", shadow=TRUE) +
+  tm_layout(
+    main.title = "District 2 Crime Rates - August 2019",
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+
+dst2_rateMap
+```
+
+```{r Generate District 5 Density Maps}
+dst5_rateMap <- tm_shape(dst5_tiles) +
+  tm_rgb() +
+  tm_shape(dst_5_pop) +
+  tm_polygons(col = "crimeRate",
+              palette = "BuPu",
+              style = "jenks",
+              title = "Crimes per 1,000 Residents") +
+  tm_text("neighborhood", shadow=TRUE) +
+  tm_layout(
+    main.title = "District 5 Crime Rates - August 2019",
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+
+dst5_rateMap
+```
+
 
 
 ### Save Maps
@@ -739,9 +847,15 @@ tmap_save(cwe_ctx_tm, file = here("results/cwe/2019/august/cwe_ctx.jpeg"), dpi =
 tmap_save(cwe_total_tm, file = here("results/bot/2019/bot_aug_total.jpeg"), dpi = 500)
 ```
 
+```{r Save District Density Maps, echo = FALSE, include = FALSE}
+tmap_save(dst2_rateMap, file = here("results/district-2/2019/dst2_aug_rates.jpeg"), dpi = 500)
+tmap_save(dst5_rateMap, file = here("results/district-5/2019/dst5_aug_rates.jpeg"), dpi = 500)
+```
+
+
 ### Clean Workspace 
 
 ```{r Remove Objects from Environment}
-rm(fpse_total_tm, fpse_dn_tm, fpse_vlnt_tm, fpse_den_tm, fpse_grove_tm, cwe_total_tm, cwe_dn_tm, cwe_vlnt_tm, cwe_den_tm, cwe_mc_tm, cwe_ctx_tm, bot_total_tm, fpse_tiles, cwe_tiles, bot_tiles, dbp_tiles, sdb_tiles, we_tiles, vp_tiles, ac_tiles, fp_tiles, lp_tiles, vd_tiles, mc_tiles, ctx_tiles, grv_tiles)
+rm(fpse_total_tm, fpse_dn_tm, fpse_vlnt_tm, fpse_den_tm, fpse_grove_tm, cwe_total_tm, cwe_dn_tm, cwe_vlnt_tm, cwe_den_tm, cwe_mc_tm, cwe_ctx_tm, bot_total_tm, fpse_tiles, cwe_tiles, bot_tiles, dbp_tiles, sdb_tiles, we_tiles, vp_tiles, ac_tiles, fp_tiles, lp_tiles, vd_tiles, mc_tiles, ctx_tiles, grv_tiles, dst_2, dst_5, dst2_tiles, dst5_tiles)
 ```
 
