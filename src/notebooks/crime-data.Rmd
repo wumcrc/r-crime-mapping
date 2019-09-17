@@ -42,8 +42,8 @@ library(raster)       # geograpic data analysis & modeling
 library(here)         # file path management
 library(RColorBrewer) # cynthia brewer color palettes
 library(viridis)      # color palettes
-library(gateway)      # aata from the City of St. Louis
-library(kableExtra)
+library(gateway)      # data from the City of St. Louis
+library(kableExtra)   # exporting pretty tables
 ```
 
 ## Tidy data
