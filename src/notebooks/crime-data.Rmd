@@ -157,13 +157,13 @@ cs_validate(yearList18, year = 2018)
 ### Download Last Year's Month
 ```{r Extract Last Years Crime Data For Current Month}
 totalCrimes18 <- cs_collapse(yearList18)
-crimes18 <- cs_extract_month(yearList18, month = "August")
+augustCrimes18 <- cs_extract_month(yearList18, month = "August")
 ```
 
 ### Clean & Categorize Data - 2018
 
 ```{r Filter & Categorize 2018 Data}
-tidyCrimes18 <- crimes18 %>% 
+tidyAugustCrimes18 <- augustCrimes18 %>% 
   cs_filter_count(., var = count) %>%
   cs_filter_crime(., var = crime, "part 1") %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
@@ -194,17 +194,50 @@ tidyCrimes18 <- tidyCrimes18 %>%
   filter(., missing == FALSE)
 ```
 
+```{r Total Crimes for 2018 Tidied}
+tidyTotalCrimes18 <- totalCrimes18 %>% 
+  cs_filter_count(., var = count) %>%
+  cs_filter_crime(., var = crime, "part 1") %>%
+  cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
+  cs_crime_cat(., var = crime, crimeCatName, "string") %>%
+  cs_crime(., var = crime, violent, "violent") %>%
+  cs_crime(., var = crime, property, "property") %>%
+  cs_parse_month(., var = coded_month, yearVar = reportYear, month = monthVar)
+  cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
+  filter(dateOcc >= as.Date("2018-08-01") & dateOcc <= as.Date("2018-08-31")) %>%
+  filter(district == 2 | district == 5) %>%
+  mutate(weekday = wday(dateOcc, label = TRUE)) %>%
+  mutate(tod = timeOcc) %>% 
+
+tidyTotalCrimes18$neighborhood <- as.numeric(tidyTotalCrimes18$neighborhood)
+
+tidyTotalCrimes18$tod <- strptime(tidyCrimes18$tod, tz = "America/Chicago", "%H:%M")
+tidyTotalCrimes18$tod <- format(tidyCrimes18$tod, format = "%H%M%S")
+
+tidyTotalCrimes18 <- tidyTotalCrimes18 %>%
+  mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
+  dplyr::select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
+
+tidyTotalCrimes18 <- cs_missingXY(tidyTotalCrimes18, varX = x_coord, varY = y_coord, newVar = missing)
+table(tidyTotalCrimes18$missing)
+
+tidyTotalCrimes18 <- tidyTotalCrimes18 %>% 
+  cs_replace0(., var = x_coord) %>%
+  cs_replace0(., var = y_coord) %>% 
+  filter(., missing == FALSE)
+```
+
 
 ### Combine 2018 & 2019 
 
 ```{r Join Previous Years Crimes}
-augustCrimes <- rbind(tidyCrimes18, tidyCrimes19)
+augustCrimes <- rbind(tidyTotalCrimes18, tidyCrimes19)
 ```
 
 ### Create Spatial Objects
 
 ```{r Create SF objects for 2018 & 2019 Crimes}
-crimes18_sf <- cs_projectXY(tidyCrimes18, varX = x_coord, varY = y_coord, crs = 102696)
+crimes18_sf <- cs_projectXY(tidyTotalCrimes18, varX = x_coord, varY = y_coord, crs = 102696)
 crimes19_sf <- cs_projectXY(tidyCrimes19, varX = x_coord, varY = y_coord, crs = 102696)
 augustCrimes_sf <- cs_projectXY(augustCrimes, varX = x_coord, varY = y_coord, crs = 102696)
 ```
@@ -850,6 +883,9 @@ tidyCrimes19 %>%
   count() %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_dayNight
 
+tidyCrimes18 %>% 
+  filter(., neighborhood == 39) %>% 
+  
 
 ```
 
@@ -858,6 +894,8 @@ tidyCrimes19 %>%
 kable(fpse_crimeCat) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
   save_kable("fpse_cat_table.jpg")
+  
+
 ```
 
 
