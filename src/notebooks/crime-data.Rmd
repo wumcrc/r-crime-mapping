@@ -42,9 +42,8 @@ library(raster)       # geograpic data analysis & modeling
 library(here)         # file path management
 library(RColorBrewer) # cynthia brewer color palettes
 library(viridis)      # color palettes
-library(gateway)      # data from the City of St. Louis
 library(kableExtra)   # exporting pretty tables
-library(janitor)
+library(janitor)      # tools for examining data
 ```
 
 ## Tidy data
@@ -335,29 +334,6 @@ dst5_tiles <- raster::extent(xydst5) %>%
 rm(xyfpse, xycwe, xybot, xydbp, xysdb, xywe, xyvp, xyac, xyfp, xylp, xyvd, xymc, xyctx, xygrv, xydst2, xydst5)
 ```
 
-### Spatial Data from the City Of St. Louis
-
-```{r}
-nhoods_sf <- gw_get_data("Neighborhoods", "sf") %>% 
-   rename(neighborhood = NHD_NUM)
-
-sa_sf <- nhoods_sf %>% 
-  filter(., neighborhood %in% sa) 
-
-
-
-fpse <- filter(nhoods_sf, neighborhood == 39 )
-cwe <- filter(nhoods_sf, neighborhood == 38 )
-bot <- filter(nhoods_sf, neighborhood == 28 )
-dbp <- filter(nhoods_sf, neighborhood == 47 )
-sdb <- filter(nhoods_sf, neighborhood == 46 )
-we <- filter(nhoods_sf, neighborhood == 48 )
-vp <- filter(nhoods_sf, neighborhood == 49 )
-ac <- filter(nhoods_sf, neighborhood == 51 )
-fp <- filter(nhoods_sf, neighborhood == 53 )
-lp <- filter(nhoods_sf, neighborhood == 54 )
-vd <- filter(nhoods_sf, neighborhood == 58 )
-```
 ### Load External Data
 
 #### Population Data 
@@ -378,6 +354,21 @@ st_read(here("data", "external", "cortex-boundary", "CORTEX BOUNDARY.shp")) %>%
 
 st_read(here("data", "external", "grove-cid", "grovecid.shp")) %>%
   st_transform(crs = 102696) -> grove_cid
+
+st_read(here("data", "external", "stl_neighborhoods", "nbhds.shp")) %>%
+  st_transform(crs = 102696) -> nhoods_sf
+
+fpse <- filter(nhoods_sf, neighborhood == 39 )
+cwe <- filter(nhoods_sf, neighborhood == 38 )
+bot <- filter(nhoods_sf, neighborhood == 28 )
+dbp <- filter(nhoods_sf, neighborhood == 47 )
+sdb <- filter(nhoods_sf, neighborhood == 46 )
+we <- filter(nhoods_sf, neighborhood == 48 )
+vp <- filter(nhoods_sf, neighborhood == 49 )
+ac <- filter(nhoods_sf, neighborhood == 51 )
+fp <- filter(nhoods_sf, neighborhood == 53 )
+lp <- filter(nhoods_sf, neighborhood == 54 )
+vd <- filter(nhoods_sf, neighborhood == 58 )
 ```
 
 ### Combine Population & Neighborhood Spatial Data by Police District
