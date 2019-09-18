@@ -854,6 +854,13 @@ tidyCrimes19 %>%
 ```
 
 
+```{r}
+kable(fpse_crimeCat) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_cat_table.jpg")
+```
+
+
 ### Save Maps
 
 ```{r Save FPSE Maps, echo = FALSE, include = FALSE}
