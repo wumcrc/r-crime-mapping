@@ -81,7 +81,8 @@ print(c_month)
 
 
 ```{r Extract August 2019 Data}
-crimes19 <- cs_extract_month(yearList19, month = "August")
+crimes19 <- cs_extract_month(yearList19, month = "August") 
+rm(yearList19)
 ```
 
 ### Clean & Categorize Data - 2019
@@ -157,13 +158,14 @@ cs_validate(yearList18, year = 2018)
 ### Download Last Year's Month
 ```{r Extract Last Years Crime Data For Current Month}
 totalCrimes18 <- cs_collapse(yearList18)
-augustCrimes18 <- cs_extract_month(yearList18, month = "August")
+monthCrimes18 <- cs_extract_month(yearList18, month = "August")
+rm(yearList18)
 ```
 
 ### Clean & Categorize Data - 2018
 
-```{r Filter & Categorize 2018 Data}
-tidyAugustCrimes18 <- augustCrimes18 %>% 
+```{r Filter & Categorize 2018 Data for Current Month}
+tidyMonthCrimes18 <- monthCrimes18 %>% 
   cs_filter_count(., var = count) %>%
   cs_filter_crime(., var = crime, "part 1") %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
@@ -176,19 +178,19 @@ tidyAugustCrimes18 <- augustCrimes18 %>%
   mutate(weekday = wday(dateOcc, label = TRUE)) %>%
   mutate(tod = timeOcc)
 
-tidyCrimes18$neighborhood <- as.numeric(tidyCrimes18$neighborhood)
+tidyMonthCrimes18$neighborhood <- as.numeric(tidyMonthCrimes18$neighborhood)
 
-tidyCrimes18$tod <- strptime(tidyCrimes18$tod, tz = "America/Chicago", "%H:%M")
-tidyCrimes18$tod <- format(tidyCrimes18$tod, format = "%H%M%S")
+tidyMonthCrimes18$tod <- strptime(tidyMonthCrimes18$tod, tz = "America/Chicago", "%H:%M")
+tidyMonthCrimes18$tod <- format(tidyMonthCrimes18$tod, format = "%H%M%S")
 
-tidyCrimes18 <- tidyCrimes18 %>%
+tidyMonthCrimes18 <- tidyMonthCrimes18 %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
   dplyr::select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
 
-tidyCrimes18 <- cs_missingXY(tidyCrimes18, varX = x_coord, varY = y_coord, newVar = missing)
-table(tidyCrimes18$missing)
+tidyMonthCrimes18 <- cs_missingXY(tidyMonthCrimes18, varX = x_coord, varY = y_coord, newVar = missing)
+table(tidyMonthCrimes18$missing)
 
-tidyCrimes18 <- tidyCrimes18 %>% 
+tidyMonthCrimes18 <- tidyMonthCrimes18 %>% 
   cs_replace0(., var = x_coord) %>%
   cs_replace0(., var = y_coord) %>% 
   filter(., missing == FALSE)
@@ -202,17 +204,16 @@ tidyTotalCrimes18 <- totalCrimes18 %>%
   cs_crime_cat(., var = crime, crimeCatName, "string") %>%
   cs_crime(., var = crime, violent, "violent") %>%
   cs_crime(., var = crime, property, "property") %>%
-  cs_parse_month(., var = coded_month, yearVar = reportYear, month = monthVar)
+  cs_parse_month(., var = coded_month, yearVar = reportYear, month = monthVar) %>%
   cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
-  filter(dateOcc >= as.Date("2018-08-01") & dateOcc <= as.Date("2018-08-31")) %>%
   filter(district == 2 | district == 5) %>%
   mutate(weekday = wday(dateOcc, label = TRUE)) %>%
-  mutate(tod = timeOcc) %>% 
+  mutate(tod = timeOcc) 
 
 tidyTotalCrimes18$neighborhood <- as.numeric(tidyTotalCrimes18$neighborhood)
 
-tidyTotalCrimes18$tod <- strptime(tidyCrimes18$tod, tz = "America/Chicago", "%H:%M")
-tidyTotalCrimes18$tod <- format(tidyCrimes18$tod, format = "%H%M%S")
+tidyTotalCrimes18$tod <- strptime(tidyTotalCrimes18$tod, tz = "America/Chicago", "%H:%M")
+tidyTotalCrimes18$tod <- format(tidyTotalCrimes18$tod, format = "%H%M%S")
 
 tidyTotalCrimes18 <- tidyTotalCrimes18 %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
@@ -225,19 +226,20 @@ tidyTotalCrimes18 <- tidyTotalCrimes18 %>%
   cs_replace0(., var = x_coord) %>%
   cs_replace0(., var = y_coord) %>% 
   filter(., missing == FALSE)
+
+rm(totalCrimes18)
 ```
 
 
 ### Combine 2018 & 2019 
 
 ```{r Join Previous Years Crimes}
-augustCrimes <- rbind(tidyTotalCrimes18, tidyCrimes19)
+augustCrimes <- rbind(tidyMonthCrimes18, tidyCrimes19)
 ```
 
 ### Create Spatial Objects
 
 ```{r Create SF objects for 2018 & 2019 Crimes}
-crimes18_sf <- cs_projectXY(tidyTotalCrimes18, varX = x_coord, varY = y_coord, crs = 102696)
 crimes19_sf <- cs_projectXY(tidyCrimes19, varX = x_coord, varY = y_coord, crs = 102696)
 augustCrimes_sf <- cs_projectXY(augustCrimes, varX = x_coord, varY = y_coord, crs = 102696)
 ```
@@ -513,6 +515,7 @@ fpse_vlnt_tm <- tm_shape(fpse_tiles) +
 
 fpse_vlnt_tm
 ```
+
 ```{r FPSE Density Map SF}
 crimes19_sf %>%
   filter(neighborhood == 39) %>%
