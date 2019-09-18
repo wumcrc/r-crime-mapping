@@ -44,6 +44,7 @@ library(RColorBrewer) # cynthia brewer color palettes
 library(viridis)      # color palettes
 library(gateway)      # data from the City of St. Louis
 library(kableExtra)   # exporting pretty tables
+library(janitor)
 ```
 
 ## Tidy data
@@ -858,6 +859,12 @@ dst5_rateMap <- tm_shape(dst5_tiles) +
 dst5_rateMap
 ```
 
+### Clean Workspace 
+
+```{r Remove Objects from Environment}
+rm(fpse_total_tm, fpse_dn_tm, fpse_vlnt_tm, fpse_den_tm, fpse_grove_tm, cwe_total_tm, cwe_dn_tm, cwe_vlnt_tm, cwe_den_tm, cwe_mc_tm, cwe_ctx_tm, bot_total_tm, fpse_tiles, cwe_tiles, bot_tiles, mc_tiles, ctx_tiles, grv_tiles, dst_2, dst_5, dst2_tiles, dst5_tiles)
+```
+
 ## Tables 
 
 ```{r FPSE Tables}
@@ -886,10 +893,28 @@ tidyCrimes19 %>%
   count() %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_dayNight
 
-tidyCrimes18 %>% 
+tidyTotalCrimes18 %>% 
   filter(., neighborhood == 39) %>% 
-  
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08",
+         "September" = "09",
+         "October" = "10",
+         "November" = "11",
+         "December" = "12") %>% 
+  adorn_totals(., "col", name = "Total")-> fpse_2018
 
+head(fpse_2018)
 ```
 
 
@@ -931,9 +956,5 @@ tmap_save(dst5_rateMap, file = here("results/district-5/2019/dst5_aug_rates.jpeg
 ```
 
 
-### Clean Workspace 
 
-```{r Remove Objects from Environment}
-rm(fpse_total_tm, fpse_dn_tm, fpse_vlnt_tm, fpse_den_tm, fpse_grove_tm, cwe_total_tm, cwe_dn_tm, cwe_vlnt_tm, cwe_den_tm, cwe_mc_tm, cwe_ctx_tm, bot_total_tm, fpse_tiles, cwe_tiles, bot_tiles, dbp_tiles, sdb_tiles, we_tiles, vp_tiles, ac_tiles, fp_tiles, lp_tiles, vd_tiles, mc_tiles, ctx_tiles, grv_tiles, dst_2, dst_5, dst2_tiles, dst5_tiles)
-```
 
