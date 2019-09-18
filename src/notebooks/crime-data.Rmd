@@ -822,6 +822,36 @@ dst5_rateMap <- tm_shape(dst5_tiles) +
 dst5_rateMap
 ```
 
+## Tables 
+
+```{r FPSE Tables}
+tidyCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(crimeCatName) %>% 
+  count() %>% 
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> fpse_crimeCat
+
+tidyCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fpse_weekDay
+
+tidyCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(violent) %>% 
+  count() %>%
+  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> fpse_violent
+
+
+tidyCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_dayNight
+
+
+```
 
 
 ### Save Maps
