@@ -5,6 +5,7 @@ date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
   github_document: default
   html_notebook: default
+always_allow_html: yes
 ---
 
 ```{r Setup, include=FALSE}
@@ -356,7 +357,8 @@ st_read(here("data", "external", "grove-cid", "grovecid.shp")) %>%
   st_transform(crs = 102696) -> grove_cid
 
 st_read(here("data", "external", "stl_neighborhoods", "nbhds.shp")) %>%
-  st_transform(crs = 102696) -> nhoods_sf
+  st_transform(crs = 102696) %>% 
+  rename(., "neighborhood" = NHD_NUM)-> nhoods_sf
 
 fpse <- filter(nhoods_sf, neighborhood == 39 )
 cwe <- filter(nhoods_sf, neighborhood == 38 )
@@ -849,6 +851,33 @@ dst5_rateMap <- tm_shape(dst5_tiles) +
 
 dst5_rateMap
 ```
+### Save Maps
+
+```{r Save FPSE Maps, echo = FALSE, include = FALSE}
+tmap_save(fpse_total_tm, file = here("results/fpse/2019/august/fpse_total_crimes.jpeg"), dpi = 500)
+tmap_save(fpse_dn_tm, file = here("results/fpse/2019/august/fpse_day_night.jpeg"), dpi = 500)
+tmap_save(fpse_vlnt_tm, file = here("results/fpse/2019/august/fpse_vlnt.jpeg"), dpi = 500)
+tmap_save(fpse_den_tm, file = here("results/fpse/2019/august/fpse_density.jpeg"), dpi = 500)
+tmap_save(fpse_grove_tm, file = here("results/fpse/2019/august/fpse_grove.jpeg"), dpi = 500)
+```
+
+```{r Save CWE Maps, echo = FALSE, include = FALSE}
+tmap_save(cwe_total_tm, file = here("results/cwe/2019/august/cwe_total_crimes.jpeg"), dpi = 500)
+tmap_save(cwe_dn_tm, file = here("results/cwe/2019/august/cwe_day_night.jpeg"), dpi = 500)
+tmap_save(cwe_vlnt_tm, file = here("results/cwe/2019/august/cwe_vlnt.jpeg"), dpi = 500)
+tmap_save(cwe_den_tm, file = here("results/cwe/2019/august/cwe_den.jpeg"), dpi = 500)
+tmap_save(cwe_mc_tm, file = here("results/cwe/2019/august/cwe_mc.jpeg"), dpi = 500)
+tmap_save(cwe_ctx_tm, file = here("results/cwe/2019/august/cwe_ctx.jpeg"), dpi = 500)
+```
+
+```{r Save BOT Map, echo = FALSE, include = FALSE}
+tmap_save(cwe_total_tm, file = here("results/bot/2019/bot_aug_total.jpeg"), dpi = 500)
+```
+
+```{r Save District Density Maps, echo = FALSE, include = FALSE}
+tmap_save(dst2_rateMap, file = here("results/district-2/2019/dst2_aug_rates.jpeg"), dpi = 500)
+tmap_save(dst5_rateMap, file = here("results/district-5/2019/dst5_aug_rates.jpeg"), dpi = 500)
+```
 
 ### Clean Workspace 
 
@@ -911,40 +940,11 @@ head(fpse_2018)
 
 ```{r}
 kable(fpse_crimeCat) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
-  save_kable("fpse_cat_table.jpg")
-  
-
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
 ```
 
 
-### Save Maps
 
-```{r Save FPSE Maps, echo = FALSE, include = FALSE}
-tmap_save(fpse_total_tm, file = here("results/fpse/2019/august/fpse_total_crimes.jpeg"), dpi = 500)
-tmap_save(fpse_dn_tm, file = here("results/fpse/2019/august/fpse_day_night.jpeg"), dpi = 500)
-tmap_save(fpse_vlnt_tm, file = here("results/fpse/2019/august/fpse_vlnt.jpeg"), dpi = 500)
-tmap_save(fpse_den_tm, file = here("results/fpse/2019/august/fpse_density.jpeg"), dpi = 500)
-tmap_save(fpse_grove_tm, file = here("results/fpse/2019/august/fpse_grove.jpeg"), dpi = 500)
-```
-
-```{r Save CWE Maps, echo = FALSE, include = FALSE}
-tmap_save(cwe_total_tm, file = here("results/cwe/2019/august/cwe_total_crimes.jpeg"), dpi = 500)
-tmap_save(cwe_dn_tm, file = here("results/cwe/2019/august/cwe_day_night.jpeg"), dpi = 500)
-tmap_save(cwe_vlnt_tm, file = here("results/cwe/2019/august/cwe_vlnt.jpeg"), dpi = 500)
-tmap_save(cwe_den_tm, file = here("results/cwe/2019/august/cwe_den.jpeg"), dpi = 500)
-tmap_save(cwe_mc_tm, file = here("results/cwe/2019/august/cwe_mc.jpeg"), dpi = 500)
-tmap_save(cwe_ctx_tm, file = here("results/cwe/2019/august/cwe_ctx.jpeg"), dpi = 500)
-```
-
-```{r Save BOT Map, echo = FALSE, include = FALSE}
-tmap_save(cwe_total_tm, file = here("results/bot/2019/bot_aug_total.jpeg"), dpi = 500)
-```
-
-```{r Save District Density Maps, echo = FALSE, include = FALSE}
-tmap_save(dst2_rateMap, file = here("results/district-2/2019/dst2_aug_rates.jpeg"), dpi = 500)
-tmap_save(dst5_rateMap, file = here("results/district-5/2019/dst5_aug_rates.jpeg"), dpi = 500)
-```
 
 
 
