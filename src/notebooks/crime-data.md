@@ -122,7 +122,8 @@ as day or night based on the newly formated time variable.
 and therefore cannot be accurately mapped.
 
 `cs_replace0` replaces missing x & y coordinates with `NA`, and drops
-the missing data.
+the missing
+data.
 
 ``` r
 tidyCrimes19$tod <- strptime(tidyCrimes19$tod, tz = "America/Chicago", "%H:%M")
@@ -858,7 +859,8 @@ dst5_rateMap
 ```
 
 ![](crime-data_files/figure-gfm/Generate%20District%205%20Density%20Maps-1.png)<!-- -->
-\#\#\# Save Maps
+\#\#\# Save
+Maps
 
 ### Clean Workspace
 
