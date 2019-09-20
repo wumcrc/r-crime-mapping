@@ -932,18 +932,21 @@ tidyCrimes19 %>%
   filter(., neighborhood == 39) %>% 
   group_by(crimeCatName) %>% 
   count() %>% 
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> fpse_crimeCat
 
 tidyCrimes19 %>% 
   filter(., neighborhood == 39) %>% 
   group_by(weekday) %>% 
   count() %>%
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fpse_weekDay
 
 tidyCrimes19 %>% 
   filter(., neighborhood == 39) %>% 
   group_by(violent) %>% 
   count() %>%
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> fpse_violent
 
 
@@ -951,6 +954,7 @@ tidyCrimes19 %>%
   filter(., neighborhood == 39) %>% 
   group_by(dayNight) %>% 
   count() %>%
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_dayNight
 
 tidyTotalCrimes18 %>% 
@@ -1002,11 +1006,13 @@ write.csv(fpse_larcenies, file = here("results/fpse/2019/august/larcenies.csv"))
 fpse_larcenies %>% 
   group_by(weekday) %>% 
   count() %>%
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fpse_larcenies_weekDay
 
 fpse_larcenies %>% 
   group_by(dayNight) %>% 
   count() %>%
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_larcenies_dayNight
 ```
 
@@ -1053,18 +1059,21 @@ tidyCrimes19 %>%
   filter(., neighborhood == 38) %>% 
   group_by(crimeCatName) %>% 
   count() %>% 
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> cwe_crimeCat
 
 tidyCrimes19 %>% 
   filter(., neighborhood == 38) %>% 
   group_by(weekday) %>% 
   count() %>%
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> cwe_weekDay
 
 tidyCrimes19 %>% 
   filter(., neighborhood == 38) %>% 
   group_by(violent) %>% 
   count() %>%
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> cwe_violent
 
 
@@ -1072,6 +1081,7 @@ tidyCrimes19 %>%
   filter(., neighborhood == 38) %>% 
   group_by(dayNight) %>% 
   count() %>%
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> cwe_dayNight
 
 tidyTotalCrimes18 %>% 
@@ -1094,7 +1104,7 @@ tidyTotalCrimes18 %>%
          "October" = "10",
          "November" = "11",
          "December" = "12") %>% 
-  adorn_totals(., "col", name = "Total")-> cwe_2018
+  adorn_totals(., "col", name = "Total") -> cwe_2018
 
 tidyTotalCrimes19 %>% 
   filter(., neighborhood == 38) %>% 
@@ -1123,14 +1133,14 @@ write.csv(cwe_larcenies, file = here("results/cwe/2019/august/larcenies.csv"))
 cwe_larcenies %>% 
   group_by(weekday) %>% 
   count() %>%
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> cwe_larcenies_weekDay
 
 cwe_larcenies %>% 
   group_by(dayNight) %>% 
   count() %>%
+  adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> cwe_larcenies_dayNight
-
-head(cwe_2019)
 ```
 
 
