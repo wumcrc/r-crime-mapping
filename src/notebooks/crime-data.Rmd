@@ -279,6 +279,7 @@ augustCrimes <- rbind(tidyMonthCrimes18, tidyCrimes19)
 ### Create Spatial Objects
 
 ```{r Create SF objects for 2018 & 2019 Crimes}
+crimesYear18_sf <- cs_projectXY(tidyTotalCrimes18, varX = x_coord, varY = y_coord, crs = 102696)
 crimes19_sf <- cs_projectXY(tidyCrimes19, varX = x_coord, varY = y_coord, crs = 102696)
 augustCrimes_sf <- cs_projectXY(augustCrimes, varX = x_coord, varY = y_coord, crs = 102696)
 ```
@@ -746,8 +747,9 @@ cwe_den_tm
 ```
 ###### Medical Campus
 
-```{r Medical Campus Total Crime}
+```{r Medical Campus Total Crime 2019}
 mc_crimes <- st_intersection(crimes19_sf, med_campus)
+
 
 cwe_mc_tm <- tm_shape(mc_tiles) +
   tm_rgb() +
@@ -778,7 +780,67 @@ cwe_mc_tm <- tm_shape(mc_tiles) +
     legend.position = c("right", "bottom")) 
 
 cwe_mc_tm
+
+mc_crimes_18 <- st_intersection(crimesYear18_sf, med_campus) %>% 
+  as.data.frame()
+
+mc_crimes <- mc_crimes %>% 
+   as.data.frame()
+
+mc_crimes_18 %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08",
+         "September" = "09",
+         "October" = "10",
+         "November" = "11",
+         "December" = "12") %>% 
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") -> mc_2018
+
+mc_crimes %>% 
+  group_by(crimeCatName) %>% 
+  count() %>% 
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> mc_crimeCat
+
+kable(mc_crimeCat) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("mc_crimCat.jpeg")
+
+mc_crimes %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> mc_dayNight
+
+kable(mc_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("mc_dayNight.jpeg")
+
+mc_larcenies <- mc_crimes %>% 
+  filter(., crimeCatNum == 6)
+
+write.csv(mc_larcenies, file = here("results/cwe/2019/august/cwe_larcenies.csv"))
+
+write.csv(mc_crimes, file = here("results/cwe/2019/august/mc_crimes_august19.csv"))
+write.csv(mc_2018, file = here("results/cwe/2019/august/mc_crimes_2018.csv"))
+
 ```
+
+
+
 ###### Cortex
 
 ```{r Cortex Total Crime}
@@ -868,7 +930,18 @@ dst2_rateMap <- tm_shape(dst2_tiles) +
     legend.position = c("right", "bottom")) 
 
 dst2_rateMap
+
+
 ```
+
+```{r}
+dst_2_statsTotal <- describe(dst_2_pop$crimeTotal)
+dst_2_statsRate <- describe(dst_2_pop$crimeRate)
+
+dst_2_statsTotal
+dst_2_statsRate
+```
+
 
 ```{r Generate District 5 Density Maps}
 dst5_rateMap <- tm_shape(dst5_tiles) +
@@ -889,6 +962,15 @@ dst5_rateMap <- tm_shape(dst5_tiles) +
 
 dst5_rateMap
 ```
+```{r}
+dst_5_statsTotal <- describe(dst_5_pop$crimeTotal)
+dst_5_statsRate <- describe(dst_5_pop$crimeRate)
+
+dst_5_statsTotal
+dst_5_statsRate
+```
+
+
 ### Save Maps
 
 ```{r Save FPSE Maps, echo = FALSE, include = FALSE}
@@ -1233,6 +1315,50 @@ tidyCrimes19 %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> bot_dayNight
+
+tidyTotalCrimes18 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08",
+         "September" = "09",
+         "October" = "10",
+         "November" = "11",
+         "December" = "12") %>% 
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") -> bot_2018
+write.csv(bot_2018, file = here("results/bot/2019/bot_2018.csv"))
+
+tidyTotalCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08") %>% 
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") -> bot_2019
+write.csv(bot_2019, file = here("results/bot/2019/bot_2019.csv"))
 ```
 
 ```{r}
