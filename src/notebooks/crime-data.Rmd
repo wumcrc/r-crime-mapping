@@ -83,7 +83,6 @@ print(c_month)
 
 ```{r Extract August 2019 Data}
 crimes19 <- cs_extract_month(yearList19, month = "August") 
-rm(yearList19)
 ```
 
 ### Clean & Categorize Data - 2019
@@ -926,6 +925,8 @@ rm(fpse_total_tm, fpse_dn_tm, fpse_vlnt_tm, fpse_den_tm, fpse_grove_tm, cwe_tota
 
 ## Tables 
 
+### FPSE Tables 
+
 ```{r FPSE Tables}
 tidyCrimes19 %>% 
   filter(., neighborhood == 39) %>% 
@@ -1023,7 +1024,103 @@ kable(fpse_2019) %>%
 ```
 
 
+### CWE Tables 
 
+```{r CWE Tables}
+tidyCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(crimeCatName) %>% 
+  count() %>% 
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> cwe_crimeCat
+
+tidyCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> cwe_weekDay
+
+tidyCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(violent) %>% 
+  count() %>%
+  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> cwe_violent
+
+
+tidyCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> cwe_dayNight
+
+tidyTotalCrimes18 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08",
+         "September" = "09",
+         "October" = "10",
+         "November" = "11",
+         "December" = "12") %>% 
+  adorn_totals(., "col", name = "Total")-> cwe_2018
+
+tidyTotalCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08") %>% 
+  adorn_totals(., "col", name = "Total")-> cwe_2019
+
+head(cwe_2019)
+```
+
+
+```{r}
+kable(cwe_crimeCat) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_crimCat.jpeg")
+
+kable(cwe_weekDay) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_weekDay.jpeg")
+
+kable(cwe_violent) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_violent.jpeg")
+
+kable(cwe_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_dayNight.jpeg")
+
+kable(cwe_2018) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_2018.jpeg")
+
+kable(cwe_2019) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_2019.jpeg")
+```
 
 
 
