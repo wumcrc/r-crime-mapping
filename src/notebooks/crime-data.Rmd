@@ -1202,4 +1202,116 @@ head(cwe_2019)
 write.csv(cwe_2019, file = here("results/cwe/2019/august/cwe_2019.csv"))
 ```
 
+## Graphs/Charts
+
+need to change file save locations
+
+### FPSE Graphs 
+
+```{r FPSE Crime by Weekday - Graph}
+tidyCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  ggplot(., aes(x=weekday, y=n, group=1)) +
+    geom_line(color="blue") +
+    geom_point() + 
+    xlab("Day of Week") + ylab("Total Crimes") +
+    ggtitle("FPSE Total Crimes by Days of the Week")
+
+ggsave(here("results/graphs/fpse_crime_weekday.jpeg"), dpi = 300)
+```
+
+```{r FPSE Crime by Category Weekday - Graph}
+tidyCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(crimeCatName) %>%
+  ggplot(., aes(weekday)) +
+    geom_bar(aes(fill = crimeCatName), position=position_dodge()) +
+    xlab("Day of Week") + ylab("Total Crimes") +
+    ggtitle("FPSE Crimes by Day & Category") + 
+    labs(fill = "Part 1 Crimes") +
+    scale_fill_brewer(palette = "Spectral")
+
+ggsave(here("results/graphs/fpse_crimeCat_weekday.jpeg"), dpi = 300)
+```
+
+
+
+```{r FPSE Crime by Time of Day }
+tidyCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(dayNight) %>%
+  count() %>% 
+  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
+    geom_bar(stat="identity", position=position_dodge(), colour="black") +
+    xlab("Time of Day") + ylab("Total Crimes") +
+    ggtitle("FPSE Crimes by Time of Day") + 
+    labs(fill = "Time")
+
+ggsave(here("results/graphs/cwe_crime_timeDay.jpeg"), dpi = 300)
+```
+
+
+### CWE Graphs 
+
+```{r CWE Crime by Weekday - Graph}
+tidyCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  ggplot(., aes(x=weekday, y=n, group=1)) +
+    geom_line(color="blue") +
+    geom_point() + 
+    xlab("Day of Week") + ylab("Total Crimes") +
+    ggtitle("CWE Total Crimes by Days of the Week")
+
+ggsave(here("results/graphs/cwe_crime_weekday.jpeg"), dpi = 300)
+```
+
+```{r CWE Crime by Category Weekday - Graph}
+tidyCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(crimeCatName) %>%
+  ggplot(., aes(weekday)) +
+    geom_bar(aes(fill = crimeCatName), position=position_dodge()) +
+    xlab("Day of Week") + ylab("Total Crimes") +
+    ggtitle("CWE Crimes by Day & Category") + 
+    labs(fill = "Part 1 Crimes") +
+    scale_fill_brewer(palette = "Spectral")
+
+ggsave(here("results/graphs/cwe_crimeCat_weekday.jpeg"), dpi = 300)
+
+```
+
+
+
+```{r CWE Crime by Time of Day }
+tidyCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(dayNight) %>%
+  count() %>% 
+  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
+    geom_bar(stat="identity", position=position_dodge(), colour="black") +
+    xlab("Time of Day") + ylab("Total Crimes") +
+    ggtitle("CWE Crimes by Time of Day") + 
+    labs(fill = "Time") 
+
+ggsave(here("results/graphs/cwe_crime_timeDay.jpeg"), dpi = 300)
+```
+### BOT 
+
+```{r BOT Crime by Weekday - Graph}
+tidyCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  ggplot(., aes(x=weekday, y=n, group=1)) +
+    geom_line(color="blue") +
+    geom_point() + 
+    xlab("Day of Week") + ylab("Total Crimes") +
+    ggtitle("BOT Total Crimes by Days of the Week")
+
+ggsave(here("results/graphs/bot_crime_weekday.jpeg"), dpi = 300)
+```
 
