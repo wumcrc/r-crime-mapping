@@ -871,7 +871,7 @@ tmap_save(cwe_ctx_tm, file = here("results/cwe/2019/august/cwe_ctx.jpeg"), dpi =
 ```
 
 ```{r Save BOT Map, echo = FALSE, include = FALSE}
-tmap_save(cwe_total_tm, file = here("results/bot/2019/bot_aug_total.jpeg"), dpi = 500)
+tmap_save(bot_total_tm, file = here("results/bot/2019/bot_aug_total.jpeg"), dpi = 500)
 ```
 
 ```{r Save District Density Maps, echo = FALSE, include = FALSE}
@@ -920,7 +920,8 @@ tidyTotalCrimes18 %>%
   rename(., "Number of Crimes" = n) %>% 
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
   replace(., is.na(.), 0) %>% 
-  rename(., "January" = "01",
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
          "February" = "02",
          "March" = "03",
          "April" = "04",
@@ -940,6 +941,19 @@ head(fpse_2018)
 
 ```{r}
 kable(fpse_crimeCat) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
+
+kable(fpse_weekDay) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
+
+
+kable(fpse_violent) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
+
+kable(fpse_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
+
+kable(fpse_2018) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
 ```
 
