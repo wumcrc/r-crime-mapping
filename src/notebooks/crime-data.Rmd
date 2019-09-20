@@ -1202,6 +1202,58 @@ head(cwe_2019)
 write.csv(cwe_2019, file = here("results/cwe/2019/august/cwe_2019.csv"))
 ```
 
+### Botanical Heights
+
+```{r BOT Tables}
+tidyCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(crimeCatName) %>% 
+  count() %>% 
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> bot_crimeCat
+
+tidyCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> bot_weekDay
+
+tidyCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(violent) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> bot_violent
+
+
+tidyCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> bot_dayNight
+```
+
+```{r}
+kable(bot_crimeCat) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("bot_crimCat.jpeg")
+
+kable(bot_weekDay) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("bot_weekDay.jpeg")
+
+kable(bot_violent) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("bot_violent.jpeg")
+
+kable(bot_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("bot_dayNight.jpeg")
+```
+
+
 ## Graphs/Charts
 
 need to change file save locations
@@ -1249,7 +1301,7 @@ tidyCrimes19 %>%
     ggtitle("FPSE Crimes by Time of Day") + 
     labs(fill = "Time")
 
-ggsave(here("results/graphs/cwe_crime_timeDay.jpeg"), dpi = 300)
+ggsave(here("results/graphs/fpse_crime_timeDay.jpeg"), dpi = 300)
 ```
 
 
