@@ -993,7 +993,21 @@ tidyTotalCrimes19 %>%
          "August" = "08") %>% 
   adorn_totals(., "col", name = "Total")-> fpse_2019
 
-head(fpse_2019)
+fpse_larcenies <- tidyCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  filter(., crimeCatNum == 6)
+
+write.csv(fpse_larcenies, file = here("results/fpse/2019/august/larcenies.csv"))
+
+fpse_larcenies %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fpse_larcenies_weekDay
+
+fpse_larcenies %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_larcenies_dayNight
 ```
 
 
@@ -1021,6 +1035,14 @@ kable(fpse_2018) %>%
 kable(fpse_2019) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
   save_kable("fpse_2019.jpeg")
+
+kable(fpse_larcenies_weekDay) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_larcenies_weekDay.jpeg")
+
+kable(fpse_larcenies_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_larcenies_dayNight.jpeg")
 ```
 
 
@@ -1092,6 +1114,22 @@ tidyTotalCrimes19 %>%
          "August" = "08") %>% 
   adorn_totals(., "col", name = "Total")-> cwe_2019
 
+cwe_larcenies <- tidyCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  filter(., crimeCatNum == 6) 
+
+write.csv(cwe_larcenies, file = here("results/cwe/2019/august/larcenies.csv"))
+
+cwe_larcenies %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> cwe_larcenies_weekDay
+
+cwe_larcenies %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> cwe_larcenies_dayNight
+
 head(cwe_2019)
 ```
 
@@ -1120,6 +1158,14 @@ kable(cwe_2018) %>%
 kable(cwe_2019) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
   save_kable("cwe_2019.jpeg")
+
+kable(cwe_larcenies_weekDay) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_larcenies_weekDay.jpeg")
+
+kable(cwe_larcenies_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_larcenies_dayNight.jpeg")
 ```
 
 
