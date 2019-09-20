@@ -144,6 +144,45 @@ tidyCrimes19 <- tidyCrimes19 %>%
   filter(., missing == FALSE) 
 ```
 
+## Total Crimes 2019 - Clean
+
+```{r}
+totalYearlyCrimes19 <- cs_collapse(yearList19)
+
+tidyTotalCrimes19 <- totalYearlyCrimes19 %>% 
+  cs_filter_count(., var = count) %>%
+  cs_filter_crime(., var = crime, "part 1") %>%
+  cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
+  cs_crime_cat(., var = crime, crimeCatName, "string") %>%
+  cs_crime(., var = crime, violent, "violent") %>%
+  cs_crime(., var = crime, property, "property") %>%
+  cs_parse_month(., var = coded_month, yearVar = reportYear, month = monthVar) %>%
+  cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
+  filter(district == 2 | district == 5) %>%
+  mutate(weekday = wday(dateOcc, label = TRUE)) %>%
+  mutate(tod = timeOcc) 
+
+tidyTotalCrimes19$neighborhood <- as.numeric(tidyTotalCrimes19$neighborhood)
+
+tidyTotalCrimes19$tod <- strptime(tidyTotalCrimes19$tod, tz = "America/Chicago", "%H:%M")
+tidyTotalCrimes19$tod <- format(tidyTotalCrimes19$tod, format = "%H%M%S")
+
+tidyTotalCrimes19 <- tidyTotalCrimes19 %>%
+  mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
+  dplyr::select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)
+
+tidyTotalCrimes19 <- cs_missingXY(tidyTotalCrimes19, varX = x_coord, varY = y_coord, newVar = missing)
+table(tidyTotalCrimes19$missing)
+
+tidyTotalCrimes19 <- tidyTotalCrimes19 %>% 
+  cs_replace0(., var = x_coord) %>%
+  cs_replace0(., var = y_coord) %>% 
+  filter(., missing == FALSE)
+
+rm(totalCrimes18)
+```
+
+
 ### Get Data - 2018
 
 ```{r Download 2018 Data}
@@ -935,26 +974,52 @@ tidyTotalCrimes18 %>%
          "December" = "12") %>% 
   adorn_totals(., "col", name = "Total")-> fpse_2018
 
-head(fpse_2018)
+tidyTotalCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08") %>% 
+  adorn_totals(., "col", name = "Total")-> fpse_2019
+
+head(fpse_2019)
 ```
 
 
 ```{r}
 kable(fpse_crimeCat) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_crimCat.jpeg")
 
 kable(fpse_weekDay) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
-
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_weekDay.jpeg")
 
 kable(fpse_violent) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_violent.jpeg")
 
 kable(fpse_dayNight) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_dayNight.jpeg")
 
 kable(fpse_2018) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center")
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_2018.jpeg")
+
+kable(fpse_2019) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_2019.jpeg")
 ```
 
 
