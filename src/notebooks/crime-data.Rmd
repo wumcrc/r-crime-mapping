@@ -830,9 +830,11 @@ kable(mc_dayNight) %>%
   save_kable("mc_dayNight.jpeg")
 
 mc_larcenies <- mc_crimes %>% 
-  filter(., crimeCatNum == 6)
+  filter(., crimeCatNum == 6) %>% 
+  as.data.frame()
 
-write.csv(mc_larcenies, file = here("results/cwe/2019/august/cwe_larcenies.csv"))
+
+write.csv(mc_larcenies, file = here("results/cwe/2019/august/mc_larcenies.csv"))
 
 write.csv(mc_crimes, file = here("results/cwe/2019/august/mc_crimes_august19.csv"))
 write.csv(mc_2018, file = here("results/cwe/2019/august/mc_crimes_2018.csv"))
