@@ -836,7 +836,7 @@ mc_larcenies <- mc_crimes %>%
 
 write.csv(mc_larcenies, file = here("results/cwe/2019/august/mc_larcenies.csv"))
 
-write.csv(mc_crimes, file = here("results/cwe/2019/august/mc_crimes_august19.csv"))
+write.csv(mc_crimeCat, file = here("results/cwe/2019/august/mc_crimes_august19.csv"))
 write.csv(mc_2018, file = here("results/cwe/2019/august/mc_crimes_2018.csv"))
 
 ```
