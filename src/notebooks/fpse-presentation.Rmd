@@ -919,6 +919,60 @@ kable(mc_larcenies_val) %>%
   save_kable("mc_larcenies_val.jpeg")
 ```
 
+```{r echo = FALSE}
+knitr::include_graphics("mc_crimCat.jpeg")
+```
+
+```{r echo = FALSE}
+knitr::include_graphics("mc_dayNight.jpeg")
+```
+
+```{r echo = FALSE}
+knitr::include_graphics("mc_larcenies_cat.jpeg")
+```
+
+```{r echo = FALSE}
+knitr::include_graphics("mc_larcenies_val.jpeg")
+```
+
+## Med. Campus Total Crime: August 2019
+
+```{r}
+cwe_mc_tm <- tm_shape(mc_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 38) %>% 
+  tm_shape() +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  tm_shape(med_campus) +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 1, 
+               lty = "solid") +
+  tm_shape(mc_crimes_month19_sf) +
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(cwe_mc_tm, file = here("results/cwe/2019/august/mc_total_crimes.jpeg"), dpi = 500)
+```
+
+```{r MC Total Crimes Knit, echo = FALSE}
+knitr::include_graphics(here("results/cwe/2019/august/mc_total_crimes.jpeg"))
+```
+
+## Cortex Total Crimes 
 
 
 
