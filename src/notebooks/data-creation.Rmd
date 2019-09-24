@@ -293,6 +293,20 @@ dst5_tiles <- raster::extent(xydst5) %>%
   cc_location(., type = "mapbox.streets", max_tiles = 15)
 
 save(fpse_tiles, cwe_tiles, bot_tiles, dbp_tiles, sdb_tiles, we_tiles, vp_tiles, ac_tiles, fp_tiles, lp_tiles, vd_tiles, mc_tiles, ctx_tiles, grv_tiles, dst2_tiles, dst5_tiles, file = here("data", "basemap-files", "mapbox-tiles.rda"))
+
+fpse <- filter(nhoods_sf, neighborhood == 39 )
+cwe <- filter(nhoods_sf, neighborhood == 38 )
+bot <- filter(nhoods_sf, neighborhood == 28 )
+dbp <- filter(nhoods_sf, neighborhood == 47 )
+sdb <- filter(nhoods_sf, neighborhood == 46 )
+we <- filter(nhoods_sf, neighborhood == 48 )
+vp <- filter(nhoods_sf, neighborhood == 49 )
+ac <- filter(nhoods_sf, neighborhood == 51 )
+fp <- filter(nhoods_sf, neighborhood == 53 )
+lp <- filter(nhoods_sf, neighborhood == 54 )
+vd <- filter(nhoods_sf, neighborhood == 58 )
+
+save(fpse, cwe, bot, dbp, sdb, we, vp, ac, fp, lp, vd, file = here("data", "basemap-files", "nbhd-boundaries.rda"))
 ```
 
 ```{r Create SF objects for 2018 & 2019 Crimes}

@@ -51,6 +51,7 @@ load(file = here("data", "basemap-files", "boundaries.rda"))
 load(file = here("data", "crime-data.rda"))
 load(file = here("data", "spatial-crime-data.rda"))
 load(file = here("data", "nbhd_pop10.rda"))
+load(file = here("data", "basemap-files", "nbhd-boundaries.rda"))
 ```
 
 ## Summary Notes: FPSE August 2019 
@@ -1084,7 +1085,7 @@ dst_5_max_tot <- print(dst_5_maxT$crimeTotal, max.levels = 0)
 
 ## District 5 Density Map Explanation 
 
-There are 23 neighborhoods in District 5. The South Hampton neighborhood is split between District 2 and District 1. 
+There are 15 neighborhoods in District 5.
 
 ```{r, echo = FALSE}
 sprintf("The minimum number of crimes in one neighborhood was %s (%s)", dst_5_min_tot, dst_5_min_tot_nhd)
@@ -1096,9 +1097,158 @@ sprintf("The maximum rate of crimes in one neighborhood was %s (%s)", round(dst_
 sprintf("The mean rate of crimes in one neighborhood was %s", round(dst_5_rate_mean, digits = 2))
 ```
 
-## FPSE Larceny 
+## Forest Park Southeast Neighborhood Detail 
+### Appendix 1 
 
-```{r Larceny Kables, include = FALSE}
+## FPSE Time of Crimes 
+
+```{r FPSE Day & Night, include = FALSE}
+fpse_dn_tm <- tm_shape(fpse_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 39) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(monthCrimes19_sf, 
+         neighborhood == 39) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "dayNight", 
+               palette = "-RdBu", 
+               title.col = "Time of Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+
+tmap_save(fpse_dn_tm, file = here("results/fpse/2019/august/fpse_day_night.jpeg"), dpi = 500)
+```
+
+```{r FPSE Day & Night Knit, echo = FALSE}
+knitr::include_graphics(here("results/fpse/2019/august/fpse_day_night.jpeg"))
+```
+
+## FPSE Violent Crime
+
+```{r FPSE Crimes Against Persons, include = FALSE}
+fpse_vlnt_tm <- tm_shape(fpse_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 39) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(monthCrimes19_sf, 
+         neighborhood == 39) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "violent", 
+               palette = "Reds", 
+               title.col = "Violent") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+
+tmap_save(fpse_vlnt_tm, file = here("results/fpse/2019/august/fpse_vlnt.jpeg"), dpi = 500)
+```
+
+```{r FPSE Violent Knit, echo = FALSE}
+knitr::include_graphics(here("results/fpse/2019/august/fpse_vlnt.jpeg"))
+```
+
+## Grove Community Improvement District 
+
+```{r Grove CID Total Crime, include = FALSE}
+grove_crimes <- st_intersection(monthCrimes19_sf, grove_cid)
+
+fpse_grove_tm <- tm_shape(grv_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 39) %>% 
+  tm_shape() +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  tm_shape(grove_cid) +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 1, 
+               lty = "solid") +
+  tm_shape(grove_crimes) +
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+
+tmap_save(fpse_grove_tm, file = here("results/fpse/2019/august/fpse_grove.jpeg"), dpi = 500)
+```
+
+```{r FPSE Grove Knit, echo = FALSE}
+knitr::include_graphics(here("results/fpse/2019/august/fpse_grove.jpeg"))
+```
+
+## FPSE Crime Density 
+
+```{r FPSE Density Map SF, include = FALSE}
+monthCrimes19_sf %>%
+  filter(neighborhood == 39) %>%
+  smooth_map(., bandwidth = 0.5, style = "pretty",
+  cover = fpse) -> fpse_densities
+```
+
+```{r FPSE Density Map Output, include = FALSE}
+fpse_den_tm <- tm_shape(fpse_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 39) %>% 
+  tm_shape() +
+    tm_fill(col = NA, 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  tm_shape(fpse_densities$polygons) +
+  tm_fill(col = "level", palette = "BuPu", alpha = .60, 
+    title = expression("Crimes per " * km^2)) +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+tmap_save(fpse_den_tm, file = here("results/fpse/2019/august/fpse_density.jpeg"), dpi = 500)
+```
+
+```{r FPSE Density Knit, echo = FALSE}
+knitr::include_graphics(here("results/fpse/2019/august/fpse_density.jpeg"))
+```
+
+## FPSE Larceny Breakdown
+
+```{r FPSE Larceny Kables, include = FALSE}
 larceny %>% 
   filter(., neighborhood == 39) %>%
   group_by(weekday) %>% 
@@ -1113,6 +1263,20 @@ larceny %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_larcenies_dayNight
 
+larceny %>% 
+  filter(., neighborhood == 39) %>%
+  group_by(type) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> fpse_larcenies_type
+
+larceny %>% 
+  filter(., neighborhood == 39) %>%
+  group_by(value) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Monetary" = value) -> fpse_larcenies_value
+
 kable(fpse_larcenies_weekDay) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
   save_kable("fpse_larcenies_weekDay.jpeg")
@@ -1120,5 +1284,316 @@ kable(fpse_larcenies_weekDay) %>%
 kable(fpse_larcenies_dayNight) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
   save_kable("fpse_larcenies_dayNight.jpeg")
+
+kable(fpse_larcenies_type) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_larcenies_type.jpeg")
+
+kable(fpse_larcenies_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_larcenies_value.jpeg")
 ```
 
+```{r FPSE Larceny Knit Days, echo = FALSE}
+knitr::include_graphics("fpse_larcenies_weekDay.jpeg", dpi = 1000)
+```
+
+```{r FPSE Larceny Knit Time, echo = FALSE}
+knitr::include_graphics("fpse_larcenies_dayNight.jpeg", dpi = 1000)
+```
+
+```{r FPSE Larceny Knit Type, echo = FALSE}
+knitr::include_graphics("fpse_larcenies_type.jpeg", dpi = 1000)
+```
+
+```{r FPSE Larceny Knit Value, echo = FALSE}
+knitr::include_graphics("fpse_larcenies_value.jpeg", dpi = 1000)
+```
+
+## FPSE Total Crimes by Days of the Week
+
+```{r FPSE Crime by Weekday - Graph, include= FALSE}
+monthCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  ggplot(., aes(x=weekday, y=n, group=1)) +
+    geom_line(color="blue") +
+    geom_point() + 
+    xlab("Day of Week") + ylab("Total Crimes")
+
+ggsave(here("results/graphs/fpse_crime_weekday.jpeg"), dpi = 500)
+```
+
+```{r FPSE Crime by Weekday, echo = FALSE}
+knitr::include_graphics(here("results/graphs/fpse_crime_weekday.jpeg"), dpi = 500)
+```
+
+## FPSE Crimes by Time of Day 
+
+```{r FPSE Crime by Time of Day - Graph, include = FALSE }
+monthCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(dayNight) %>%
+  count() %>% 
+  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
+    geom_bar(stat="identity", position=position_dodge(), colour="black") +
+    xlab("Time of Day") + ylab("Total Crimes") +
+    labs(fill = "Time")
+
+ggsave(here("results/graphs/fpse_crime_timeDay.jpeg"), dpi = 300)
+```
+
+```{r FPSE Crime by Time of Day Knit, echo = FALSE}
+knitr::include_graphics(here("results/graphs/fpse_crime_timeDay.jpeg"), dpi = 500)
+```
+
+## FPSE Crimes by Day & Category
+
+```{r FPSE Crime by Category Weekday - Graph, include= FALSE}
+monthCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(crimeCatName) %>%
+  ggplot(., aes(weekday)) +
+    geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
+    xlab("Day of Week") + ylab("Total Crimes") +
+    labs(fill = "Part 1 Crimes") +
+    scale_fill_brewer(palette = "Spectral")
+
+ggsave(here("results/graphs/fpse_crimeCat_weekday.jpeg"), dpi = 300)
+```
+
+```{r Crime by Category Weekday Knit, echo = FALSE}
+knitr::include_graphics(here("results/graphs/fpse_crimeCat_weekday.jpeg"), dpi = 500)
+```
+
+## Central West End Neighborhood Detail 
+### Appendix 2
+
+## CWE Time of Crimes 
+
+```{r cwe Day & Night, include = FALSE}
+cwe_dn_tm <- tm_shape(cwe_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 38) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(monthCrimes19_sf, 
+         neighborhood == 38) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "dayNight", 
+               palette = "-RdBu", 
+               title.col = "Time of Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+
+tmap_save(cwe_dn_tm, file = here("results/cwe/2019/august/cwe_day_night.jpeg"), dpi = 500)
+```
+
+```{r cwe Day & Night Knit, echo = FALSE}
+knitr::include_graphics(here("results/cwe/2019/august/cwe_day_night.jpeg"))
+```
+
+## CWE Violent Crime
+
+```{r cwe Crimes Against Persons, include = FALSE}
+cwe_vlnt_tm <- tm_shape(cwe_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 38) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(monthCrimes19_sf, 
+         neighborhood == 38) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "violent", 
+               palette = "Reds", 
+               title.col = "Violent") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+
+tmap_save(cwe_vlnt_tm, file = here("results/cwe/2019/august/cwe_vlnt.jpeg"), dpi = 500)
+```
+
+```{r cwe Violent Knit, echo = FALSE}
+knitr::include_graphics(here("results/cwe/2019/august/cwe_vlnt.jpeg"))
+```
+
+## CWE Crime Density 
+
+```{r cwe Density Map SF, include = FALSE}
+monthCrimes19_sf %>%
+  filter(neighborhood == 38) %>%
+  smooth_map(., bandwidth = 0.5, style = "pretty",
+  cover = cwe) -> cwe_densities
+```
+
+```{r cwe Density Map Output, include = FALSE}
+cwe_den_tm <- tm_shape(cwe_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 38) %>% 
+  tm_shape() +
+    tm_fill(col = NA, 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  tm_shape(cwe_densities$polygons) +
+  tm_fill(col = "level", palette = "BuPu", alpha = .60, 
+    title = expression("Crimes per " * km^2)) +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+tmap_save(cwe_den_tm, file = here("results/cwe/2019/august/cwe_density.jpeg"), dpi = 500)
+```
+
+```{r cwe Density Knit, echo = FALSE}
+knitr::include_graphics(here("results/cwe/2019/august/cwe_density.jpeg"))
+```
+
+## CWE Larceny Breakdown
+
+```{r CWE Larceny Kables, include = FALSE}
+larceny %>% 
+  filter(., neighborhood == 38) %>%
+  group_by(weekday) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> cwe_larcenies_weekDay
+
+larceny %>% 
+  filter(., neighborhood == 38) %>%
+  group_by(dayNight) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> cwe_larcenies_dayNight
+
+larceny %>% 
+  filter(., neighborhood == 38) %>%
+  group_by(type) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> cwe_larcenies_type
+
+larceny %>% 
+  filter(., neighborhood == 38) %>%
+  group_by(value) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Monetary Value" = value) -> cwe_larcenies_value
+
+kable(cwe_larcenies_weekDay) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_larcenies_weekDay.jpeg")
+
+kable(cwe_larcenies_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_larcenies_dayNight.jpeg")
+
+kable(cwe_larcenies_type) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_larcenies_type.jpeg")
+
+kable(cwe_larcenies_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("cwe_larcenies_value.jpeg")
+```
+
+```{r cwe Larceny Knit Days, echo = FALSE}
+knitr::include_graphics("cwe_larcenies_weekDay.jpeg", dpi = 1000)
+```
+
+```{r cwe Larceny Knit Time, echo = FALSE}
+knitr::include_graphics("cwe_larcenies_dayNight.jpeg", dpi = 1000)
+```
+
+```{r cwe Larceny Knit Type, echo = FALSE}
+knitr::include_graphics("cwe_larcenies_type.jpeg", dpi = 1000)
+```
+
+```{r cwe Larceny Knit Value, echo = FALSE}
+knitr::include_graphics("cwe_larcenies_value.jpeg", dpi = 1000)
+```
+
+## CWE Total Crimes by Days of the Week
+
+```{r cwe Crime by Weekday - Graph, include = FALSE}
+monthCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  ggplot(., aes(x=weekday, y=n, group=1)) +
+    geom_line(color="blue") +
+    geom_point() + 
+    xlab("Day of Week") + ylab("Total Crimes")
+
+ggsave(here("results/graphs/cwe_crime_weekday.jpeg"), dpi = 500)
+```
+
+```{r cwe Crime by Weekday, echo = FALSE}
+knitr::include_graphics(here("results/graphs/cwe_crime_weekday.jpeg"), dpi = 500)
+```
+
+## CWE Crimes by Time of Day 
+
+```{r cwe Crime by Time of Day - Graph, include = FALSE }
+monthCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(dayNight) %>%
+  count() %>% 
+  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
+    geom_bar(stat="identity", position=position_dodge(), colour="black") +
+    xlab("Time of Day") + ylab("Total Crimes") +
+    labs(fill = "Time")
+
+ggsave(here("results/graphs/cwe_crime_timeDay.jpeg"), dpi = 300)
+```
+
+```{r cwe Crime by Time of Day Knit, echo = FALSE}
+knitr::include_graphics(here("results/graphs/cwe_crime_timeDay.jpeg"), dpi = 500)
+```
+
+## CWE Crimes by Day & Category
+
+```{r cwe Crime by Category Weekday - Graph, include= FALSE}
+monthCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(crimeCatName) %>%
+  ggplot(., aes(weekday)) +
+    geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
+    xlab("Day of Week") + ylab("Total Crimes") +
+    labs(fill = "Part 1 Crimes") +
+    scale_fill_brewer(palette = "Spectral")
+
+ggsave(here("results/graphs/cwe_crimeCat_weekday.jpeg"), dpi = 300)
+```
+
+```{r we Crime by Category Weekday Knit, echo = FALSE}
+knitr::include_graphics(here("results/graphs/cwe_crimeCat_weekday.jpeg"), dpi = 500)
+```
