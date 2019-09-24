@@ -25,6 +25,7 @@ library(dplyr)         # data manipulation
 library(magrittr)      # pipe operator
 library(readxl)        # read & write excel files
 library(lubridate)     # time data manipulation
+library(scales)
 
 # spatial packages
 library(tmap)         # map layouts
@@ -41,6 +42,7 @@ library(janitor)      # tools for examining data
 library(RColorBrewer) # cynthia brewer color palettes
 library(viridis)      # color palettes
 library(kableExtra)   # exporting pretty tables
+library(htmltools)
 
 # load data 
 load(file = here("data", "basemap-files", "mapbox-tiles.rda"))
@@ -51,21 +53,104 @@ load(file = here("data", "nbhd_pop10.rda"))
 
 ## Summary Notes: FPSE August 2019 
 
-
-
 ```{r, include=FALSE}
 tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 39,])
 tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 39,])
+cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 39 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 39 & monthCrimes18$crimeCatNum == 3,])
 cap19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 39 & monthCrimes19$crimeCatNum == 4 | monthCrimes19$neighborhood == 39 & monthCrimes19$crimeCatNum == 3,])
 
-pct_chg <- (tc19 - tc18)/tc18*100 
-pct_chg <- round(pct_chg, digits = 2)
-tc <- sprintf("%s Total Crimes in 2019", tc19)
-pc <- sprintf("%s Percent Change compared to August 2018 (%s Total Crimes)", pct_chg, tc18)
+tc_ytd18 <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 39,])
+tc_ytdCurrent <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 39,])
+cap18_ytd <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 39 & ytdCrimes18$crimeCatNum == 4 | ytdCrimes18$neighborhood == 39 & ytdCrimes18$crimeCatNum == 3,])
+cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 39 & ytdCrimes19$crimeCatNum == 4 | ytdCrimes19$neighborhood == 39 & ytdCrimes19$crimeCatNum == 3,])
+
+pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- percent(pct_chg_mth)
+pct_chg_cap <- (cap19 - cap18)/cap18 
+pct_chg_cap <- percent(pct_chg_cap)
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- percent(pct_chg_ytd)
+pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
+
 ```
 
 ```{r, echo = FALSE}
-print(tc)
-print(pc)
+sprintf("%s total crimes in August 2019", tc19)
+sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
+sprintf("%s crime(s) against persons in August 2019", cap19)
+sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+sprintf("%s total crimes in 2019", tc_ytdCurrent)
+sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
+sprintf("%s crime(s) against persons in 2019", cap19_ytd)
+sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
 ```
+## Comparing 2018 to 2019
+
+```{r ,include=FALSE}
+totalCrimes18 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  arrange(., crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08",
+         "September" = "09",
+         "October" = "10",
+         "November" = "11",
+         "December" = "12") %>% 
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") -> fpse_2018
+
+fpse_2019 <- ytdCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  arrange(., crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08") %>%
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") 
+```
+
+```{r, echo = FALSE}
+kable(fpse_2018) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "scale_down"), 
+                full_width = F, position = "center") %>% 
+  save_kable("fpse_2018.jpeg")
+
+kable(fpse_2019) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "scale_down"), 
+                full_width = F, position = "center") %>% 
+  save_kable("fpse_2019.jpeg")
+```
+```{r echo = FALSE}
+knitr::include_graphics("fpse_2018.jpeg")
+```
+
+```{r echo = FALSE}
+knitr::include_graphics("fpse_2019.jpeg")
+```
+
+### Forest Park Southeast 2019 
 

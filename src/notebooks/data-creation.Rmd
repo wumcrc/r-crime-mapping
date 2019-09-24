@@ -67,7 +67,7 @@ cs_validate(yearlist19, year = 2019) # Identifies problems with SLMPD Data
 
 ```{r Standardize 2018 and 2019 Data}
 totalCrimes18 <- cs_collapse(yearlist18)
-c_yearCrimes <- cs_collapse(yearlist19) 
+ytdCrimes19 <- cs_collapse(yearlist19) 
 ```
 
 ### Clean & Categorize Data 
@@ -106,7 +106,7 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 `monthCrimes` is an object that holds crimes for the current month of this year. 
 
 ```{r Creates 2019 Tidy Crime File}
-c_yearCrimes <- c_yearCrimes %>% 
+ytdCrimes19 <- ytdCrimes19 %>% 
   cs_filter_count(., var = count) %>%
   cs_filter_crime(., var = crime, "part 1") %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
@@ -119,11 +119,11 @@ c_yearCrimes <- c_yearCrimes %>%
   mutate(weekday = wday(dateOcc, label = TRUE)) %>%
   mutate(tod = timeOcc)
 
-c_yearCrimes$neighborhood <- as.numeric(c_yearCrimes$neighborhood)
-c_yearCrimes$tod <- strptime(c_yearCrimes$tod, tz = "America/Chicago", "%H:%M")
-c_yearCrimes$tod <- format(c_yearCrimes$tod, format = "%H%M%S")
+ytdCrimes19$neighborhood <- as.numeric(ytdCrimes19$neighborhood)
+ytdCrimes19$tod <- strptime(ytdCrimes19$tod, tz = "America/Chicago", "%H:%M")
+ytdCrimes19$tod <- format(ytdCrimes19$tod, format = "%H%M%S")
 
-c_yearCrimes <- c_yearCrimes %>%
+ytdCrimes19 <- ytdCrimes19 %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
   dplyr::select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)  %>%
   cs_missingXY(., varX = x_coord, varY = y_coord, newVar = missing) %>% 
@@ -131,7 +131,7 @@ c_yearCrimes <- c_yearCrimes %>%
   cs_replace0(., var = y_coord) %>% 
   filter(., missing == FALSE) 
 
-monthCrimes19 <- c_yearCrimes %>% 
+monthCrimes19 <- ytdCrimes19 %>% 
     filter(dateOcc >= as.Date(params$date))
 
 rm(yearlist19)
@@ -200,7 +200,7 @@ rm(yearlist18)
 ### Save Data to RDA files 
 
 ```{r}
-save(c_yearCrimes, monthCrimes18, monthCrimes19, ytdCrimes18, totalCrimes18, larceny, file = here("data", "crime-data.rda"))
+save(ytdCrimes19, monthCrimes18, monthCrimes19, ytdCrimes18, totalCrimes18, larceny, file = here("data", "crime-data.rda"))
 ```
 
 ### Get Spatial Data 
