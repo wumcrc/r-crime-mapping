@@ -2,7 +2,9 @@
 title: "Forest Park Southeast, Botanical Heights, Central West End, Medical Campus"
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
-output: powerpoint_presentation
+output: 
+  powerpoint_presentation:
+    reference_doc: wumc-template.pptx
 always_allow_html: yes
 params: 
   month: August 
@@ -100,15 +102,15 @@ totalCrimes18 %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
   replace(., is.na(.), 0) %>% 
   rename(., "Part 1 Crimes" = crimeCatName, 
-         "January" = "01",
-         "February" = "02",
-         "March" = "03",
-         "April" = "04",
-         "May" = "05",
-         "June" = "06",
-         "July" = "07",
-         "August" = "08",
-         "September" = "09",
+         "January" = "1",
+         "February" = "2",
+         "March" = "3",
+         "April" = "4",
+         "May" = "5",
+         "June" = "6",
+         "July" = "7",
+         "August" = "8",
+         "September" = "9",
          "October" = "10",
          "November" = "11",
          "December" = "12") %>% 
@@ -124,14 +126,14 @@ ytdCrimes19 %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
   replace(., is.na(.), 0) %>% 
   rename(., "Part 1 Crimes" = crimeCatName, 
-         "January" = "01",
-         "February" = "02",
-         "March" = "03",
-         "April" = "04",
-         "May" = "05",
-         "June" = "06",
-         "July" = "07",
-         "August" = "08") %>%
+         "January" = "1",
+         "February" = "2",
+         "March" = "3",
+         "April" = "4",
+         "May" = "5",
+         "June" = "6",
+         "July" = "7",
+         "August" = "8") %>%
   adorn_totals(., "col", name = "Total") %>% 
   adorn_totals(., "row", name = "Total") -> fpse_2019 
 ```
@@ -305,15 +307,15 @@ totalCrimes18 %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
   replace(., is.na(.), 0) %>% 
   rename(., "Part 1 Crimes" = crimeCatName, 
-         "January" = "01",
-         "February" = "02",
-         "March" = "03",
-         "April" = "04",
-         "May" = "05",
-         "June" = "06",
-         "July" = "07",
-         "August" = "08",
-         "September" = "09",
+         "January" = "1",
+         "February" = "2",
+         "March" = "3",
+         "April" = "4",
+         "May" = "5",
+         "June" = "6",
+         "July" = "7",
+         "August" = "8",
+         "September" = "9",
          "October" = "10",
          "November" = "11",
          "December" = "12") %>% 
@@ -329,14 +331,14 @@ ytdCrimes19 %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
   replace(., is.na(.), 0) %>% 
   rename(., "Part 1 Crimes" = crimeCatName, 
-         "January" = "01",
-         "February" = "02",
-         "March" = "03",
-         "April" = "04",
-         "May" = "05",
-         "June" = "06",
-         "July" = "07",
-         "August" = "08") %>%
+         "January" = "1",
+         "February" = "2",
+         "March" = "3",
+         "April" = "4",
+         "May" = "5",
+         "June" = "6",
+         "July" = "7",
+         "August" = "8") %>%
   adorn_totals(., "col", name = "Total") %>% 
   adorn_totals(., "row", name = "Total") -> bot_2019 
 ```
@@ -615,15 +617,15 @@ totalCrimes18 %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
   replace(., is.na(.), 0) %>% 
   rename(., "Part 1 Crimes" = crimeCatName, 
-         "January" = "01",
-         "February" = "02",
-         "March" = "03",
-         "April" = "04",
-         "May" = "05",
-         "June" = "06",
-         "July" = "07",
-         "August" = "08",
-         "September" = "09",
+         "January" = "1",
+         "February" = "2",
+         "March" = "3",
+         "April" = "4",
+         "May" = "5",
+         "June" = "6",
+         "July" = "7",
+         "August" = "8",
+         "September" = "9",
          "October" = "10",
          "November" = "11",
          "December" = "12") %>% 
@@ -639,14 +641,14 @@ ytdCrimes19 %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
   replace(., is.na(.), 0) %>% 
   rename(., "Part 1 Crimes" = crimeCatName, 
-         "January" = "01",
-         "February" = "02",
-         "March" = "03",
-         "April" = "04",
-         "May" = "05",
-         "June" = "06",
-         "July" = "07",
-         "August" = "08") %>%
+         "January" = "1",
+         "February" = "2",
+         "March" = "3",
+         "April" = "4",
+         "May" = "5",
+         "June" = "6",
+         "July" = "7",
+         "August" = "8") %>%
   adorn_totals(., "col", name = "Total") %>% 
   adorn_totals(., "row", name = "Total") -> cwe_2019 
 ```
@@ -820,15 +822,15 @@ mc_crimes_total18 %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
   replace(., is.na(.), 0) %>% 
   rename(., "Part 1 Crimes" = crimeCatName, 
-         "January" = "01",
-         "February" = "02",
-         "March" = "03",
-         "April" = "04",
-         "May" = "05",
-         "June" = "06",
-         "July" = "07",
-         "August" = "08",
-         "September" = "09",
+         "January" = "1",
+         "February" = "2",
+         "March" = "3",
+         "April" = "4",
+         "May" = "5",
+         "June" = "6",
+         "July" = "7",
+         "August" = "8",
+         "September" = "9",
          "October" = "10",
          "November" = "11",
          "December" = "12") %>% 
@@ -843,14 +845,14 @@ mc_crimes_ytd19 %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
   replace(., is.na(.), 0) %>% 
   rename(., "Part 1 Crimes" = crimeCatName, 
-         "January" = "01",
-         "February" = "02",
-         "March" = "03",
-         "April" = "04",
-         "May" = "05",
-         "June" = "06",
-         "July" = "07",
-         "August" = "08") %>%
+         "January" = "1",
+         "February" = "2",
+         "March" = "3",
+         "April" = "4",
+         "May" = "5",
+         "June" = "6",
+         "July" = "7",
+         "August" = "8") %>%
   adorn_totals(., "col", name = "Total") %>% 
   adorn_totals(., "row", name = "Total") -> mc_2019 
 ```

@@ -119,10 +119,12 @@ ytdCrimes19 <- ytdCrimes19 %>%
   cs_crime(., var = crime, violent, "violent") %>%
   cs_crime(., var = crime, property, "property") %>%
   cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
-  cs_parse_month(., var = coded_month, yearVar = reportYear, month = monthVar) %>%
   filter(district == 2 | district == 5) %>%
   mutate(weekday = wday(dateOcc, label = TRUE)) %>%
+  mutate(monthVar = dateOcc) %>%
   mutate(tod = timeOcc)
+
+ytdCrimes19$monthVar <- month(as.Date(ytdCrimes19$monthVar, format="%d/%m/%Y"))
 
 ytdCrimes19$neighborhood <- as.numeric(ytdCrimes19$neighborhood)
 ytdCrimes19$tod <- strptime(ytdCrimes19$tod, tz = "America/Chicago", "%H:%M")
@@ -173,11 +175,13 @@ totalCrimes18 <- totalCrimes18 %>%
   cs_crime_cat(., var = crime, crimeCatName, "string") %>%
   cs_crime(., var = crime, violent, "violent") %>%
   cs_crime(., var = crime, property, "property") %>%
-  cs_parse_month(., var = coded_month, yearVar = reportYear, month = monthVar) %>%
   cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
   filter(district == 2 | district == 5) %>%
   mutate(weekday = wday(dateOcc, label = TRUE)) %>%
+  mutate(monthVar = dateOcc) %>%
   mutate(tod = timeOcc) 
+
+totalCrimes18$monthVar <- month(as.Date(totalCrimes18$monthVar, format="%d/%m/%Y"))
 
 totalCrimes18$neighborhood <- as.numeric(totalCrimes18$neighborhood)
 
