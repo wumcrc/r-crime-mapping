@@ -662,6 +662,7 @@ kable(cwe_2019) %>%
                 full_width = F, position = "center") %>% 
   save_kable("cwe_2019.jpeg")
 ```
+
 ```{r echo = FALSE}
 knitr::include_graphics("cwe_2018.jpeg")
 ```
@@ -776,9 +777,148 @@ knitr::include_graphics(here("results/cwe/2019/august/cwe_total_crimes.jpeg"))
 
 ## Washington University Medical Campus: August 2019
 
+```{r Med Campus Summary, include=FALSE}
+tc18 <- nrow(mc_crimes_month18)
+tc19 <- nrow(mc_crimes_month19)
+cap18 <- nrow(mc_crimes_month18[mc_crimes_month18$crimeCatNum == 4 | mc_crimes_month18$crimeCatNum == 3,])
+cap19 <- nrow(mc_crimes_month19[mc_crimes_month19$crimeCatNum == 4 | mc_crimes_month19$crimeCatNum == 3,])
 
+tc_ytd18 <- nrow(mc_crimes_ytd18)
+tc_ytdCurrent <- nrow(mc_crimes_ytd19)
+cap18_ytd <- nrow(mc_crimes_ytd18[mc_crimes_ytd18$crimeCatNum == 4 | mc_crimes_ytd18$crimeCatNum == 3,])
+cap19_ytd <- nrow(mc_crimes_ytd19[mc_crimes_ytd19$crimeCatNum == 4 | mc_crimes_ytd19$crimeCatNum == 3,])
+
+pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- percent(pct_chg_mth)
+pct_chg_cap <- (cap19 - cap18)/cap18 
+pct_chg_cap <- percent(pct_chg_cap)
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- percent(pct_chg_ytd)
+pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
+```
+
+```{r, echo = FALSE}
+sprintf("%s total crimes in August 2019", tc19)
+sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
+sprintf("%s crime(s) against persons in August 2019", cap19)
+sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+sprintf("%s total crimes in 2019", tc_ytdCurrent)
+sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
+sprintf("%s crime(s) against persons in 2019", cap19_ytd)
+sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+```
 
 ## WUMC Campus: Comparing 2018 and 2019
+
+```{r, include = FALSE}
+mc_crimes_total18 %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  arrange(., crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08",
+         "September" = "09",
+         "October" = "10",
+         "November" = "11",
+         "December" = "12") %>% 
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") -> mc_2018
+
+mc_crimes_ytd19 %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  arrange(., crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08") %>%
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") -> mc_2019 
+```
+
+```{r, include = FALSE}
+kable(mc_2018) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "scale_down"), 
+                full_width = F, position = "center") %>% 
+  save_kable("cwe_2018.jpeg")
+
+kable(mc_2019) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "scale_down"), 
+                full_width = F, position = "center") %>% 
+  save_kable("cwe_2019.jpeg")
+```
+
+```{r echo = FALSE}
+knitr::include_graphics("mc_2018.jpeg")
+```
+
+```{r echo = FALSE}
+knitr::include_graphics("mc_2019.jpeg")
+```
+
+## WUMC Campus: August 2019
+
+```{r, include = FALSE}
+mc_crimes_month19 %>% 
+  group_by(crimeCatName) %>% 
+  count() %>% 
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> mc_crimeCat
+
+kable(mc_crimeCat) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("mc_crimCat.jpeg")
+
+mc_crimes_month19 %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> mc_dayNight
+
+kable(mc_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("mc_dayNight.jpeg")
+
+mc_larcenies %>% 
+  group_by(type) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> mc_larcenies_cat
+
+kable(mc_larcenies_cat) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("mc_larcenies_cat.jpeg")
+
+mc_larcenies %>% 
+  group_by(value) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Monetary Value" = value) -> mc_larcenies_val
+
+kable(mc_larcenies_val) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("mc_larcenies_val.jpeg")
+```
+
 
 
 
