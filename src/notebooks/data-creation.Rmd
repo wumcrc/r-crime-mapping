@@ -10,6 +10,7 @@ params:
   month: August 
   pastyear: 2018
   year: 2019 
+  ytd: "2019-01-01"
   date: "2019-08-01"
   pastdate: "2018-01-01"
   pstdtmonth: "2018-08-01"
@@ -124,13 +125,14 @@ ytdCrimes19 <- ytdCrimes19 %>%
   mutate(monthVar = dateOcc) %>%
   mutate(tod = timeOcc)
 
-ytdCrimes19$monthVar <- month(as.Date(ytdCrimes19$monthVar, format="%d/%m/%Y"))
+ytdCrimes19$monthVar <- month(as.Date(ytdCrimes19$monthVar, format="%d/%m/%Y"), label = TRUE)
 
 ytdCrimes19$neighborhood <- as.numeric(ytdCrimes19$neighborhood)
 ytdCrimes19$tod <- strptime(ytdCrimes19$tod, tz = "America/Chicago", "%H:%M")
 ytdCrimes19$tod <- format(ytdCrimes19$tod, format = "%H%M%S")
 
 ytdCrimes19 <- ytdCrimes19 %>%
+  filter(dateOcc >= as.Date(params$ytd)) %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
   dplyr::select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)  %>%
   cs_missingXY(., varX = x_coord, varY = y_coord, newVar = missing) %>% 
@@ -140,8 +142,6 @@ ytdCrimes19 <- ytdCrimes19 %>%
 
 monthCrimes19 <- ytdCrimes19 %>% 
     filter(dateOcc >= as.Date(params$date))
-
-rm(yearlist19)
 ```
 
 ##### Larcenies 
@@ -181,7 +181,7 @@ totalCrimes18 <- totalCrimes18 %>%
   mutate(monthVar = dateOcc) %>%
   mutate(tod = timeOcc) 
 
-totalCrimes18$monthVar <- month(as.Date(totalCrimes18$monthVar, format="%d/%m/%Y"))
+totalCrimes18$monthVar <- month(as.Date(totalCrimes18$monthVar, format="%d/%m/%Y"), label = TRUE)
 
 totalCrimes18$neighborhood <- as.numeric(totalCrimes18$neighborhood)
 
@@ -202,8 +202,6 @@ monthCrimes18 <- totalCrimes18 %>%
 
 ytdCrimes18 <- totalCrimes18%>% 
     filter(dateOcc <= as.Date(params$pstdtmonth2))
-
-rm(yearlist18)
 ```
 
 
@@ -385,5 +383,8 @@ save(totalCrimes18_sf, ytdCrimes18_sf, ytdCrimes19_sf, monthCrimes18_sf, monthCr
 
 save(ytdCrimes18, ytdCrimes19, monthCrimes18, monthCrimes19, totalCrimes18, larceny, mc_crimes_month18, mc_crimes_month19, mc_crimes_ytd18, mc_crimes_total18, mc_crimes_ytd19, mc_larcenies, dst_2, dst_5, file = here("data", "crime-data.rda"))
 
+```
+```{r}
 rm(list = ls())
 ```
+
