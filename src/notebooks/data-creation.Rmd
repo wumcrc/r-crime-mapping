@@ -50,6 +50,9 @@ library(raster)       # geograpic data analysis & modeling
 # other packages
 library(here)         # file path management
 library(janitor)      # tools for examining data
+
+dst2 <- c(7:15,27:29, 39:45,81,82,87,88)
+dst5 <- c(38,46:58,78)
 ```
 
 ## Tidy data
@@ -197,11 +200,6 @@ ytdCrimes18 <- totalCrimes18%>%
 rm(yearlist18)
 ```
 
-### Save Data to RDA files 
-
-```{r}
-save(ytdCrimes19, monthCrimes18, monthCrimes19, ytdCrimes18, totalCrimes18, larceny, file = here("data", "crime-data.rda"))
-```
 
 ### Get Spatial Data 
 
@@ -293,7 +291,51 @@ dst5_tiles <- raster::extent(xydst5) %>%
   cc_location(., type = "mapbox.streets", max_tiles = 15)
 
 save(fpse_tiles, cwe_tiles, bot_tiles, dbp_tiles, sdb_tiles, we_tiles, vp_tiles, ac_tiles, fp_tiles, lp_tiles, vd_tiles, mc_tiles, ctx_tiles, grv_tiles, dst2_tiles, file = here("data", "basemap-files", "mapbox-tiles.rda"))
-
-rm(xyfpse, xycwe, xybot, xydbp, xysdb, xywe, xyvp, xyac, xyfp, xylp, xyvd, xymc, xyctx, xygrv, xydst2, xydst5)
 ```
 
+```{r Create SF objects for 2018 & 2019 Crimes}
+totalCrimes18_sf <- cs_projectXY(totalCrimes18, varX = x_coord, varY = y_coord, crs = 102696)
+monthCrimes19_sf <- cs_projectXY(monthCrimes19, varX = x_coord, varY = y_coord, crs = 102696)
+
+mc_crimes19_sf <- st_intersection(monthCrimes19_sf, med_campus)
+mc_crimes19 <- mc_crimes19_sf %>% 
+   as.data.frame()
+
+mc_crimes18_sf <- st_intersection(totalCrimes18_sf, med_campus) 
+
+mc_crimes18 <- mc_crimes18_sf %>% 
+   as.data.frame() 
+
+dst_2 <- monthCrimes19 %>% 
+  filter(., neighborhood %in% dst2) %>% 
+  group_by(., neighborhood) %>%
+  count() %>% 
+  rename(crimeTotal = n) %>%
+  left_join(nbhd_pop10, by = "neighborhood") %>% 
+  mutate(., crimeRate = (crimeTotal/pop10)*1000) %>% 
+  drop_na()
+
+dst_5 <- monthCrimes19 %>% 
+  filter(., neighborhood %in% dst5) %>% 
+  group_by(., neighborhood) %>%
+  count() %>% 
+  rename(crimeTotal = n) %>%
+  left_join(nbhd_pop10, by = "neighborhood") %>% 
+  mutate(., crimeRate = (crimeTotal/pop10)*1000) %>% 
+  drop_na()
+
+dst_2_pop <- left_join(nhoods_sf, dst_2, by = "neighborhood") %>% 
+  st_transform(crs = 102696) %>%
+  drop_na() %>% 
+  subset(., neighborhood != 88)
+
+dst_5_pop <- left_join(nhoods_sf, dst_5, by = "neighborhood") %>% 
+  st_transform(crs = 102696) %>%
+  drop_na()
+
+save(totalCrimes18_sf, monthCrimes19_sf, mc_crimes19_sf, dst_2_pop, dst_5_pop, file = here("data", "spatial-crime-data.rda"))
+
+save(ytdCrimes19, monthCrimes18, monthCrimes19, ytdCrimes18, totalCrimes18, larceny, mc_crimes18, mc_crimes19, dst_2, dst_5, file = here("data", "crime-data.rda"))
+
+rm(list = ls())
+```

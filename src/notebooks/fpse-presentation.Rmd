@@ -43,17 +43,19 @@ library(RColorBrewer) # cynthia brewer color palettes
 library(viridis)      # color palettes
 library(kableExtra)   # exporting pretty tables
 library(htmltools)
+library(skimr)
 
 # load data 
 load(file = here("data", "basemap-files", "mapbox-tiles.rda"))
 load(file = here("data", "basemap-files", "boundaries.rda"))
 load(file = here("data", "crime-data.rda"))
+load(file = here("data", "spatial-crime-data.rda"))
 load(file = here("data", "nbhd_pop10.rda"))
 ```
 
 ## Summary Notes: FPSE August 2019 
 
-```{r, include=FALSE}
+```{r Forest Park Southeast Summary, include=FALSE}
 tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 39,])
 tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 39,])
 cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 39 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 39 & monthCrimes18$crimeCatNum == 3,])
@@ -72,7 +74,6 @@ pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
 pct_chg_ytd <- percent(pct_chg_ytd)
 pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
 pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
-
 ```
 
 ```{r, echo = FALSE}
@@ -85,9 +86,10 @@ sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd
 sprintf("%s crime(s) against persons in 2019", cap19_ytd)
 sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
 ```
-## Comparing 2018 to 2019
 
-```{r ,include=FALSE}
+## Comparing 2018 to 2019: Forest Park Southeast
+
+```{r Forest Park Southeast,include=FALSE}
 totalCrimes18 %>% 
   filter(., neighborhood == 39) %>% 
   group_by(monthVar) %>% 
@@ -112,7 +114,7 @@ totalCrimes18 %>%
   adorn_totals(., "col", name = "Total") %>% 
   adorn_totals(., "row", name = "Total") -> fpse_2018
 
-fpse_2019 <- ytdCrimes19 %>% 
+ytdCrimes19 %>% 
   filter(., neighborhood == 39) %>% 
   group_by(monthVar) %>% 
   count(crimeCatName) %>% 
@@ -130,7 +132,7 @@ fpse_2019 <- ytdCrimes19 %>%
          "July" = "07",
          "August" = "08") %>%
   adorn_totals(., "col", name = "Total") %>% 
-  adorn_totals(., "row", name = "Total") 
+  adorn_totals(., "row", name = "Total") -> fpse_2019 
 ```
 
 ```{r, echo = FALSE}
@@ -152,5 +154,443 @@ knitr::include_graphics("fpse_2018.jpeg")
 knitr::include_graphics("fpse_2019.jpeg")
 ```
 
-### Forest Park Southeast 2019 
+## Forest Park Southeast August 2019 
+
+```{r FPSE Tables, include = FALSE}
+monthCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(crimeCatName) %>% 
+  count() %>% 
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> fpse_crimeCat
+
+monthCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fpse_weekDay
+
+monthCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(violent) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> fpse_violent
+
+monthCrimes19 %>% 
+  filter(., neighborhood == 39) %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_dayNight
+
+```
+
+```{r Save FPSE Kables, include = FALSE}
+kable(fpse_crimeCat) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_crimCat.jpeg")
+
+kable(fpse_weekDay) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_weekDay.jpeg")
+
+kable(fpse_violent) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_violent.jpeg")
+
+kable(fpse_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_dayNight.jpeg")
+```
+
+
+```{r Knit FPSE Kable Crime Categories, echo = FALSE} 
+knitr::include_graphics("fpse_crimCat.jpeg", dpi = 1000)
+```
+
+```{r Knit FPSE Kable Weekday, echo = FALSE} 
+knitr::include_graphics("fpse_weekDay.jpeg", dpi = 1000)
+```
+
+
+```{r Knit FPSE Kable Violent Crimes, echo = FALSE}
+knitr::include_graphics("fpse_violent.jpeg", dpi = 1000)
+```
+
+```{r Knit FPSE Kable Time of Day, echo = FALSE}
+knitr::include_graphics("fpse_dayNight.jpeg", dpi = 1000)
+```
+
+## Forest Park Southeast Total Crime
+
+```{r FPSE Total Crime, include = FALSE}
+tm_shape(fpse_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 39) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(monthCrimes19_sf, 
+         neighborhood == 39) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) -> fpse_total_tm
+
+tmap_save(fpse_total_tm, file = here("results/fpse/2019/august/fpse_total_crimes.jpeg"), dpi = 500)
+```
+
+```{r FPSE Total Crimes Knit, echo = FALSE}
+knitr::include_graphics(here("results/fpse/2019/august/fpse_total_crimes.jpeg"))
+```
+
+## Summary Notes: Botanical Heights 
+
+```{r Botanical Heights Summary, include=FALSE}
+tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 28,])
+tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 28,])
+cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 28 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 28 & monthCrimes18$crimeCatNum == 3,])
+cap19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 28 & monthCrimes19$crimeCatNum == 4 | monthCrimes19$neighborhood == 28 & monthCrimes19$crimeCatNum == 3,])
+
+tc_ytd18 <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 28,])
+tc_ytdCurrent <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 28,])
+cap18_ytd <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 28 & ytdCrimes18$crimeCatNum == 4 | ytdCrimes18$neighborhood == 28 & ytdCrimes18$crimeCatNum == 3,])
+cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 28 & ytdCrimes19$crimeCatNum == 4 | ytdCrimes19$neighborhood == 28 & ytdCrimes19$crimeCatNum == 3,])
+
+pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- percent(pct_chg_mth)
+pct_chg_cap <- (cap19 - cap18)/cap18 
+pct_chg_cap <- percent(pct_chg_cap)
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- percent(pct_chg_ytd)
+pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
+```
+
+```{r, echo = FALSE}
+sprintf("%s total crimes in August 2019", tc19)
+sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
+sprintf("%s crime(s) against persons in August 2019", cap19)
+sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+sprintf("%s total crimes in 2019", tc_ytdCurrent)
+sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
+sprintf("%s crime(s) against persons in 2019", cap19_ytd)
+sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+```
+
+## Comparing 2018 to 2019: Botanical Heights
+
+```{r Botanical Heights Year Comps,include=FALSE}
+totalCrimes18 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  arrange(., crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08",
+         "September" = "09",
+         "October" = "10",
+         "November" = "11",
+         "December" = "12") %>% 
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") -> bot_2018
+
+ytdCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  arrange(., crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName, 
+         "January" = "01",
+         "February" = "02",
+         "March" = "03",
+         "April" = "04",
+         "May" = "05",
+         "June" = "06",
+         "July" = "07",
+         "August" = "08") %>%
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") -> bot_2019 
+```
+
+```{r Botanical Heights Tables, echo = FALSE}
+kable(bot_2018) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "scale_down"), 
+                full_width = F, position = "center") %>% 
+  save_kable("bot_2018.jpeg")
+
+kable(bot_2019) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "scale_down"), 
+                full_width = F, position = "center") %>% 
+  save_kable("bot_2019.jpeg")
+```
+
+```{r echo = FALSE}
+knitr::include_graphics("bot_2018.jpeg")
+```
+
+```{r echo = FALSE}
+knitr::include_graphics("bot_2019.jpeg")
+```
+
+```{r, include = FALSE}
+monthCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(crimeCatName) %>% 
+  count() %>% 
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> bot_crimeCat
+
+monthCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> bot_weekDay
+
+monthCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(violent) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> bot_violent
+
+
+monthCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> bot_dayNight
+```
+
+```{r include = FALSE}
+kable(bot_crimeCat) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("bot_crimCat.jpeg")
+
+kable(bot_weekDay) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("bot_weekDay.jpeg")
+
+kable(bot_violent) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("bot_violent.jpeg")
+
+kable(bot_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("bot_dayNight.jpeg")
+```
+
+```{r Knit BOT Kable Crime Categories, echo = FALSE} 
+knitr::include_graphics("bot_crimCat.jpeg", dpi = 1000)
+```
+
+```{r Knit BOT Kable Weekday, echo = FALSE} 
+knitr::include_graphics("bot_weekDay.jpeg", dpi = 1000)
+```
+
+
+```{r Knit BOT Kable Violent Crimes, echo = FALSE}
+knitr::include_graphics("bot_violent.jpeg", dpi = 1000)
+```
+
+```{r Knit BOT Kable Time of Day, echo = FALSE}
+knitr::include_graphics("bot_dayNight.jpeg", dpi = 1000)
+```
+
+## Botanical Heights Total Crime
+
+```{r Botanical Heights Total Crime, include = FALSE}
+bot_total_tm <- tm_shape(bot_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 28) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(monthCrimes19_sf, 
+         neighborhood == 28) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+
+tmap_save(bot_total_tm, file = here("results/bot/2019/bot_total_crimes.jpeg"), dpi = 500)
+```
+
+```{r BOT Total Crimes Knit, echo = FALSE}
+knitr::include_graphics(here("results/bot/2019/bot_total_crimes.jpeg"))
+```
+
+## Botanical Heights Crime by Days of the Week
+
+```{r BOT Crime by Weekday - Graph, include = FALSE}
+monthCrimes19 %>% 
+  filter(., neighborhood == 28) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  ggplot(., aes(x=weekday, y=n, group=1)) +
+    geom_line(color="blue") +
+    geom_point() + 
+    xlab("Day of Week") + ylab("Total Crimes")
+
+ggsave(here("results/graphs/bot_crime_weekday.jpeg"), dpi = 300)
+```
+
+```{r BOT Crimes Knit Weekday, echo = FALSE}
+knitr::include_graphics(here("results/graphs/bot_crime_weekday.jpeg"))
+```
+
+## District 2 Crime Rates 
+
+```{r Generate District 2 Density Maps, include = FALSE}
+dst2_rateMap <- tm_shape(dst2_tiles) +
+  tm_rgb() +
+  tm_shape(dst_2_pop) +
+  tm_polygons(col = "crimeRate",
+              palette = "BuPu",
+              style = "jenks",
+              title = "Crimes per 1,000 Residents") +
+  tm_text("neighborhood", shadow=TRUE) +
+  tm_layout(
+    main.title = "District 2 Crime Rates - August 2019",
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+
+dst2_rateMap
+```
+
+
+```{r include = FALSE}
+library(qwraps2)
+options(qwraps2_markup = "markdown")
+
+dst_2_pop <- as.data.frame(dst_2_pop)
+summary_statistics <-
+  list(
+    "Crime Rates" =
+      list(
+        "mean" = ~mean(crimeRate, na_rm = TRUE),
+        "min" = ~min(crimeRate, na.rm = TRUE),
+        "max" = ~max(crimeRate, na.rm = TRUE)),
+    "Crime Total" =
+      list(
+        "mean" = ~mean(crimeTotal, na_rm = TRUE),
+        "min" = ~min(crimeTotal, na.rm = TRUE),
+        "max" = ~max(crimeTotal, na.rm = TRUE)))
+ 
+dst_2_table <- summary_table(dst_2_pop, summary_statistics)
+
+print(dst_2_table, 
+      cnames = "Summary Statistics")
+```
+
+```{r include = FALSE}
+dst_2_rate_mean <- mean(dst_2_pop$crimeRate)
+dst_2_rate_mean
+
+dst_2_min <- dst_2_pop[which.min(dst_2_pop$crimeRate),]
+dst_2_min_rate_nhd <- print(dst_2_min$NHD_NAME, max.levels = 0)
+dst_2_min_rate <- print(dst_2_min$crimeRate, max.levels = 0)
+
+dst_2_max <- dst_2_pop[which.max(dst_2_pop$crimeRate),]
+dst_2_max_rate_nhd <- print(dst_2_max$NHD_NAME, max.levels = 0)
+dst_2_max_rate <- print(dst_2_max$crimeRate, max.levels = 0)
+
+dst_2_total_mean <- mean(dst_2_pop$crimeTotal)
+dst_2_total_mean
+
+dst_2_minT <- dst_2_pop[which.min(dst_2_pop$crimeTotal),]
+dst_2_min_tot_nhd <- print(dst_2_minT$NHD_NAME, max.levels = 0)
+dst_2_min_tot <- print(dst_2_minT$crimeTotal, max.levels = 0)
+
+dst_2_maxT <- dst_2_pop[which.max(dst_2_pop$crimeTotal),]
+dst_2_max_tot_nhd <- print(dst_2_maxT$NHD_NAME, max.levels = 0)
+dst_2_max_tot <- print(dst_2_maxT$crimeTotal, max.levels = 0)
+
+```
+
+## District 2 Density Map Explanation 
+
+There are 23 neighborhoods in District 2. The South Hampton neighborhood is split between District 2 and District 1. 
+
+```{r, echo = FALSE}
+sprintf("The minimum number of crimes in one neighborhood was %s (%s)", dst_2_min_tot, dst_2_min_tot_nhd)
+sprintf("The maximum number of crimes in one neighborhood was %s (%s)", dst_2_max_tot, dst_2_max_tot_nhd)
+sprintf("The mean number of crimes in one neighborhood was %s", round(dst_2_total_mean, digits = 2))
+
+sprintf("The minimum rate of crimes in one neighborhood was %s (%s)", round(dst_2_min_rate, digits = 2), dst_2_min_rate_nhd)
+sprintf("The maximum rate of crimes in one neighborhood was %s (%s)", round(dst_2_max_rate, digits = 2), dst_2_max_rate_nhd)
+sprintf("The mean rate of crimes in one neighborhood was %s", round(dst_2_rate_mean, digits = 2))
+```
+
+
+
+## FPSE Larceny 
+
+```{r Larceny Kables, include = FALSE}
+larceny %>% 
+  filter(., neighborhood == 39) %>%
+  group_by(weekday) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fpse_larcenies_weekDay
+
+larceny %>% 
+  filter(., neighborhood == 39) %>%
+  group_by(dayNight) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_larcenies_dayNight
+
+kable(fpse_larcenies_weekDay) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_larcenies_weekDay.jpeg")
+
+kable(fpse_larcenies_dayNight) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
+  save_kable("fpse_larcenies_dayNight.jpeg")
+```
 
