@@ -1443,7 +1443,7 @@ kable(cwe_larcenies_type) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
   save_kable("cwe_larcenies_type.jpeg")
 
-kable(cwe_larcenies_dayNight) %>%
+kable(cwe_larcenies_value) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
   save_kable("cwe_larcenies_value.jpeg")
 ```
