@@ -119,23 +119,21 @@ ytdCrimes19 %>%
   adorn_totals(., "row", name = "Total") -> fpse_2019 
 ```
 
-```{r, echo = FALSE}
-kable(fpse_2018) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "scale_down"), 
-                full_width = F, position = "center") %>% 
-  save_kable("fpse_2018.jpeg")
-
-kable(fpse_2019) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "scale_down"), 
-                full_width = F, position = "center") %>% 
-  save_kable("fpse_2019.jpeg")
-```
-```{r echo = FALSE}
-knitr::include_graphics("fpse_2018.jpeg")
+```{r Set column name keys for flextable, include = FALSE }
+colkeys18 <- totalCrimes18$monthVar
+colkeys19 <- ytdCrimes19$monthVar
 ```
 
-```{r echo = FALSE}
-knitr::include_graphics("fpse_2019.jpeg")
+```{r FPSE Total Crimes Flextable 2018, echo = FALSE}
+flextable(fpse_2018) %>% 
+  colformat_num(., col_keys = colkeys, "total", digits = 0) %>% 
+  autofit()
+```
+
+```{r FPSE Total Crimes Flextable 2019, echo = FALSE}
+flextable(fpse_2019) %>% 
+  colformat_num(., col_keys = colkeys, "total", digits = 0) %>% 
+  autofit()
 ```
 
 ## Forest Park Southeast: August 2019 
