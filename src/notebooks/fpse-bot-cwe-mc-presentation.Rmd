@@ -717,4 +717,119 @@ flextable(mc_2019) %>%
   autofit()
 ```
 
+## Washington University Medical Campus: Summary Tables
 
+```{r WUMC Summary Tables Prep, include = FALSE}
+mc_crimes_month19 %>% 
+  group_by(crimeCatName) %>% 
+  count() %>% 
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> mc_crimeCat
+
+mc_crimes_month19 %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> mc_dayNight
+
+mc_larcenies %>% 
+  group_by(type) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> mc_larcenies_cat
+
+mc_larcenies %>% 
+  group_by(value) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Monetary Value" = value) -> mc_larcenies_val
+
+```
+
+```{r WUMC Flextables Knit, echo = FALSE}
+flextable(mc_crimeCat) %>% 
+  autofit()
+
+flextable(mc_dayNight) %>% 
+  autofit()
+
+flextable(mc_larcenies_cat) %>% 
+  autofit()
+
+flextable(mc_larcenies_val) %>% 
+  autofit()
+```
+
+## Washington University Medical Center: Total Crime Map
+
+```{r MC Total Crime Prep, include = FALSE}
+cwe_mc_tm <- tm_shape(mc_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 38) %>% 
+  tm_shape() +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  tm_shape(med_campus) +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 1, 
+               lty = "solid") +
+  tm_shape(mc_crimes_month19_sf) +
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(cwe_mc_tm, file = here("results", params$year, params$month, "cwe", "mc_total_crimes.jpeg"), dpi = 500)
+```
+
+```{r MC Total Crime Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "cwe", "mc_total_crimes.jpeg"))
+```
+
+## Cortex: Total Crime Map
+
+```{r Cortex Total Crime Prep, include = FALSE}
+cwe_ctx_tm <- tm_shape(ctx_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 38) %>% 
+  tm_shape() +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  tm_shape(cortex) +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 1, 
+               lty = "solid") +
+  tm_shape(ctx_crimes_sf) +
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) 
+
+tmap_save(cwe_ctx_tm, file = here("results", params$year, params$month, "cwe", "ctx_total_crimes.jpeg"), dpi = 500)
+```
+
+```{r Cortex Total Crime Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "cwe", "ctx_total_crimes.jpeg"))
+```
