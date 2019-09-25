@@ -100,7 +100,7 @@ sprintf("%s change compared to this time in 2018 (%s crimes against persons)", p
 
 ## Forest Park Southeast: Year to Year Comparison
 
-```{r Forest Park Southeast Year Comps Prep,include=FALSE}
+```{r FPSE Year Comps Prep,include=FALSE}
 totalCrimes18 %>% 
   filter(., neighborhood == 39) %>% 
   group_by(monthVar) %>% 
@@ -225,7 +225,7 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 
 ## Botanical Heights: Summary Notes 
 
-```{r Botanical Heights Summary Prep, include=FALSE}
+```{r BOT Summary Prep, include=FALSE}
 tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 28,])
 tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 28,])
 cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 28 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 28 & monthCrimes18$crimeCatNum == 3,])
@@ -259,7 +259,7 @@ sprintf("%s change compared to this time in 2018 (%s crimes against persons)", p
 
 ## Botanical Heights: Year to Year Comparison
 
-```{r Botanical Heights Year Comps Prep, include=FALSE}
+```{r BOT Year Comps Prep, include=FALSE}
 totalCrimes18 %>% 
   filter(., neighborhood == 28) %>% 
   group_by(monthVar) %>% 
@@ -301,7 +301,7 @@ flextable(bot_2019) %>%
 
 ## Botanical Heights: Summary Tables
 
-```{r, include = FALSE}
+```{r BOT Tables Prep, include = FALSE}
 monthCrimes19 %>% 
   filter(., neighborhood == 28) %>% 
   group_by(crimeCatName) %>% 
@@ -348,7 +348,7 @@ flextable(bot_dayNight) %>%
 
 ## Botanical Heights: Total Crime Map
 
-```{r Botanical Heights Total Crime Prep, include = FALSE}
+```{r BOT Total Crime Prep, include = FALSE}
 tm_shape(bot_tiles) +
   tm_rgb() +
   nhoods_sf %>%
@@ -402,7 +402,7 @@ knitr::include_graphics(here("results", params$year, params$month, "bot", "bot_c
 
 ## District 2: Crime Rates Map
 
-```{r Generate District 2 Density Maps Prep, include = FALSE}
+```{r District 2 Density Maps Prep, include = FALSE}
 dst2_rateMap <- tm_shape(dst2_tiles) +
   tm_rgb() +
   tm_shape(dst_2_pop_sf) +
@@ -421,6 +421,258 @@ dst2_rateMap <- tm_shape(dst2_tiles) +
 tmap_save(dst2_rateMap, file = here("results", params$year, params$month, "district-2", "dst2_rates.jpeg"), dpi = 500)
 ```
 
-```{r Dst 2 Rate of Crimes Knit, echo = FALSE}
+```{r District 2 Density Map Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "district-2", "dst2_rates.jpeg"))
+```
+
+```{r District 2 Density Map Explanation Prep, include = FALSE}
+library(qwraps2)
+options(qwraps2_markup = "markdown")
+
+dst_2_pop_sf <- as.data.frame(dst_2_pop_sf)
+summary_statistics <-
+  list(
+    "Crime Rates" =
+      list(
+        "mean" = ~mean(crimeRate, na_rm = TRUE),
+        "min" = ~min(crimeRate, na.rm = TRUE),
+        "max" = ~max(crimeRate, na.rm = TRUE)),
+    "Crime Total" =
+      list(
+        "mean" = ~mean(crimeTotal, na_rm = TRUE),
+        "min" = ~min(crimeTotal, na.rm = TRUE),
+        "max" = ~max(crimeTotal, na.rm = TRUE)))
+ 
+dst_2_table <- summary_table(dst_2_pop_sf, summary_statistics)
+
+print(dst_2_table, 
+      cnames = "Summary Statistics")
+
+dst_2_rate_mean <- mean(dst_2_pop_sf$crimeRate)
+dst_2_rate_mean
+
+dst_2_min <- dst_2_pop_sf[which.min(dst_2_pop_sf$crimeRate),]
+dst_2_min_rate_nhd <- print(dst_2_min$NHD_NAME, max.levels = 0)
+dst_2_min_rate <- print(dst_2_min$crimeRate, max.levels = 0)
+
+dst_2_max <- dst_2_pop_sf[which.max(dst_2_pop_sf$crimeRate),]
+dst_2_max_rate_nhd <- print(dst_2_max$NHD_NAME, max.levels = 0)
+dst_2_max_rate <- print(dst_2_max$crimeRate, max.levels = 0)
+
+dst_2_total_mean <- mean(dst_2_pop_sf$crimeTotal)
+dst_2_total_mean
+
+dst_2_minT <- dst_2_pop_sf[which.min(dst_2_pop_sf$crimeTotal),]
+dst_2_min_tot_nhd <- print(dst_2_minT$NHD_NAME, max.levels = 0)
+dst_2_min_tot <- print(dst_2_minT$crimeTotal, max.levels = 0)
+
+dst_2_maxT <- dst_2_pop_sf[which.max(dst_2_pop_sf$crimeTotal),]
+dst_2_max_tot_nhd <- print(dst_2_maxT$NHD_NAME, max.levels = 0)
+dst_2_max_tot <- print(dst_2_maxT$crimeTotal, max.levels = 0)
+```
+
+## District 2 Density Map Explanation 
+
+There are 23 neighborhoods in District 2. The South Hampton neighborhood is split between District 2 and District 1. 
+
+```{r District 2 Density Map Explanation Knit, echo = FALSE}
+sprintf("The minimum number of crimes in one neighborhood was %s (%s)", dst_2_min_tot, dst_2_min_tot_nhd)
+sprintf("The maximum number of crimes in one neighborhood was %s (%s)", dst_2_max_tot, dst_2_max_tot_nhd)
+sprintf("The mean number of crimes in one neighborhood was %s", round(dst_2_total_mean, digits = 2))
+
+sprintf("The minimum rate of crimes in one neighborhood was %s (%s)", round(dst_2_min_rate, digits = 2), dst_2_min_rate_nhd)
+sprintf("The maximum rate of crimes in one neighborhood was %s (%s)", round(dst_2_max_rate, digits = 2), dst_2_max_rate_nhd)
+sprintf("The mean rate of crimes in one neighborhood was %s", round(dst_2_rate_mean, digits = 2))
+```
+
+## Summary Notes: Central West End
+
+```{r CWE Summary Notes Prep, include=FALSE}
+tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 38,])
+tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 38,])
+cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 38 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 38 & monthCrimes18$crimeCatNum == 3,])
+cap19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 38 & monthCrimes19$crimeCatNum == 4 | monthCrimes19$neighborhood == 38 & monthCrimes19$crimeCatNum == 3,])
+
+tc_ytd18 <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 38,])
+tc_ytdCurrent <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 38,])
+cap18_ytd <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 38 & ytdCrimes18$crimeCatNum == 4 | ytdCrimes18$neighborhood == 38 & ytdCrimes18$crimeCatNum == 3,])
+cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 38 & ytdCrimes19$crimeCatNum == 4 | ytdCrimes19$neighborhood == 38 & ytdCrimes19$crimeCatNum == 3,])
+
+pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- percent(pct_chg_mth)
+pct_chg_cap <- (cap19 - cap18)/cap18 
+pct_chg_cap <- percent(pct_chg_cap)
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- percent(pct_chg_ytd)
+pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
+```
+
+```{r CWE Summary Notes Knit, echo = FALSE}
+sprintf("%s total crimes in August 2019", tc19)
+sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
+sprintf("%s crime(s) against persons in August 2019", cap19)
+sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+sprintf("%s total crimes in 2019", tc_ytdCurrent)
+sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
+sprintf("%s crime(s) against persons in 2019", cap19_ytd)
+sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+```
+
+## Central West End: Year to Year Comparison
+
+```{r CWE Year Comps Prep,include=FALSE}
+totalCrimes18 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName) %>% 
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") -> cwe_2018
+
+ytdCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(monthVar) %>% 
+  count(crimeCatName) %>% 
+  rename(., "Number of Crimes" = n) %>% 
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>% 
+  rename(., "Part 1 Crimes" = crimeCatName) %>%
+  adorn_totals(., "col", name = "Total") %>% 
+  adorn_totals(., "row", name = "Total") -> cwe_2019 
+```
+
+```{r CWE Total Crimes Flextable 2018, echo = FALSE}
+flextable(cwe_2018) %>% 
+  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  autofit()
+```
+
+```{r CWE Total Crimes Flextable 2019, echo = FALSE}
+flextable(cwe_2019) %>% 
+  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>% 
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  autofit()
+```
+
+## Central West End: Summary Tables
+
+```{r CWE Tables Prep, include = FALSE}
+monthCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(crimeCatName) %>% 
+  count() %>% 
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> cwe_crimeCat
+
+monthCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(weekday) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> cwe_weekDay
+
+monthCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(violent) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> cwe_violent
+
+monthCrimes19 %>% 
+  filter(., neighborhood == 38) %>% 
+  group_by(dayNight) %>% 
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> cwe_dayNight
+
+```
+
+```{r CWE Flextables Knit, echo = FALSE}
+flextable(cwe_crimeCat) %>% 
+  autofit()
+
+flextable(cwe_weekDay) %>% 
+  autofit()
+
+flextable(cwe_violent) %>% 
+  autofit()
+
+flextable(cwe_dayNight) %>% 
+  autofit()
+```
+
+## Central West End: Total Crime Map
+
+```{r CWE Total Crime Prep, include = FALSE}
+tm_shape(cwe_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 38) %>% 
+  tm_shape() +
+    tm_fill(col = "#9ecae1", 
+            alpha = .5) +
+    tm_borders(col = "black", 
+               lwd = 2, 
+               lty = "dashed") +
+  filter(monthCrimes19_sf, 
+         neighborhood == 38) %>%
+  tm_shape() +
+    tm_bubbles(size = .25, 
+               col = "crimeCatName", 
+               palette = "Set1", 
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white", 
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) -> cwe_total_tm
+
+tmap_save(cwe_total_tm, file = here("results", params$year, params$month, "cwe", "cwe_total_crimes.jpeg"), dpi = 500)
+```
+
+```{r cwe Total Crimes Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "cwe", "cwe_total_crimes.jpeg"))
+```
+
+## Washington University Medical Campus: Summary Notes
+
+```{r WUMC Summary Prep, include=FALSE}
+tc18 <- nrow(mc_crimes_month18)
+tc19 <- nrow(mc_crimes_month19)
+cap18 <- nrow(mc_crimes_month18[mc_crimes_month18$crimeCatNum == 4 | mc_crimes_month18$crimeCatNum == 3,])
+cap19 <- nrow(mc_crimes_month19[mc_crimes_month19$crimeCatNum == 4 | mc_crimes_month19$crimeCatNum == 3,])
+
+tc_ytd18 <- nrow(mc_crimes_ytd18)
+tc_ytdCurrent <- nrow(mc_crimes_ytd19)
+cap18_ytd <- nrow(mc_crimes_ytd18[mc_crimes_ytd18$crimeCatNum == 4 | mc_crimes_ytd18$crimeCatNum == 3,])
+cap19_ytd <- nrow(mc_crimes_ytd19[mc_crimes_ytd19$crimeCatNum == 4 | mc_crimes_ytd19$crimeCatNum == 3,])
+
+pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- percent(pct_chg_mth)
+pct_chg_cap <- (cap19 - cap18)/cap18 
+pct_chg_cap <- percent(pct_chg_cap)
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- percent(pct_chg_ytd)
+pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
+```
+
+```{r WUMC Summary Knit, echo = FALSE}
+sprintf("%s total crimes in August 2019", tc19)
+sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
+sprintf("%s crime(s) against persons in August 2019", cap19)
+sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+sprintf("%s total crimes in 2019", tc_ytdCurrent)
+sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
+sprintf("%s crime(s) against persons in 2019", cap19_ytd)
+sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
 ```
