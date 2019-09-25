@@ -122,17 +122,20 @@ ytdCrimes19 %>%
 ```{r Set column name keys for flextable, include = FALSE }
 colkeys18 <- totalCrimes18$monthVar
 colkeys19 <- ytdCrimes19$monthVar
+colkeystotal <- c("Total")
 ```
 
 ```{r FPSE Total Crimes Flextable 2018, echo = FALSE}
 flextable(fpse_2018) %>% 
-  colformat_num(., col_keys = colkeys, "total", digits = 0) %>% 
+  colformat_num(., col_keys = colkeys, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
   autofit()
 ```
 
 ```{r FPSE Total Crimes Flextable 2019, echo = FALSE}
 flextable(fpse_2019) %>% 
   colformat_num(., col_keys = colkeys, "total", digits = 0) %>% 
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
   autofit()
 ```
 
@@ -169,22 +172,18 @@ monthCrimes19 %>%
 
 ```
 
-```{r Save FPSE Kables, include = FALSE}
-kable(fpse_crimeCat) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
-  save_kable("fpse_crimCat.jpeg")
+```{r Save FPSE Kables, echo = FALSE}
+flextable(fpse_crimeCat) %>% 
+  autofit()
 
-kable(fpse_weekDay) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
-  save_kable("fpse_weekDay.jpeg")
+flextable(fpse_weekDay) %>% 
+  autofit()
 
-kable(fpse_violent) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
-  save_kable("fpse_violent.jpeg")
+flextable(fpse_violent) %>% 
+  autofit()
 
-kable(fpse_dayNight) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F, position = "center") %>% 
-  save_kable("fpse_dayNight.jpeg")
+flextable(fpse_dayNight) %>% 
+  autofit()
 ```
 
 
