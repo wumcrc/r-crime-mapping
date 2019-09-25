@@ -16,7 +16,7 @@ params:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6)
 ```
 
 ```{r Load Dependencies and Data, include = FALSE}
@@ -216,7 +216,7 @@ tm_shape(fpse_tiles) +
     legend.outside = TRUE,
     legend.position = c("right", "bottom")) -> fpse_total_tm
 
-tmap_save(fpse_total_tm, file = here("results", params$year, params$month, "fpse", "fpse_total_tmjpeg"), dpi = 500)
+tmap_save(fpse_total_tm, file = here("results", params$year, params$month, "fpse", "fpse_total_tm.jpeg"), dpi = 500)
 ```
 
 ```{r FPSE Total Crimes Knit, echo = FALSE}
