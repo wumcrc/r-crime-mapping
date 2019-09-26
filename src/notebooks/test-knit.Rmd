@@ -81,106 +81,18 @@ pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
 pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 ```
 
-```{r, echo = FALSE}
-sprintf("%s total crimes in August 2019", tc19)
-sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
-sprintf("%s crime(s) against persons in August 2019", cap19)
-sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
-sprintf("%s total crimes in 2019", tc_ytdCurrent)
-sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
-sprintf("%s crime(s) against persons in 2019", cap19_ytd)
-sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
-```
-
-## Comparing 2018 to 2019: Forest Park Southeast
-
-```{r Forest Park Southeast,include=FALSE}
-totalCrimes18 %>% 
-  filter(., neighborhood == 39) %>% 
-  group_by(monthVar) %>% 
-  count(crimeCatName) %>% 
-  rename(., "Number of Crimes" = n) %>% 
-  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>% 
-  rename(., "Part 1 Crimes" = crimeCatName) %>% 
-  adorn_totals(., "col", name = "Total") %>% 
-  adorn_totals(., "row", name = "Total") -> fpse_2018
-
-ytdCrimes19 %>% 
-  filter(., neighborhood == 39) %>% 
-  group_by(monthVar) %>% 
-  count(crimeCatName) %>% 
-  rename(., "Number of Crimes" = n) %>% 
-  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>% 
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>% 
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>% 
-  adorn_totals(., "row", name = "Total") -> fpse_2019 
-```
-
-```{r Set column name keys for flextable, include = FALSE }
-colkeys18 <- totalCrimes18$monthVar
-colkeys19 <- ytdCrimes19$monthVar
-colkeystotal <- c("Total")
+```{r FPSE Summary Notes, include = FALSE}
+sprint_1 <- sprintf("%s total crimes in August 2019", tc19)
+sprint_2 <- sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
+sprint_3 <- sprintf("%s crime(s) against persons in August 2019", cap19)
+sprint_4 <- sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+sprint_5 <- sprintf("%s total crimes in 2019", tc_ytdCurrent)
+sprint_6 <- sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
+sprint_7 <- sprintf("%s crime(s) against persons in 2019", cap19_ytd)
+sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
 ```
 
 
-```{r, echo = FALSE}
-flextable(fpse_2018) %>% 
-  colformat_num(., col_keys = colkeys18, digits = 0) %>% 
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
-  autofit()
-```
-
-## Forest Park Southeast: August 2019 
-
-```{r FPSE Tables, include = FALSE}
-monthCrimes19 %>% 
-  filter(., neighborhood == 39) %>% 
-  group_by(crimeCatName) %>% 
-  count() %>% 
-  adorn_totals(., "row", name = "Total") %>%
-  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> fpse_crimeCat
-
-monthCrimes19 %>% 
-  filter(., neighborhood == 39) %>% 
-  group_by(weekday) %>% 
-  count() %>%
-  adorn_totals(., "row", name = "Total") %>%
-  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fpse_weekDay
-
-monthCrimes19 %>% 
-  filter(., neighborhood == 39) %>% 
-  group_by(violent) %>% 
-  count() %>%
-  adorn_totals(., "row", name = "Total") %>%
-  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> fpse_violent
-
-monthCrimes19 %>% 
-  filter(., neighborhood == 39) %>% 
-  group_by(dayNight) %>% 
-  count() %>%
-  adorn_totals(., "row", name = "Total") %>%
-  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_dayNight
-```
-
-
-
-```{r Save FPSE Kables, echo = FALSE}
-flextable(fpse_crimeCat) %>% 
-  autofit()
-
-flextable(fpse_weekDay) %>% 
-  autofit()
-
-flextable(fpse_violent) %>% 
-  autofit()
-
-flextable(fpse_dayNight) %>% 
-  autofit()
-```
 
 
 
