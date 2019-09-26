@@ -621,7 +621,6 @@ ytdCrimes19 %>%
   filter(., neighborhood == 49) %>%
   group_by(monthVar) %>%
   count(crimeCatName) %>%
-
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
   arrange(., crimeCatName) %>%
@@ -633,8 +632,6 @@ ytdCrimes19 %>%
 
 ```{r VP Total Crimes Flextable 2018, echo = FALSE}
 flextable(vp_2018) %>%
-  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
   autofit()
 ```
 
