@@ -1,0 +1,1645 @@
+---
+title: "Academy, Fountain Park, Lewis Place Place, Vandeventer"
+author: "Washington University Medical Center"
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output:
+  powerpoint_presentation:
+    fig_width: 7
+    reference_doc: wumc-template.pptx
+always_allow_html: yes
+params:
+  month: August
+  pastyear: 2018
+  year: 2019
+  date: "2019-08-01"
+  pastdate: "2018-01-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Load Dependencies and Data, include = FALSE}
+# tidyverse packages
+library(ggplot2)       # plotting data
+library(stringr)       # wrappers for common string operations
+library(tidyr)         # tidy data
+library(dplyr)         # data manipulation
+library(magrittr)      # pipe operator
+library(readxl)        # read & write excel files
+library(lubridate)     # time data manipulation
+library(scales)
+
+# spatial packages
+library(tmap)         # map layouts
+library(tmaptools)    # tools for handeling spatial
+library(oldtmaptools) # deprecated toolds for spatial analysis
+library(sf)           # spatial data tools
+library(ceramic)      # download online imagery tiles
+library(compstatr)    # tools for STL crime data
+library(raster)       # geograpic data analysis & modeling
+
+# other packages
+library(here)         # file path management
+library(janitor)      # tools for examining data
+library(RColorBrewer) # cynthia brewer color palettes
+library(viridis)      # color palettes
+library(flextable)   # exporting pretty tables
+library(htmltools)
+library(knitr)
+
+
+# load data
+load(file = here("data", "basemap-files", "mapbox-tiles.rda"))
+load(file = here("data", "basemap-files", "boundaries.rda"))
+load(file = here("data", "crime-data.rda"))
+load(file = here("data", "spatial-crime-data.rda"))
+load(file = here("data", "nbhd_pop10.rda"))
+load(file = here("data", "basemap-files", "nbhd-boundaries.rda"))
+```
+
+```{r Set column name keys for flextable, include = FALSE }
+colkeys18 <- totalCrimes18$monthVar
+colkeys19 <- ytdCrimes19$monthVar
+colkeystotal <- c("Total")
+tmap_options()
+```
+
+## Academy: Summary Notes
+
+```{r AC Summary Prep, include=FALSE}
+tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 51,])
+tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 51,])
+cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 51 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 51 & monthCrimes18$crimeCatNum == 3,])
+cap19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 51 & monthCrimes19$crimeCatNum == 4 | monthCrimes19$neighborhood == 51 & monthCrimes19$crimeCatNum == 3,])
+
+tc_ytd18 <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 51,])
+tc_ytdCurrent <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 51,])
+cap18_ytd <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 51 & ytdCrimes18$crimeCatNum == 4 | ytdCrimes18$neighborhood == 51 & ytdCrimes18$crimeCatNum == 3,])
+cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 51 & ytdCrimes19$crimeCatNum == 4 | ytdCrimes19$neighborhood == 51 & ytdCrimes19$crimeCatNum == 3,])
+
+pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- percent(pct_chg_mth)
+pct_chg_cap <- (cap19 - cap18)/cap18
+pct_chg_cap <- percent(pct_chg_cap)
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- percent(pct_chg_ytd)
+pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
+
+sprint_1 <- sprintf("%s total crimes in August 2019", tc19)
+sprint_2 <- sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
+sprint_3 <- sprintf("%s crime(s) against persons in August 2019", cap19)
+sprint_4 <- sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+sprint_5 <- sprintf("%s total crimes in 2019", tc_ytdCurrent)
+sprint_6 <- sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
+sprint_7 <- sprintf("%s crime(s) against persons in 2019", cap19_ytd)
+sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+```
+
+- **`r sprint_1`**
+- **`r sprint_2`**
+- **`r sprint_3`**
+- **`r sprint_4`**
+- **`r sprint_5`**
+- **`r sprint_6`**
+- **`r sprint_7`**
+- **`r sprint_8`**
+
+## Academy: Year to Year Comparison
+
+```{r AC Year Comps Prep, include=FALSE}
+totalCrimes18 %>%
+  filter(., neighborhood == 51) %>%
+  group_by(monthVar) %>%
+  count(crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>%
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  rename(., "Part 1 Crimes" = crimeCatName) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") -> ac_2018
+
+ytdCrimes19 %>%
+  filter(., neighborhood == 51) %>%
+  group_by(monthVar) %>%
+  count(crimeCatName) %>%
+
+  rename(., "Number of Crimes" = n) %>%
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  rename(., "Part 1 Crimes" = crimeCatName) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") -> ac_2019
+```
+
+```{r AC Total Crimes Flextable 2018, echo = FALSE}
+flextable(ac_2018) %>%
+  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  autofit()
+```
+
+```{r AC Total Crimes Flextable 2019, echo = FALSE}
+flextable(ac_2019) %>%
+  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  autofit()
+```
+
+## Academy: Summary Tables
+
+```{r AC Tables Prep, include = FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 51) %>%
+  group_by(crimeCatName) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> ac_crimeCat
+
+monthCrimes19 %>%
+  filter(., neighborhood == 51) %>%
+  group_by(weekday) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> ac_weekDay
+
+monthCrimes19 %>%
+  filter(., neighborhood == 51) %>%
+  group_by(violent) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> ac_violent
+
+monthCrimes19 %>%
+  filter(., neighborhood == 51) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> ac_dayNight
+
+```
+
+```{r AC Flextables Knit, echo = FALSE}
+flextable(ac_crimeCat) %>%
+  autofit()
+
+flextable(ac_weekDay) %>%
+  autofit()
+
+flextable(ac_violent) %>%
+  autofit()
+
+flextable(ac_dayNight) %>%
+  autofit()
+```
+
+## Academy: Total Crime Map
+
+```{r AC Total Crime Prep, include = FALSE}
+tm_shape(ac_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 51) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 51) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "crimeCatName",
+               palette = "Set1",
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) -> ac_total_tm
+
+tmap_save(ac_total_tm, file = here("results", params$year, params$month, "ac", "ac_total_tm.jpeg"), dpi = 500)
+```
+
+```{r AC Total Crimes Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "ac", "ac_total_tm.jpeg"))
+```
+
+## Fountain Park: Summary Notes
+
+```{r FP Summary Prep, include=FALSE}
+tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 53,])
+tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 53,])
+cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 53 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 53 & monthCrimes18$crimeCatNum == 3,])
+cap19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 53 & monthCrimes19$crimeCatNum == 4 | monthCrimes19$neighborhood == 53 & monthCrimes19$crimeCatNum == 3,])
+
+tc_ytd18 <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 53,])
+tc_ytdCurrent <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 53,])
+cap18_ytd <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 53 & ytdCrimes18$crimeCatNum == 4 | ytdCrimes18$neighborhood == 53 & ytdCrimes18$crimeCatNum == 3,])
+cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 53 & ytdCrimes19$crimeCatNum == 4 | ytdCrimes19$neighborhood == 53 & ytdCrimes19$crimeCatNum == 3,])
+
+pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- percent(pct_chg_mth)
+pct_chg_cap <- (cap19 - cap18)/cap18
+pct_chg_cap <- percent(pct_chg_cap)
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- percent(pct_chg_ytd)
+pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
+
+sprint_1 <- sprintf("%s total crimes in August 2019", tc19)
+sprint_2 <- sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
+sprint_3 <- sprintf("%s crime(s) against persons in August 2019", cap19)
+sprint_4 <- sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+sprint_5 <- sprintf("%s total crimes in 2019", tc_ytdCurrent)
+sprint_6 <- sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
+sprint_7 <- sprintf("%s crime(s) against persons in 2019", cap19_ytd)
+sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+```
+
+- **`r sprint_1`**
+- **`r sprint_2`**
+- **`r sprint_3`**
+- **`r sprint_4`**
+- **`r sprint_5`**
+- **`r sprint_6`**
+- **`r sprint_7`**
+- **`r sprint_8`**
+
+## Fountain Park: Year to Year Comparison
+
+```{r FP Year Comps Prep, include=FALSE}
+totalCrimes18 %>%
+  filter(., neighborhood == 53) %>%
+  group_by(monthVar) %>%
+  count(crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>%
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  rename(., "Part 1 Crimes" = crimeCatName) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") -> fp_2018
+
+ytdCrimes19 %>%
+  filter(., neighborhood == 53) %>%
+  group_by(monthVar) %>%
+  count(crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>%
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  rename(., "Part 1 Crimes" = crimeCatName) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") -> fp_2019
+```
+
+```{r FP Total Crimes Flextable 2018, echo = FALSE}
+flextable(fp_2018) %>%
+  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  autofit()
+```
+
+```{r FP Total Crimes Flextable 2019, echo = FALSE}
+flextable(fp_2019) %>%
+  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  autofit()
+```
+
+## Fountain Park: Summary Tables
+
+```{r FP Tables Prep, include = FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 53) %>%
+  group_by(crimeCatName) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> fp_crimeCat
+
+monthCrimes19 %>%
+  filter(., neighborhood == 53) %>%
+  group_by(weekday) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fp_weekDay
+
+monthCrimes19 %>%
+  filter(., neighborhood == 53) %>%
+  group_by(violent) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> fp_violent
+
+
+monthCrimes19 %>%
+  filter(., neighborhood == 53) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fp_dayNight
+```
+
+```{r FP Flextables Knit, echo = FALSE}
+flextable(fp_crimeCat) %>%
+  autofit()
+
+flextable(fp_weekDay) %>%
+  autofit()
+
+flextable(fp_violent) %>%
+  autofit()
+
+flextable(fp_dayNight) %>%
+  autofit()
+```
+
+## Fountain Park: Total Crime Map
+
+```{r FP Total Crime Prep, include = FALSE}
+tm_shape(fp_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 53) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 53) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "crimeCatName",
+               palette = "Set1",
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) -> fp_total_tm
+
+tmap_save(fp_total_tm, file = here("results", params$year, params$month, "fp", "fp_total_crimes.jpeg"), dpi = 500)
+```
+
+```{r FP Total Crimes Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "fp", "fp_total_crimes.jpeg"))
+```
+
+## Summary Notes: Lewis Place
+
+```{r LP Summary Notes Prep, include=FALSE}
+tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 54,])
+tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 54,])
+cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 54 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 54 & monthCrimes18$crimeCatNum == 3,])
+cap19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 54 & monthCrimes19$crimeCatNum == 4 | monthCrimes19$neighborhood == 54 & monthCrimes19$crimeCatNum == 3,])
+
+tc_ytd18 <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 54,])
+tc_ytdCurrent <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 54,])
+cap18_ytd <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 54 & ytdCrimes18$crimeCatNum == 4 | ytdCrimes18$neighborhood == 54 & ytdCrimes18$crimeCatNum == 3,])
+cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 54 & ytdCrimes19$crimeCatNum == 4 | ytdCrimes19$neighborhood == 54 & ytdCrimes19$crimeCatNum == 3,])
+
+pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- percent(pct_chg_mth)
+pct_chg_cap <- (cap19 - cap18)/cap18
+pct_chg_cap <- percent(pct_chg_cap)
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- percent(pct_chg_ytd)
+pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
+
+sprint_1 <- sprintf("%s total crimes in August 2019", tc19)
+sprint_2 <- sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
+sprint_3 <- sprintf("%s crime(s) against persons in August 2019", cap19)
+sprint_4 <- sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+sprint_5 <- sprintf("%s total crimes in 2019", tc_ytdCurrent)
+sprint_6 <- sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
+sprint_7 <- sprintf("%s crime(s) against persons in 2019", cap19_ytd)
+sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+```
+
+- **`r sprint_1`**
+- **`r sprint_2`**
+- **`r sprint_3`**
+- **`r sprint_4`**
+- **`r sprint_5`**
+- **`r sprint_6`**
+- **`r sprint_7`**
+- **`r sprint_8`**
+
+## Lewis Place: Year to Year Comparison
+
+```{r LP Year Comps Prep,include=FALSE}
+totalCrimes18 %>%
+  filter(., neighborhood == 54) %>%
+  group_by(monthVar) %>%
+  count(crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>%
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  rename(., "Part 1 Crimes" = crimeCatName) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") -> lp_2018
+
+ytdCrimes19 %>%
+  filter(., neighborhood == 54) %>%
+  group_by(monthVar) %>%
+  count(crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>%
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  rename(., "Part 1 Crimes" = crimeCatName) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") -> lp_2019
+```
+
+```{r LP Total Crimes Flextable 2018, echo = FALSE}
+flextable(lp_2018) %>%
+  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  autofit()
+```
+
+```{r LP Total Crimes Flextable 2019, echo = FALSE}
+flextable(lp_2019) %>%
+  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  autofit()
+```
+
+## Lewis Place: Summary Tables
+
+```{r LP Tables Prep, include = FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 54) %>%
+  group_by(crimeCatName) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> lp_crimeCat
+
+monthCrimes19 %>%
+  filter(., neighborhood == 54) %>%
+  group_by(weekday) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> lp_weekDay
+
+monthCrimes19 %>%
+  filter(., neighborhood == 54) %>%
+  group_by(violent) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> lp_violent
+
+monthCrimes19 %>%
+  filter(., neighborhood == 54) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> lp_dayNight
+
+```
+
+```{r LP Flextables Knit, echo = FALSE}
+flextable(lp_crimeCat) %>%
+  autofit()
+
+flextable(lp_weekDay) %>%
+  autofit()
+
+flextable(lp_violent) %>%
+  autofit()
+
+flextable(lp_dayNight) %>%
+  autofit()
+```
+
+## Lewis Place: Total Crime Map
+
+```{r LP Total Crime Prep, include = FALSE}
+tm_shape(lp_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 54) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 54) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "crimeCatName",
+               palette = "Set1",
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) -> lp_total_tm
+
+tmap_save(lp_total_tm, file = here("results", params$year, params$month, "lp", "lp_total_crimes.jpeg"), dpi = 500)
+```
+
+```{r LP Total Crimes Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "lp", "lp_total_crimes.jpeg"))
+```
+
+## Vandeventer: Summary Notes
+
+```{r VD Summary Prep, include=FALSE}
+tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 58,])
+tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 58,])
+cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 58 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 58 & monthCrimes18$crimeCatNum == 3,])
+cap19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 58 & monthCrimes19$crimeCatNum == 4 | monthCrimes19$neighborhood == 58 & monthCrimes19$crimeCatNum == 3,])
+
+tc_ytd18 <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 58,])
+tc_ytdCurrent <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 58,])
+cap18_ytd <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 58 & ytdCrimes18$crimeCatNum == 4 | ytdCrimes18$neighborhood == 58 & ytdCrimes18$crimeCatNum == 3,])
+cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 58 & ytdCrimes19$crimeCatNum == 4 | ytdCrimes19$neighborhood == 58 & ytdCrimes19$crimeCatNum == 3,])
+
+pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- percent(pct_chg_mth)
+pct_chg_cap <- (cap19 - cap18)/cap18
+pct_chg_cap <- percent(pct_chg_cap)
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- percent(pct_chg_ytd)
+pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
+
+sprint_1 <- sprintf("%s total crimes in August 2019", tc19)
+sprint_2 <- sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
+sprint_3 <- sprintf("%s crime(s) against persons in August 2019", cap19)
+sprint_4 <- sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+sprint_5 <- sprintf("%s total crimes in 2019", tc_ytdCurrent)
+sprint_6 <- sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
+sprint_7 <- sprintf("%s crime(s) against persons in 2019", cap19_ytd)
+sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+```
+
+- **`r sprint_1`**
+- **`r sprint_2`**
+- **`r sprint_3`**
+- **`r sprint_4`**
+- **`r sprint_5`**
+- **`r sprint_6`**
+- **`r sprint_7`**
+- **`r sprint_8`**
+
+## Vandeventer: Year to Year Comparison
+
+```{r VD Year Comps Prep, include=FALSE}
+totalCrimes18 %>%
+  filter(., neighborhood == 58) %>%
+  group_by(monthVar) %>%
+  count(crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>%
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  rename(., "Part 1 Crimes" = crimeCatName) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") -> vd_2018
+
+ytdCrimes19 %>%
+  filter(., neighborhood == 58) %>%
+  group_by(monthVar) %>%
+  count(crimeCatName) %>%
+  rename(., "Number of Crimes" = n) %>%
+  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  rename(., "Part 1 Crimes" = crimeCatName) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") -> vd_2019
+```
+
+```{r VD Total Crimes Flextable 2018, echo = FALSE}
+flextable(vd_2018) %>%
+  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  autofit()
+```
+
+```{r VD Total Crimes Flextable 2019, echo = FALSE}
+flextable(vd_2019) %>%
+  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  autofit()
+```
+
+## Vandeventer: Summary Tables
+
+```{r VD Tables Prep, include = FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 58) %>%
+  group_by(crimeCatName) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> vd_crimeCat
+
+monthCrimes19 %>%
+  filter(., neighborhood == 58) %>%
+  group_by(weekday) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> vd_weekDay
+
+monthCrimes19 %>%
+  filter(., neighborhood == 58) %>%
+  group_by(violent) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> vd_violent
+
+monthCrimes19 %>%
+  filter(., neighborhood == 58) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> vd_dayNight
+
+```
+
+```{r VD Flextables Knit, echo = FALSE}
+flextable(vd_crimeCat) %>%
+  autofit()
+
+flextable(vd_weekDay) %>%
+  autofit()
+
+flextable(vd_violent) %>%
+  autofit()
+
+flextable(vd_dayNight) %>%
+  autofit()
+```
+
+## Vandeventer: Total Crime Map
+
+```{r VD Total Crime Prep, include = FALSE}
+tm_shape(vd_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 58) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 58) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "crimeCatName",
+               palette = "Set1",
+               title.col = "Part 1 Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom")) -> vd_total_tm
+
+tmap_save(vd_total_tm, file = here("results", params$year, params$month, "vd", "vd_total_tm.jpeg"), dpi = 500)
+```
+
+```{r VD Total Crimes Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "vd", "vd_total_tm.jpeg"))
+```
+
+## District 5: Crime Rates Map
+
+```{r District 5 Density Map Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "district-5", "dst5_rates.jpeg"))
+```
+
+```{r District 5 Density Map Explanation Prep, include = FALSE}
+library(qwraps2)
+options(qwraps2_markup = "markdown")
+
+dst_5_pop_sf <- as.data.frame(dst_5_pop_sf)
+summary_statistics <-
+  list(
+    "Crime Rates" =
+      list(
+        "mean" = ~mean(crimeRate, na_rm = TRUE),
+        "min" = ~min(crimeRate, na.rm = TRUE),
+        "max" = ~max(crimeRate, na.rm = TRUE)),
+    "Crime Total" =
+      list(
+        "mean" = ~mean(crimeTotal, na_rm = TRUE),
+        "min" = ~min(crimeTotal, na.rm = TRUE),
+        "max" = ~max(crimeTotal, na.rm = TRUE)))
+
+dst_5_table <- summary_table(dst_5_pop_sf, summary_statistics)
+
+print(dst_5_table,
+      cnames = "Summary Statistics")
+
+dst_5_rate_mean <- mean(dst_5_pop_sf$crimeRate)
+dst_5_rate_mean
+
+dst_5_min <- dst_5_pop_sf[which.min(dst_5_pop_sf$crimeRate),]
+dst_5_min_rate_nhd <- print(dst_5_min$NHD_NAME, max.levels = 0)
+dst_5_min_rate <- print(dst_5_min$crimeRate, max.levels = 0)
+
+dst_5_max <- dst_5_pop_sf[which.max(dst_5_pop_sf$crimeRate),]
+dst_5_max_rate_nhd <- print(dst_5_max$NHD_NAME, max.levels = 0)
+dst_5_max_rate <- print(dst_5_max$crimeRate, max.levels = 0)
+
+dst_5_total_mean <- mean(dst_5_pop_sf$crimeTotal)
+dst_5_total_mean
+
+dst_5_minT <- dst_5_pop_sf[which.min(dst_5_pop_sf$crimeTotal),]
+dst_5_min_tot_nhd <- print(dst_5_minT$NHD_NAME, max.levels = 0)
+dst_5_min_tot <- print(dst_5_minT$crimeTotal, max.levels = 0)
+
+dst_5_maxT <- dst_5_pop_sf[which.max(dst_5_pop_sf$crimeTotal),]
+dst_5_max_tot_nhd <- print(dst_5_maxT$NHD_NAME, max.levels = 0)
+dst_5_max_tot <- print(dst_5_maxT$crimeTotal, max.levels = 0)
+
+sprint_1 <- sprintf("The minimum number of crimes in one neighborhood was %s (%s)", dst_5_min_tot, dst_5_min_tot_nhd)
+sprint_2 <- sprintf("The maximum number of crimes in one neighborhood was %s (%s)", dst_5_max_tot, dst_5_max_tot_nhd)
+sprint_3 <- sprintf("The mean number of crimes in one neighborhood was %s", round(dst_5_total_mean, digits = 2))
+sprint_4 <- sprintf("The minimum rate of crimes in one neighborhood was %s (%s)", round(dst_5_min_rate, digits = 2), dst_5_min_rate_nhd)
+sprint_5 <- sprintf("The maximum rate of crimes in one neighborhood was %s (%s)", round(dst_5_max_rate, digits = 2), dst_5_max_rate_nhd)
+sprint_6 <- sprintf("The mean rate of crimes in one neighborhood was %s", round(dst_5_rate_mean, digits = 2))
+```
+
+## District 5: Density Map Explanation
+
+There are 15 neighborhoods in District 5.
+
+- **`r sprint_1`**
+- **`r sprint_2`**
+- **`r sprint_3`**
+- **`r sprint_4`**
+- **`r sprint_5`**
+- **`r sprint_6`**
+
+## Academy: Neighborhood Detail
+### Appendix 1
+
+## Academy: Time of Crimes Map
+
+```{r AC Day & Night Prep, include = FALSE}
+ac_dn_tm <- tm_shape(ac_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 51) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 51) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "dayNight",
+               palette = "-RdBu",
+               title.col = "Time of Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(ac_dn_tm, file = here("results", params$year, params$month, "ac", "ac_day_night.jpeg"), dpi = 500)
+```
+
+```{r AC Day & Night Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "ac", "ac_day_night.jpeg"))
+```
+
+## Academy: Violent Crime Map
+
+```{r AC Violent Crime Map Prep, include = FALSE}
+ac_vlnt_tm <- tm_shape(ac_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 51) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 51) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "violent",
+               palette = "Reds",
+               title.col = "Violent") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(ac_vlnt_tm, file = here("results", params$year, params$month, "ac", "ac_vlnt.jpeg"), dpi = 500)
+```
+
+```{r AC Violent Crime Map Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "ac", "ac_vlnt.jpeg"))
+```
+
+## Academy: Crime Density Map
+
+```{r AC Density Map Prep, include = FALSE}
+monthCrimes19_sf %>%
+  filter(neighborhood == 51) %>%
+  smooth_map(., bandwidth = 0.5, style = "pretty",
+  cover = ac) -> ac_densities
+
+ac_den_tm <- tm_shape(ac_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 51) %>%
+  tm_shape() +
+    tm_fill(col = NA,
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  tm_shape(ac_densities$polygons) +
+  tm_fill(col = "level", palette = "BuPu", alpha = .60,
+    title = expression("Crimes per " * km^2)) +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(ac_den_tm, file = here("results", params$year, params$month, "ac", "ac_density.jpeg"), dpi = 500)
+```
+
+```{r AC Density Map Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "ac", "ac_density.jpeg"))
+```
+
+## Academy: Larceny Breakdown
+
+```{r AC Larceny Breakdown Prep, include = FALSE}
+larceny %>%
+  filter(., neighborhood == 51) %>%
+  group_by(weekday) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> ac_larcenies_weekDay
+
+larceny %>%
+  filter(., neighborhood == 51) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> ac_larcenies_dayNight
+
+larceny %>%
+  filter(., neighborhood == 51) %>%
+  group_by(type) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> ac_larcenies_type
+
+larceny %>%
+  filter(., neighborhood == 51) %>%
+  group_by(value) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Monetary" = value) -> ac_larcenies_value
+```
+
+```{r AC Larceny Tables Knit, echo = FALSE}
+flextable(ac_larcenies_weekDay) %>%
+  autofit()
+
+flextable(ac_larcenies_dayNight) %>%
+  autofit()
+
+flextable(ac_larcenies_type) %>%
+  autofit()
+
+flextable(ac_larcenies_value) %>%
+  autofit()
+```
+
+## Academy: Total Crimes by Days of the Week
+
+```{r AC Crime by Weekday Graph Prep, include= FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 51) %>%
+  group_by(weekday) %>%
+  count() %>%
+  ggplot(., aes(x=weekday, y=n, group=1)) +
+    geom_line(color="blue") +
+    geom_point() +
+    xlab("Day of Week") + ylab("Total Crimes")
+
+ggsave(here("results", params$year, params$month, "ac", "ac_crime_weekday_graph.jpeg"), dpi = 500)
+```
+
+```{r AC Crime by Weekday Graph Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "ac", "ac_crime_weekday_graph.jpeg"), dpi = 500)
+```
+
+## Academy: Crimes by Time of Day
+
+```{r AC Crime by Time of Day Graph Prep, include = FALSE }
+monthCrimes19 %>%
+  filter(., neighborhood == 51) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
+    geom_bar(stat="identity", position=position_dodge(), colour="black") +
+    xlab("Time of Day") + ylab("Total Crimes") +
+    labs(fill = "Time")
+
+ggsave(here("results", params$year, params$month, "ac", "ac_crime_timeDay_graph.jpeg"), dpi = 300)
+```
+
+```{r AC Crime by Time of Day Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "ac", "ac_crime_timeDay_graph.jpeg"), dpi = 500)
+```
+
+## Academy: Crimes by Day & Category
+
+```{r AC Crime by Category Weekday Graph Prep, include= FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 51) %>%
+  group_by(crimeCatName) %>%
+  ggplot(., aes(weekday)) +
+    geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
+    xlab("Day of Week") + ylab("Total Crimes") +
+    labs(fill = "Part 1 Crimes") +
+    scale_fill_brewer(palette = "Spectral")
+
+ggsave(here("results", params$year, params$month, "ac", "ac_crimeCat_weekday_graph.jpeg"), dpi = 300)
+```
+
+```{r AC Crime by Category Weekday Graph Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "ac", "ac_crimeCat_weekday_graph.jpeg"), dpi = 500)
+```
+
+## Fountain Park: Neighborhood Detail
+### Appendix 2
+
+## Fountain Park: Time of Crimes Map
+
+```{r FP Day & Night Prep, include = FALSE}
+fp_dn_tm <- tm_shape(fp_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 53) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 53) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "dayNight",
+               palette = "-RdBu",
+               title.col = "Time of Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(fp_dn_tm, file = here("results", params$year, params$month, "fp", "fp_day_night.jpeg"), dpi = 500)
+```
+
+```{r FP Day & Night Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "fp", "fp_day_night.jpeg"))
+```
+
+## Fountain Park: Violent Crime Map
+
+```{r FP Violent Crime Map Prep, include = FALSE}
+fp_vlnt_tm <- tm_shape(fp_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 53) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 53) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "violent",
+               palette = "Reds",
+               title.col = "Violent") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(fp_vlnt_tm, file = here("results", params$year, params$month, "fp", "fp_vlnt.jpeg"), dpi = 500)
+```
+
+```{r FP Violent Crime Map Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "fp", "fp_vlnt.jpeg"))
+```
+
+## Fountain Park: Crime Density Map
+
+```{r FP Density Map Prep, include = FALSE}
+monthCrimes19_sf %>%
+  filter(neighborhood == 53) %>%
+  smooth_map(., bandwidth = 0.5, style = "pretty",
+  cover = fp) -> fp_densities
+
+fp_den_tm <- tm_shape(fp_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 53) %>%
+  tm_shape() +
+    tm_fill(col = NA,
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  tm_shape(fp_densities$polygons) +
+  tm_fill(col = "level", palette = "BuPu", alpha = .60,
+    title = expression("Crimes per " * km^2)) +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(fp_den_tm, file = here("results", params$year, params$month, "fp", "fp_density.jpeg"), dpi = 500)
+```
+
+```{r FP Density Map Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "fp", "fp_density.jpeg"))
+```
+
+## Fountain Park: Larceny Breakdown
+
+```{r FP Larceny Breakdown Prep, include = FALSE}
+larceny %>%
+  filter(., neighborhood == 53) %>%
+  group_by(weekday) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fp_larcenies_weekDay
+
+larceny %>%
+  filter(., neighborhood == 53) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fp_larcenies_dayNight
+
+larceny %>%
+  filter(., neighborhood == 53) %>%
+  group_by(type) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> fp_larcenies_type
+
+larceny %>%
+  filter(., neighborhood == 53) %>%
+  group_by(value) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Monetary" = value) -> fp_larcenies_value
+```
+
+```{r FP Larceny Tables Knit, echo = FALSE}
+flextable(fp_larcenies_weekDay) %>%
+  autofit()
+
+flextable(fp_larcenies_dayNight) %>%
+  autofit()
+
+flextable(fp_larcenies_type) %>%
+  autofit()
+
+flextable(fp_larcenies_value) %>%
+  autofit()
+```
+
+## Fountain Park: Total Crimes by Days of the Week
+
+```{r FP Crime by Weekday Graph Prep, include= FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 53) %>%
+  group_by(weekday) %>%
+  count() %>%
+  ggplot(., aes(x=weekday, y=n, group=1)) +
+    geom_line(color="blue") +
+    geom_point() +
+    xlab("Day of Week") + ylab("Total Crimes")
+
+ggsave(here("results", params$year, params$month, "fp", "fp_crime_weekday_graph.jpeg"), dpi = 500)
+```
+
+```{r FP Crime by Weekday Graph Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "fp", "fp_crime_weekday_graph.jpeg"), dpi = 500)
+```
+
+## Fountain Park: Crimes by Time of Day
+
+```{r FP Crime by Time of Day Graph Prep, include = FALSE }
+monthCrimes19 %>%
+  filter(., neighborhood == 53) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
+    geom_bar(stat="identity", position=position_dodge(), colour="black") +
+    xlab("Time of Day") + ylab("Total Crimes") +
+    labs(fill = "Time")
+
+ggsave(here("results", params$year, params$month, "fp", "fp_crime_timeDay_graph.jpeg"), dpi = 300)
+```
+
+```{r FP Crime by Time of Day Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "fp", "fp_crime_timeDay_graph.jpeg"), dpi = 500)
+```
+
+## Fountain Park: Crimes by Day & Category
+
+```{r FP Crime by Category Weekday Graph Prep, include= FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 53) %>%
+  group_by(crimeCatName) %>%
+  ggplot(., aes(weekday)) +
+    geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
+    xlab("Day of Week") + ylab("Total Crimes") +
+    labs(fill = "Part 1 Crimes") +
+    scale_fill_brewer(palette = "Spectral")
+
+ggsave(here("results", params$year, params$month, "fp", "fp_crimeCat_weekday_graph.jpeg"), dpi = 300)
+```
+
+```{r FP Crime by Category Weekday Graph Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "fp", "fp_crimeCat_weekday_graph.jpeg"), dpi = 500)
+```
+
+## Lewis Place: Neighborhood Detail
+### Appendix 3
+
+## Lewis Place: Time of Crimes Map
+
+```{r LP Day & Night Prep, include = FALSE}
+lp_dn_tm <- tm_shape(lp_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 54) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 54) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "dayNight",
+               palette = "-RdBu",
+               title.col = "Time of Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(lp_dn_tm, file = here("results", params$year, params$month, "lp", "lp_day_night.jpeg"), dpi = 500)
+```
+
+```{r LP Day & Night Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "lp", "lp_day_night.jpeg"))
+```
+
+## Lewis Place: Violent Crime Map
+
+```{r LP Violent Crime Map Prep, include = FALSE}
+lp_vlnt_tm <- tm_shape(lp_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 54) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 54) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "violent",
+               palette = "Reds",
+               title.col = "Violent") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(lp_vlnt_tm, file = here("results", params$year, params$month, "lp", "lp_vlnt.jpeg"), dpi = 500)
+```
+
+```{r LP Violent Crime Map Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "lp", "lp_vlnt.jpeg"))
+```
+
+## Lewis Place: Crime Density Map
+
+```{r LP Density Map Prep, include = FALSE}
+monthCrimes19_sf %>%
+  filter(neighborhood == 54) %>%
+  smooth_map(., bandwidth = 0.5, style = "pretty",
+  cover = lp) -> lp_densities
+
+lp_den_tm <- tm_shape(lp_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 54) %>%
+  tm_shape() +
+    tm_fill(col = NA,
+            alpha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  tm_shape(lp_densities$polygons) +
+  tm_fill(col = "level", palette = "BuPu", alpha = .60,
+    title = expression("Crimes per " * km^2)) +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(lp_den_tm, file = here("results", params$year, params$month, "lp", "lp_density.jpeg"), dpi = 500)
+```
+
+```{r LP Density Map Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "lp", "lp_density.jpeg"))
+```
+
+## Lewis Place: Larceny Breakdown
+
+```{r LP Larceny Breakdown Prep, include = FALSE}
+larceny %>%
+  filter(., neighborhood == 54) %>%
+  group_by(weekday) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> lp_larcenies_weekDay
+
+larceny %>%
+  filter(., neighborhood == 54) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> lp_larcenies_dayNight
+
+larceny %>%
+  filter(., neighborhood == 54) %>%
+  group_by(type) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> lp_larcenies_type
+
+larceny %>%
+  filter(., neighborhood == 54) %>%
+  group_by(value) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Monetary" = value) -> lp_larcenies_value
+```
+
+```{r LP Larceny Tables Knit, echo = FALSE}
+flextable(lp_larcenies_weekDay) %>%
+  autofit()
+
+flextable(lp_larcenies_dayNight) %>%
+  autofit()
+
+flextable(lp_larcenies_type) %>%
+  autofit()
+
+flextable(lp_larcenies_value) %>%
+  autofit()
+```
+
+## Lewis Place: Total Crimes by Days of the Week
+
+```{r LP Crime by Weekday Graph Prep, include= FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 54) %>%
+  group_by(weekday) %>%
+  count() %>%
+  ggplot(., aes(x=weekday, y=n, group=1)) +
+    geom_line(color="blue") +
+    geom_point() +
+    xlab("Day of Week") + ylab("Total Crimes")
+
+ggsave(here("results", params$year, params$month, "lp", "lp_crime_weekday_graph.jpeg"), dpi = 500)
+```
+
+```{r LP Crime by Weekday Graph Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "lp", "lp_crime_weekday_graph.jpeg"), dpi = 500)
+```
+
+## Lewis Place: Crimes by Time of Day
+
+```{r LP Crime by Time of Day Graph Prep, include = FALSE }
+monthCrimes19 %>%
+  filter(., neighborhood == 54) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
+    geom_bar(stat="identity", position=position_dodge(), colour="black") +
+    xlab("Time of Day") + ylab("Total Crimes") +
+    labs(fill = "Time")
+
+ggsave(here("results", params$year, params$month, "lp", "lp_crime_timeDay_graph.jpeg"), dpi = 300)
+```
+
+```{r LP Crime by Time of Day Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "lp", "lp_crime_timeDay_graph.jpeg"), dpi = 500)
+```
+
+## Lewis Place: Crimes by Day & Category
+
+```{r LP Crime by Category Weekday Graph Prep, include= FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 54) %>%
+  group_by(crimeCatName) %>%
+  ggplot(., aes(weekday)) +
+    geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
+    xlab("Day of Week") + ylab("Total Crimes") +
+    labs(fill = "Part 1 Crimes") +
+    scale_fill_brewer(palette = "Spectral")
+
+ggsave(here("results", params$year, params$month, "lp", "lp_crimeCat_weekday_graph.jpeg"), dpi = 300)
+```
+
+```{r LP Crime by Category Weekday Graph Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "lp", "lp_crimeCat_weekday_graph.jpeg"), dpi = 500)
+```
+
+## Vandeventer: Neighborhood Detail
+### Appendix 4
+
+## Vandeventer: Time of Crimes Map
+
+```{r VD Day & Night Prep, include = FALSE}
+vd_dn_tm <- tm_shape(vd_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 58) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            avdha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 58) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "dayNight",
+               palette = "-RdBu",
+               title.col = "Time of Crimes") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(vd_dn_tm, file = here("results", params$year, params$month, "vd", "vd_day_night.jpeg"), dpi = 500)
+```
+
+```{r VD Day & Night Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "vd", "vd_day_night.jpeg"))
+```
+
+## Vandeventer: Violent Crime Map
+
+```{r VD Violent Crime Map Prep, include = FALSE}
+vd_vlnt_tm <- tm_shape(vd_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 58) %>%
+  tm_shape() +
+    tm_fill(col = "#9ecae1",
+            avdha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  filter(monthCrimes19_sf,
+         neighborhood == 58) %>%
+  tm_shape() +
+    tm_bubbles(size = .25,
+               col = "violent",
+               palette = "Reds",
+               title.col = "Violent") +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(vd_vlnt_tm, file = here("results", params$year, params$month, "vd", "vd_vlnt.jpeg"), dpi = 500)
+```
+
+```{r VD Violent Crime Map Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "vd", "vd_vlnt.jpeg"))
+```
+
+## Vandeventer: Crime Density Map
+
+```{r VD Density Map Prep, include = FALSE}
+monthCrimes19_sf %>%
+  filter(neighborhood == 58) %>%
+  smooth_map(., bandwidth = 0.5, style = "pretty",
+  cover = vd) -> vd_densities
+
+vd_den_tm <- tm_shape(vd_tiles) +
+  tm_rgb() +
+  nhoods_sf %>%
+  filter(., neighborhood == 58) %>%
+  tm_shape() +
+    tm_fill(col = NA,
+            avdha = .5) +
+    tm_borders(col = "black",
+               lwd = 2,
+               lty = "dashed") +
+  tm_shape(vd_densities$polygons) +
+  tm_fill(col = "level", palette = "BuPu", avdha = .60,
+    title = expression("Crimes per " * km^2)) +
+  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
+  tm_layout(
+    frame = FALSE,
+    legend.bg.color = "white",
+    legend.frame=TRUE,
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"))
+
+tmap_save(vd_den_tm, file = here("results", params$year, params$month, "vd", "vd_density.jpeg"), dpi = 500)
+```
+
+```{r VD Density Map Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "vd", "vd_density.jpeg"))
+```
+
+## Vandeventer: Larceny Breakdown
+
+```{r VD Larceny Breakdown Prep, include = FALSE}
+larceny %>%
+  filter(., neighborhood == 58) %>%
+  group_by(weekday) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> vd_larcenies_weekDay
+
+larceny %>%
+  filter(., neighborhood == 58) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> vd_larcenies_dayNight
+
+larceny %>%
+  filter(., neighborhood == 58) %>%
+  group_by(type) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> vd_larcenies_type
+
+larceny %>%
+  filter(., neighborhood == 58) %>%
+  group_by(value) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Monetary" = value) -> vd_larcenies_value
+```
+
+```{r VD Larceny Tables Knit, echo = FALSE}
+flextable(vd_larcenies_weekDay) %>%
+  autofit()
+
+flextable(vd_larcenies_dayNight) %>%
+  autofit()
+
+flextable(vd_larcenies_type) %>%
+  autofit()
+
+flextable(vd_larcenies_value) %>%
+  autofit()
+```
+
+## Vandeventer: Total Crimes by Days of the Week
+
+```{r VD Crime by Weekday Graph Prep, include= FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 58) %>%
+  group_by(weekday) %>%
+  count() %>%
+  ggplot(., aes(x=weekday, y=n, group=1)) +
+    geom_line(color="blue") +
+    geom_point() +
+    xlab("Day of Week") + ylab("Total Crimes")
+
+ggsave(here("results", params$year, params$month, "vd", "vd_crime_weekday_graph.jpeg"), dpi = 500)
+```
+
+```{r VD Crime by Weekday Graph Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "vd", "vd_crime_weekday_graph.jpeg"), dpi = 500)
+```
+
+## Vandeventer: Crimes by Time of Day
+
+```{r VD Crime by Time of Day Graph Prep, include = FALSE }
+monthCrimes19 %>%
+  filter(., neighborhood == 58) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
+    geom_bar(stat="identity", position=position_dodge(), colour="black") +
+    xlab("Time of Day") + ylab("Total Crimes") +
+    labs(fill = "Time")
+
+ggsave(here("results", params$year, params$month, "vd", "vd_crime_timeDay_graph.jpeg"), dpi = 300)
+```
+
+```{r VD Crime by Time of Day Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "vd", "vd_crime_timeDay_graph.jpeg"), dpi = 500)
+```
+
+## Vandeventer: Crimes by Day & Category
+
+```{r VD Crime by Category Weekday Graph Prep, include= FALSE}
+monthCrimes19 %>%
+  filter(., neighborhood == 58) %>%
+  group_by(crimeCatName) %>%
+  ggplot(., aes(weekday)) +
+    geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
+    xlab("Day of Week") + ylab("Total Crimes") +
+    labs(fill = "Part 1 Crimes") +
+    scale_fill_brewer(palette = "Spectral")
+
+ggsave(here("results", params$year, params$month, "vd", "vd_crimeCat_weekday_graph.jpeg"), dpi = 300)
+```
+
+```{r VD Crime by Category Weekday Graph Knit, echo = FALSE}
+knitr::include_graphics(here("results", params$year, params$month, "vd", "vd_crimeCat_weekday_graph.jpeg"), dpi = 500)
+```
