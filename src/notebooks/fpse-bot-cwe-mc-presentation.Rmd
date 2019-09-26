@@ -16,7 +16,7 @@ params:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.width = 6)
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r Load Dependencies and Data, include = FALSE}
@@ -62,6 +62,7 @@ load(file = here("data", "basemap-files", "nbhd-boundaries.rda"))
 colkeys18 <- totalCrimes18$monthVar
 colkeys19 <- ytdCrimes19$monthVar
 colkeystotal <- c("Total")
+tmap_options()
 ```
 
 ## Forest Park Southeast: Summary Notes 
@@ -100,7 +101,7 @@ sprintf("%s change compared to this time in 2018 (%s crimes against persons)", p
 
 ## Forest Park Southeast: Year to Year Comparison
 
-```{r FPSE Year Comps Prep,include=FALSE}
+```{r FPSE Year Comps Prep, include=FALSE}
 totalCrimes18 %>% 
   filter(., neighborhood == 39) %>% 
   group_by(monthVar) %>% 
