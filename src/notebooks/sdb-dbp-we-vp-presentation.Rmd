@@ -980,7 +980,7 @@ monthCrimes19 %>%
     xlab("Time of Day") + ylab("Total Crimes") +
     labs(fill = "Time")
 
-ggsave(here("results", params$year, params$month, "sdb", "sdb_crime_timeDay_graph.jpeg"), dpi = 300)
+ggsave(here("results", params$year, params$month, "sdb", "sdb_crime_timeDay_graph.jpeg"), dpi = 500)
 ```
 
 ```{r SDB Crime by Time of Day Knit, echo = FALSE}
@@ -999,7 +999,7 @@ monthCrimes19 %>%
     labs(fill = "Part 1 Crimes") +
     scale_fill_brewer(palette = "Spectral")
 
-ggsave(here("results", params$year, params$month, "sdb", "sdb_crimeCat_weekday_graph.jpeg"), dpi = 300)
+ggsave(here("results", params$year, params$month, "sdb", "sdb_crimeCat_weekday_graph.jpeg"), dpi = 500)
 ```
 
 ```{r SDB Crime by Category Weekday Graph Knit, echo = FALSE}
@@ -1192,7 +1192,7 @@ monthCrimes19 %>%
     xlab("Time of Day") + ylab("Total Crimes") +
     labs(fill = "Time")
 
-ggsave(here("results", params$year, params$month, "dbp", "dbp_crime_timeDay_graph.jpeg"), dpi = 300)
+ggsave(here("results", params$year, params$month, "dbp", "dbp_crime_timeDay_graph.jpeg"), dpi = 500)
 ```
 
 ```{r DBP Crime by Time of Day Knit, echo = FALSE}
@@ -1211,7 +1211,7 @@ monthCrimes19 %>%
     labs(fill = "Part 1 Crimes") +
     scale_fill_brewer(palette = "Spectral")
 
-ggsave(here("results", params$year, params$month, "dbp", "dbp_crimeCat_weekday_graph.jpeg"), dpi = 300)
+ggsave(here("results", params$year, params$month, "dbp", "dbp_crimeCat_weekday_graph.jpeg"), dpi = 500)
 ```
 
 ```{r DBP Crime by Category Weekday Graph Knit, echo = FALSE}
@@ -1404,7 +1404,7 @@ monthCrimes19 %>%
     xlab("Time of Day") + ylab("Total Crimes") +
     labs(fill = "Time")
 
-ggsave(here("results", params$year, params$month, "we", "we_crime_timeDay_graph.jpeg"), dpi = 300)
+ggsave(here("results", params$year, params$month, "we", "we_crime_timeDay_graph.jpeg"), dpi = 500)
 ```
 
 ```{r WE Crime by Time of Day Knit, echo = FALSE}
@@ -1423,7 +1423,7 @@ monthCrimes19 %>%
     labs(fill = "Part 1 Crimes") +
     scale_fill_brewer(palette = "Spectral")
 
-ggsave(here("results", params$year, params$month, "we", "we_crimeCat_weekday_graph.jpeg"), dpi = 300)
+ggsave(here("results", params$year, params$month, "we", "we_crimeCat_weekday_graph.jpeg"), dpi = 500)
 ```
 
 ```{r WE Crime by Category Weekday Graph Knit, echo = FALSE}
@@ -1580,7 +1580,7 @@ monthCrimes19 %>%
     xlab("Time of Day") + ylab("Total Crimes") +
     labs(fill = "Time")
 
-ggsave(here("results", params$year, params$month, "vp", "vp_crime_timeDay_graph.jpeg"), dpi = 300)
+ggsave(here("results", params$year, params$month, "vp", "vp_crime_timeDay_graph.jpeg"), dpi = 500)
 ```
 
 ```{r VP Crime by Time of Day Knit, echo = FALSE}
@@ -1599,7 +1599,7 @@ monthCrimes19 %>%
     labs(fill = "Part 1 Crimes") +
     scale_fill_brewer(palette = "Spectral")
 
-ggsave(here("results", params$year, params$month, "vp", "vp_crimeCat_weekday_graph.jpeg"), dpi = 300)
+ggsave(here("results", params$year, params$month, "vp", "vp_crimeCat_weekday_graph.jpeg"), dpi = 500)
 ```
 
 ```{r VP Crime by Category Weekday Graph Knit, echo = FALSE}
