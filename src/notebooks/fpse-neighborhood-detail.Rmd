@@ -133,12 +133,16 @@ ytdCrimes19 %>%
   adorn_totals(., "row", name = "Total") -> fpse_2019
 ```
 
+### FPSE Total Crimes 2018
+
 ```{r FPSE Total Crimes Flextable 2018, echo = FALSE}
 flextable(fpse_2018) %>%
   colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
   autofit()
 ```
+
+### FPSE Total Crimes 2019
 
 ```{r FPSE Total Crimes Flextable 2019, echo = FALSE}
 flextable(fpse_2019) %>%
@@ -196,72 +200,14 @@ flextable(fpse_dayNight) %>%
 
 ## Forest Park Southeast: Total Crime Map
 
-```{r FPSE Total Crime Prep, include = FALSE}
-tm_shape(fpse_tiles) +
-  tm_rgb() +
-  nhoods_sf %>%
-  filter(., neighborhood == 39) %>%
-  tm_shape() +
-    tm_fill(col = "#9ecae1",
-            alpha = .5) +
-    tm_borders(col = "black",
-               lwd = 2,
-               lty = "dashed") +
-  filter(monthCrimes19_sf,
-         neighborhood == 39) %>%
-  tm_shape() +
-    tm_bubbles(size = .25,
-               col = "crimeCatName",
-               palette = "Set1",
-               title.col = "Part 1 Crimes") +
-  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
-  tm_layout(
-    frame = FALSE,
-    legend.bg.color = "white",
-    legend.frame=TRUE,
-    legend.outside = TRUE,
-    legend.position = c("right", "bottom")) -> fpse_total_tm
-
-tmap_save(fpse_total_tm, file = here("results", params$year, params$month, "fpse", "fpse_total_tm.jpeg"), dpi = 500)
-```
-
 ```{r FPSE Total Crimes Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_total_tm.jpeg"))
 ```
 
 ## Forest Park Southeast: Neighborhood Detail
-### Appendix 1
+
 
 ## Forest Park Southeast: Time of Crimes Map
-
-```{r FPSE Day & Night Prep, include = FALSE}
-fpse_dn_tm <- tm_shape(fpse_tiles) +
-  tm_rgb() +
-  nhoods_sf %>%
-  filter(., neighborhood == 39) %>%
-  tm_shape() +
-    tm_fill(col = "#9ecae1",
-            alpha = .5) +
-    tm_borders(col = "black",
-               lwd = 2,
-               lty = "dashed") +
-  filter(monthCrimes19_sf,
-         neighborhood == 39) %>%
-  tm_shape() +
-    tm_bubbles(size = .25,
-               col = "dayNight",
-               palette = "-RdBu",
-               title.col = "Time of Crimes") +
-  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
-  tm_layout(
-    frame = FALSE,
-    legend.bg.color = "white",
-    legend.frame=TRUE,
-    legend.outside = TRUE,
-    legend.position = c("right", "bottom"))
-
-tmap_save(fpse_dn_tm, file = here("results", params$year, params$month, "fpse", "fpse_day_night.jpeg"), dpi = 500)
-```
 
 ```{r FPSE Day & Night Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_day_night.jpeg"))
@@ -269,70 +215,11 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 
 ## Forest Park Southeast: Violent Crime Map
 
-```{r FPSE Violent Crime Map Prep, include = FALSE}
-fpse_vlnt_tm <- tm_shape(fpse_tiles) +
-  tm_rgb() +
-  nhoods_sf %>%
-  filter(., neighborhood == 39) %>%
-  tm_shape() +
-    tm_fill(col = "#9ecae1",
-            alpha = .5) +
-    tm_borders(col = "black",
-               lwd = 2,
-               lty = "dashed") +
-  filter(monthCrimes19_sf,
-         neighborhood == 39) %>%
-  tm_shape() +
-    tm_bubbles(size = .25,
-               col = "violent",
-               palette = "Reds",
-               title.col = "Violent") +
-  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
-  tm_layout(
-    frame = FALSE,
-    legend.bg.color = "white",
-    legend.frame=TRUE,
-    legend.outside = TRUE,
-    legend.position = c("right", "bottom"))
-
-tmap_save(fpse_vlnt_tm, file = here("results", params$year, params$month, "fpse", "fpse_vlnt.jpeg"), dpi = 500)
-```
-
 ```{r FPSE Violent Crime Map Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_vlnt.jpeg"))
 ```
 
 ## Forest Park Southeast: Crime Density Map
-
-```{r FPSE Density Map Prep, include = FALSE}
-monthCrimes19_sf %>%
-  filter(neighborhood == 39) %>%
-  smooth_map(., bandwidth = 0.5, style = "pretty",
-  cover = fpse) -> fpse_densities
-
-fpse_den_tm <- tm_shape(fpse_tiles) +
-  tm_rgb() +
-  nhoods_sf %>%
-  filter(., neighborhood == 39) %>%
-  tm_shape() +
-    tm_fill(col = NA,
-            alpha = .5) +
-    tm_borders(col = "black",
-               lwd = 2,
-               lty = "dashed") +
-  tm_shape(fpse_densities$polygons) +
-  tm_fill(col = "level", palette = "BuPu", alpha = .60,
-    title = expression("Crimes per " * km^2)) +
-  tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
-  tm_layout(
-    frame = FALSE,
-    legend.bg.color = "white",
-    legend.frame=TRUE,
-    legend.outside = TRUE,
-    legend.position = c("right", "bottom"))
-
-tmap_save(fpse_den_tm, file = here("results", params$year, params$month, "fpse", "fpse_density.jpeg"), dpi = 500)
-```
 
 ```{r FPSE Density Map Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_density.jpeg"))
@@ -386,37 +273,11 @@ flextable(fpse_larcenies_value) %>%
 
 ## Forest Park Southeast: Total Crimes by Days of the Week
 
-```{r FPSE Crime by Weekday Graph Prep, include= FALSE}
-monthCrimes19 %>%
-  filter(., neighborhood == 39) %>%
-  group_by(weekday) %>%
-  count() %>%
-  ggplot(., aes(x=weekday, y=n, group=1)) +
-    geom_line(color="blue") +
-    geom_point() +
-    xlab("Day of Week") + ylab("Total Crimes")
-
-ggsave(here("results", params$year, params$month, "fpse", "fpse_crime_weekday_graph.jpeg"), dpi = 500)
-```
-
 ```{r FPSE Crime by Weekday Graph Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_crime_weekday_graph.jpeg"), dpi = 500)
 ```
 
 ## Forest Park Southeast: Crimes by Time of Day
-
-```{r FPSE Crime by Time of Day Graph Prep, include = FALSE }
-monthCrimes19 %>%
-  filter(., neighborhood == 39) %>%
-  group_by(dayNight) %>%
-  count() %>%
-  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
-    geom_bar(stat="identity", position=position_dodge(), colour="black") +
-    xlab("Time of Day") + ylab("Total Crimes") +
-    labs(fill = "Time")
-
-ggsave(here("results", params$year, params$month, "fpse", "fpse_crime_timeDay_graph.jpeg"), dpi = 500)
-```
 
 ```{r FPSE Crime by Time of Day Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_crime_timeDay_graph.jpeg"), dpi = 500)
@@ -424,19 +285,12 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 
 ## Forest Park Southeast: Crimes by Day & Category
 
-```{r FPSE Crime by Category Weekday Graph Prep, include= FALSE}
-monthCrimes19 %>%
-  filter(., neighborhood == 39) %>%
-  group_by(crimeCatName) %>%
-  ggplot(., aes(weekday)) +
-    geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
-    xlab("Day of Week") + ylab("Total Crimes") +
-    labs(fill = "Part 1 Crimes") +
-    scale_fill_brewer(palette = "Spectral")
-
-ggsave(here("results", params$year, params$month, "fpse", "fpse_crimeCat_weekday_graph.jpeg"), dpi = 500)
-```
-
 ```{r FPSE Crime by Category Weekday Graph Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_crimeCat_weekday_graph.jpeg"), dpi = 500)
 ```
+
+### Disclaimer 
+
+* All crime data comes directly from the St. Louis Metropolitan Police Department. Some crimes are reclassified
+or reported at a later date. Crime data presented in this report includes only selected categories of crime
+most relevant to overall neighborhood safety and security. 
