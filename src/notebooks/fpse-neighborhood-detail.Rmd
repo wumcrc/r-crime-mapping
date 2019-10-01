@@ -1,5 +1,5 @@
 ---
-title: "Forest Park Southeast, Botanical Heights, Central West End, Medical Campus"
+title: "Forest Park Southeast"
 subtitle: "Monthly Crime report: August 2019" 
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
@@ -63,7 +63,7 @@ colkeystotal <- c("Total")
 tmap_options()
 ```
 
-## Forest Park Southeast: Summary Notes
+## Summary Notes
 
 ```{r FPSE Summary Prep, include=FALSE}
 tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 39,])
@@ -104,7 +104,7 @@ sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against 
 - **`r sprint_7`**
 - **`r sprint_8`**
 
-## Forest Park Southeast: Year to Year Comparison
+## Year to Year Comparison
 
 ```{r FPSE Year Comps Prep, include=FALSE}
 totalCrimes18 %>%
@@ -133,7 +133,7 @@ ytdCrimes19 %>%
   adorn_totals(., "row", name = "Total") -> fpse_2019
 ```
 
-### FPSE Total Crimes 2018
+### Total Crimes 2018
 
 ```{r FPSE Total Crimes Flextable 2018, echo = FALSE}
 flextable(fpse_2018) %>%
@@ -142,7 +142,7 @@ flextable(fpse_2018) %>%
   autofit()
 ```
 
-### FPSE Total Crimes 2019
+### Total Crimes 2019
 
 ```{r FPSE Total Crimes Flextable 2019, echo = FALSE}
 flextable(fpse_2019) %>%
@@ -151,7 +151,7 @@ flextable(fpse_2019) %>%
   autofit()
 ```
 
-## Forest Park Southeast: Summary Tables
+## Summary Tables
 
 ```{r FPSE Tables Prep, include = FALSE}
 monthCrimes19 %>%
@@ -184,48 +184,61 @@ monthCrimes19 %>%
 
 ```
 
-```{r FPSE Flextables Knit, echo = FALSE}
+### Crime by Category
+
+```{r, echo = FALSE}
 flextable(fpse_crimeCat) %>%
   autofit()
+```
 
+### Crime by Days of the Week 
+
+```{r, echo = FALSE}
 flextable(fpse_weekDay) %>%
   autofit()
+```
 
+### Crimes Against Persons
+
+```{r, echo = FALSE}
 flextable(fpse_violent) %>%
   autofit()
+```
 
+### Time of crimes
+
+```{r, echo = FALSE}
 flextable(fpse_dayNight) %>%
   autofit()
 ```
 
-## Forest Park Southeast: Total Crime Map
+## Maps
+
+### Total Crimes
 
 ```{r FPSE Total Crimes Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_total_tm.jpeg"))
 ```
 
-## Forest Park Southeast: Neighborhood Detail
-
-
-## Forest Park Southeast: Time of Crimes Map
+### Time of Crimes
 
 ```{r FPSE Day & Night Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_day_night.jpeg"))
 ```
 
-## Forest Park Southeast: Violent Crime Map
+### Violent Crime
 
 ```{r FPSE Violent Crime Map Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_vlnt.jpeg"))
 ```
 
-## Forest Park Southeast: Crime Density Map
+### Crime Density
 
 ```{r FPSE Density Map Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_density.jpeg"))
 ```
 
-## Forest Park Southeast: Larceny Breakdown
+## Larceny Breakdown
 
 ```{r FPSE Larceny Breakdown Prep, include = FALSE}
 larceny %>%
@@ -254,36 +267,50 @@ larceny %>%
   group_by(value) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
-  rename(., "Number of Crimes" = n, "Monetary" = value) -> fpse_larcenies_value
+  rename(., "Number of Crimes" = n, "Monetary Value" = value) -> fpse_larcenies_value
 ```
 
-```{r FPSE Larceny Tables Knit, echo = FALSE}
+### Lacenies by Days of the Week
+
+```{r, echo = FALSE}
 flextable(fpse_larcenies_weekDay) %>%
   autofit()
+```
 
+### Larcenies by Time of Day
+
+```{r, echo = FALSE}
 flextable(fpse_larcenies_dayNight) %>%
   autofit()
+```
 
+### Types of Larceny
+
+```{r, echo = FALSE}
 flextable(fpse_larcenies_type) %>%
   autofit()
+```
 
+### Monetary Value of Larcenies
+
+```{r, echo = FALSE}
 flextable(fpse_larcenies_value) %>%
   autofit()
 ```
 
-## Forest Park Southeast: Total Crimes by Days of the Week
+### Total Crimes by Days of the Week
 
 ```{r FPSE Crime by Weekday Graph Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_crime_weekday_graph.jpeg"), dpi = 500)
 ```
 
-## Forest Park Southeast: Crimes by Time of Day
+### Crimes by Time of Day
 
 ```{r FPSE Crime by Time of Day Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_crime_timeDay_graph.jpeg"), dpi = 500)
 ```
 
-## Forest Park Southeast: Crimes by Day & Category
+### Crimes by Day & Category
 
 ```{r FPSE Crime by Category Weekday Graph Knit, echo = FALSE}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_crimeCat_weekday_graph.jpeg"), dpi = 500)
