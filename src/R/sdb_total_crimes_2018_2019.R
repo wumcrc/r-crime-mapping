@@ -9,12 +9,43 @@ library(here)
 i <- cs_create_index()
 
 # Get data 
+yearlist08 <- cs_get_data(year = 2008, index = i)
+yearlist09 <- cs_get_data(year = 2009, index = i)
+yearlist10 <- cs_get_data(year = 2010, index = i)
+yearlist11 <- cs_get_data(year = 2011, index = i)
+yearlist12 <- cs_get_data(year = 2012, index = i)
+yearlist13 <- cs_get_data(year = 2013, index = i)
+yearlist14 <- cs_get_data(year = 2014, index = i)
+yearlist15 <- cs_get_data(year = 2015, index = i)
+yearlist16 <- cs_get_data(year = 2016, index = i)
+yearlist17 <- cs_get_data(year = 2017, index = i)
 yearlist18 <- cs_get_data(year = 2018, index = i)
 yearlist19 <- cs_get_data(year = 2019, index = i)
 
 # Validate Data 
+cs_validate(yearlist08, year = 2008)
+cs_validate(yearlist09, year = 2009)
+cs_validate(yearlist10, year = 2010)
+cs_validate(yearlist11, year = 2011)
+cs_validate(yearlist12, year = 2012)
+cs_validate(yearlist13, year = 2013)
+cs_validate(yearlist14, year = 2014)
+cs_validate(yearlist15, year = 2015)
+cs_validate(yearlist16, year = 2016)
+cs_validate(yearlist17, year = 2017)
 cs_validate(yearlist18, year = 2018)
 cs_validate(yearlist19, year = 2019)
+
+# Standardize Data 
+# Months prior to 2013 and approximately half of the months during 2013, SLMPD data are released with 18 variables.
+yearlist08 <- cs_standardize(yearlist08, config = 18)
+yearlist09 <- cs_standardize(yearlist09, config = 18)
+yearlist10 <- cs_standardize(yearlist10, config = 18)
+yearlist11 <- cs_standardize(yearlist11, config = 18)
+yearlist12 <- cs_standardize(yearlist12, config = 18)
+yearlist13 <- cs_standardize(yearlist13, config = 18)
+yearlist17 <- cs_standardize(yearlist17, config = 26)
+
 
 # Collapse Data 
 reports18 <- cs_collapse(yearlist18)
