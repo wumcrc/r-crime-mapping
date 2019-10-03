@@ -89,5 +89,7 @@ crimes9 <- full_join(crimes7, crimes8)  # Crimes 2011, 2012, 2013, 2014, 2015, 2
 crimes <- full_join(crimes9, crimes6)   # Crimes 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019
 
 # Save Data 
+save(crimes,  file = here("data", "crime-data", "total-crimes-10yrs.rda"))
 
-save(crimes,  file = here("data", "historic-data", "total-crimes-10yrs.rda"))
+# Clean Environment
+rm(list = ls())
