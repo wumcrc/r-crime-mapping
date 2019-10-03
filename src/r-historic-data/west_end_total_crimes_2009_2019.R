@@ -135,4 +135,4 @@ we_crimes_tidy <- mutate(we_crimes_tidy, "value" = ifelse(grepl("UNDER", descrip
                                             ifelse(grepl("\\$500 - \\$24,999", description), "$500 - $24,999",
                                                    ifelse(grepl("OVER \\$25,000", description), "Over $25,000", NA))))
 
-write_xlsx(we_crimes_tidy, here("results", "historic-data", "we_total_crimes_2009_2019.xlsx"))
+write_xlsx(we_crimes_tidy, here("results", "historic-data", "west_end_total_crimes_2009_2019.xlsx"))
