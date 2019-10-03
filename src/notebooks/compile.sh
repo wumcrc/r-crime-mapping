@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 Rscript -e "rmarkdown::render('data-creation.Rmd')"
 Rscript -e "rmarkdown::render('fpse-bot-cwe-mc-presentation.Rmd')"
