@@ -88,10 +88,10 @@ crimes9 <- full_join(crimes7, crimes8)  # Crimes 2011, 2012, 2013, 2014, 2015, 2
 crimes <- full_join(crimes9, crimes6)   # Crimes 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019
 
 # Extract Skinker DeBaliviere 
-sdb_crimes <- filter(crimes, neighborhood == 46)
+fpse_crimes <- filter(crimes, neighborhood == 39)
 
 # Add Crime Details 
-sdb_crimes_tidy <- sdb_crimes %>% 
+fpse_crimes_tidy <- fpse_crimes %>% 
   cs_filter_count(., var = count) %>%                                           # Removes Negative Counts
   cs_filter_crime(., var = crime, "part 1") %>%                                 # Filters Part 1 Crimes 
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%                      
@@ -104,16 +104,16 @@ sdb_crimes_tidy <- sdb_crimes %>%
   mutate(monthVar = dateOcc) %>%
   mutate(tod = timeOcc)
 
-sdb_crimes_tidy$monthVar <- month(as.Date(sdb_crimes_tidy$monthVar, 
+fpse_crimes_tidy$monthVar <- month(as.Date(fpse_crimes_tidy$monthVar, 
                                       format="%d/%m/%Y"), label = TRUE)
 
-sdb_crimes_tidy$tod <- strptime(sdb_crimes_tidy$tod, 
+fpse_crimes_tidy$tod <- strptime(fpse_crimes_tidy$tod, 
                             tz = "America/Chicago", "%H:%M")
 
-sdb_crimes_tidy$tod <- format(sdb_crimes_tidy$tod, 
+fpse_crimes_tidy$tod <- format(fpse_crimes_tidy$tod, 
                           format = "%H%M%S")
 
-sdb_crimes_tidy <- sdb_crimes_tidy %>%
+fpse_crimes_tidy <- fpse_crimes_tidy %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
   dplyr::select(-dateTime, -tod, -flag_crime, 
                 -flag_administrative, -flag_unfounded, -flag_cleanup)  %>%
@@ -121,7 +121,7 @@ sdb_crimes_tidy <- sdb_crimes_tidy %>%
   cs_replace0(., var = x_coord) %>%
   cs_replace0(., var = y_coord) 
 
-sdb_crimes_tidy <- mutate(sdb_crimes_tidy, "type" = ifelse(grepl("ALL OTHER", description), "All Other", 
+fpse_crimes_tidy <- mutate(fpse_crimes_tidy, "type" = ifelse(grepl("ALL OTHER", description), "All Other", 
                                            ifelse(grepl("BICYCLE", description), "Bicycle", 
                                                   ifelse(grepl("FROM BUILDING", description), "From Building", 
                                                          ifelse(grepl("FROM COIN", description), "From Coin Machine", 
@@ -131,8 +131,8 @@ sdb_crimes_tidy <- mutate(sdb_crimes_tidy, "type" = ifelse(grepl("ALL OTHER", de
                                                                                      ifelse(grepl("SHOPLIFT", description), "Shoplifting",
                                                                                             ifelse(grepl("FRM PRSN", description), "From Person", NA))))))))))
 
-sdb_crimes_tidy <- mutate(sdb_crimes_tidy, "value" = ifelse(grepl("UNDER", description), "Under $500",
+fpse_crimes_tidy <- mutate(fpse_crimes_tidy, "value" = ifelse(grepl("UNDER", description), "Under $500",
                                             ifelse(grepl("\\$500 - \\$24,999", description), "$500 - $24,999",
                                                    ifelse(grepl("OVER \\$25,000", description), "Over $25,000", NA))))
 
-write_xlsx(sdb_crimes_tidy, here("results", "sdb_total_crimes_2009_2019.xlsx"))
+write_xlsx(fpse_crimes_tidy, here("results", "historic-data", "fpse_total_crimes_2009_2019.xlsx"))
