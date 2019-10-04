@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style type="text/css">
+@font-face {
+font-family: octicons-link;
+src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+}
+body {
+-webkit-text-size-adjust: 100%;
+text-size-adjust: 100%;
+color: #333;
+font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+font-size: 16px;
+line-height: 1.6;
+word-wrap: break-word;
+}
+a {
+background-color: transparent;
+}
+a:active,
+a:hover {
+outline: 0;
+}
+strong {
+font-weight: bold;
+}
+h1 {
+font-size: 2em;
+margin: 0.67em 0;
+}
+img {
+border: 0;
+}
+hr {
+box-sizing: content-box;
+height: 0;
+}
+pre {
+overflow: auto;
+}
+code,
+kbd,
+pre {
+font-family: monospace, monospace;
+font-size: 1em;
+}
+input {
+color: inherit;
+font: inherit;
+margin: 0;
+}
+html input[disabled] {
+cursor: default;
+}
+input {
+line-height: normal;
+}
+input[type="checkbox"] {
+box-sizing: border-box;
+padding: 0;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+td,
+th {
+padding: 0;
+}
+* {
+box-sizing: border-box;
+}
+input {
+font: 13px / 1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+a {
+color: #4078c0;
+text-decoration: none;
+}
+a:hover,
+a:active {
+text-decoration: underline;
+}
+hr {
+height: 0;
+margin: 15px 0;
+overflow: hidden;
+background: transparent;
+border: 0;
+border-bottom: 1px solid #ddd;
+}
+hr:before {
+display: table;
+content: "";
+}
+hr:after {
+display: table;
+clear: both;
+content: "";
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 15px;
+margin-bottom: 15px;
+line-height: 1.1;
+}
+h1 {
+font-size: 30px;
+}
+h2 {
+font-size: 21px;
+}
+h3 {
+font-size: 16px;
+}
+h4 {
+font-size: 14px;
+}
+h5 {
+font-size: 12px;
+}
+h6 {
+font-size: 11px;
+}
+blockquote {
+margin: 0;
+}
+ul,
+ol {
+padding: 0;
+margin-top: 0;
+margin-bottom: 0;
+}
+ol ol,
+ul ol {
+list-style-type: lower-roman;
+}
+ul ul ol,
+ul ol ol,
+ol ul ol,
+ol ol ol {
+list-style-type: lower-alpha;
+}
+dd {
+margin-left: 0;
+}
+code {
+font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+font-size: 12px;
+}
+pre {
+margin-top: 0;
+margin-bottom: 0;
+font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+.select::-ms-expand {
+opacity: 0;
+}
+.octicon {
+font: normal normal normal 16px/1 octicons-link;
+display: inline-block;
+text-decoration: none;
+text-rendering: auto;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+.octicon-link:before {
+content: '\f05c';
+}
+.markdown-body:before {
+display: table;
+content: "";
+}
+.markdown-body:after {
+display: table;
+clear: both;
+content: "";
+}
+.markdown-body>*:first-child {
+margin-top: 0 !important;
+}
+.markdown-body>*:last-child {
+margin-bottom: 0 !important;
+}
+a:not([href]) {
+color: inherit;
+text-decoration: none;
+}
+.anchor {
+display: inline-block;
+padding-right: 2px;
+margin-left: -18px;
+}
+.anchor:focus {
+outline: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 1em;
+margin-bottom: 16px;
+font-weight: bold;
+line-height: 1.4;
+}
+h1 .octicon-link,
+h2 .octicon-link,
+h3 .octicon-link,
+h4 .octicon-link,
+h5 .octicon-link,
+h6 .octicon-link {
+color: #000;
+vertical-align: middle;
+visibility: hidden;
+}
+h1:hover .anchor,
+h2:hover .anchor,
+h3:hover .anchor,
+h4:hover .anchor,
+h5:hover .anchor,
+h6:hover .anchor {
+text-decoration: none;
+}
+h1:hover .anchor .octicon-link,
+h2:hover .anchor .octicon-link,
+h3:hover .anchor .octicon-link,
+h4:hover .anchor .octicon-link,
+h5:hover .anchor .octicon-link,
+h6:hover .anchor .octicon-link {
+visibility: visible;
+}
+h1 {
+padding-bottom: 0.3em;
+font-size: 2.25em;
+line-height: 1.2;
+border-bottom: 1px solid #eee;
+}
+h1 .anchor {
+line-height: 1;
+}
+h2 {
+padding-bottom: 0.3em;
+font-size: 1.75em;
+line-height: 1.225;
+border-bottom: 1px solid #eee;
+}
+h2 .anchor {
+line-height: 1;
+}
+h3 {
+font-size: 1.5em;
+line-height: 1.43;
+}
+h3 .anchor {
+line-height: 1.2;
+}
+h4 {
+font-size: 1.25em;
+}
+h4 .anchor {
+line-height: 1.2;
+}
+h5 {
+font-size: 1em;
+}
+h5 .anchor {
+line-height: 1.1;
+}
+h6 {
+font-size: 1em;
+color: #777;
+}
+h6 .anchor {
+line-height: 1.1;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table,
+pre {
+margin-top: 0;
+margin-bottom: 16px;
+}
+hr {
+height: 4px;
+padding: 0;
+margin: 16px 0;
+background-color: #e7e7e7;
+border: 0 none;
+}
+ul,
+ol {
+padding-left: 2em;
+}
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+margin-top: 0;
+margin-bottom: 0;
+}
+li>p {
+margin-top: 16px;
+}
+dl {
+padding: 0;
+}
+dl dt {
+padding: 0;
+margin-top: 16px;
+font-size: 1em;
+font-style: italic;
+font-weight: bold;
+}
+dl dd {
+padding: 0 16px;
+margin-bottom: 16px;
+}
+blockquote {
+padding: 0 15px;
+color: #777;
+border-left: 4px solid #ddd;
+}
+blockquote>:first-child {
+margin-top: 0;
+}
+blockquote>:last-child {
+margin-bottom: 0;
+}
+table {
+display: block;
+width: 100%;
+overflow: auto;
+word-break: normal;
+word-break: keep-all;
+}
+table th {
+font-weight: bold;
+}
+table th,
+table td {
+padding: 6px 13px;
+border: 1px solid #ddd;
+}
+table tr {
+background-color: #fff;
+border-top: 1px solid #ccc;
+}
+table tr:nth-child(2n) {
+background-color: #f8f8f8;
+}
+img {
+max-width: 100%;
+box-sizing: content-box;
+background-color: #fff;
+}
+code {
+padding: 0;
+padding-top: 0.2em;
+padding-bottom: 0.2em;
+margin: 0;
+font-size: 85%;
+background-color: rgba(0,0,0,0.04);
+border-radius: 3px;
+}
+code:before,
+code:after {
+letter-spacing: -0.2em;
+content: "\00a0";
+}
+pre>code {
+padding: 0;
+margin: 0;
+font-size: 100%;
+word-break: normal;
+white-space: pre;
+background: transparent;
+border: 0;
+}
+.highlight {
+margin-bottom: 16px;
+}
+.highlight pre,
+pre {
+padding: 16px;
+overflow: auto;
+font-size: 85%;
+line-height: 1.45;
+background-color: #f7f7f7;
+border-radius: 3px;
+}
+.highlight pre {
+margin-bottom: 0;
+word-break: normal;
+}
+pre {
+word-wrap: normal;
+}
+pre code {
+display: inline;
+max-width: initial;
+padding: 0;
+margin: 0;
+overflow: initial;
+line-height: inherit;
+word-wrap: normal;
+background-color: transparent;
+border: 0;
+}
+pre code:before,
+pre code:after {
+content: normal;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font-size: 11px;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.pl-c {
+color: #969896;
+}
+.pl-c1,
+.pl-s .pl-v {
+color: #0086b3;
+}
+.pl-e,
+.pl-en {
+color: #795da3;
+}
+.pl-s .pl-s1,
+.pl-smi {
+color: #333;
+}
+.pl-ent {
+color: #63a35c;
+}
+.pl-k {
+color: #a71d5d;
+}
+.pl-pds,
+.pl-s,
+.pl-s .pl-pse .pl-s1,
+.pl-sr,
+.pl-sr .pl-cce,
+.pl-sr .pl-sra,
+.pl-sr .pl-sre {
+color: #183691;
+}
+.pl-v {
+color: #ed6a43;
+}
+.pl-id {
+color: #b52a1d;
+}
+.pl-ii {
+background-color: #b52a1d;
+color: #f8f8f8;
+}
+.pl-sr .pl-cce {
+color: #63a35c;
+font-weight: bold;
+}
+.pl-ml {
+color: #693a17;
+}
+.pl-mh,
+.pl-mh .pl-en,
+.pl-ms {
+color: #1d3e81;
+font-weight: bold;
+}
+.pl-mq {
+color: #008080;
+}
+.pl-mi {
+color: #333;
+font-style: italic;
+}
+.pl-mb {
+color: #333;
+font-weight: bold;
+}
+.pl-md {
+background-color: #ffecec;
+color: #bd2c00;
+}
+.pl-mi1 {
+background-color: #eaffea;
+color: #55a532;
+}
+.pl-mdr {
+color: #795da3;
+font-weight: bold;
+}
+.pl-mo {
+color: #1d3e81;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.task-list-item {
+list-style-type: none;
+}
+.task-list-item+.task-list-item {
+margin-top: 3px;
+}
+.task-list-item input {
+margin: 0 0.35em 0.25em -1.6em;
+vertical-align: middle;
+}
+:checked+.radio-label {
+z-index: 1;
+position: relative;
+border-color: #4078c0;
+}
+.sourceLine {
+display: inline-block;
+}
+code .kw { color: #000000; }
+code .dt { color: #ed6a43; }
+code .dv { color: #009999; }
+code .bn { color: #009999; }
+code .fl { color: #009999; }
+code .ch { color: #009999; }
+code .st { color: #183691; }
+code .co { color: #969896; }
+code .ot { color: #0086b3; }
+code .al { color: #a61717; }
+code .fu { color: #63a35c; }
+code .er { color: #a61717; background-color: #e3d2d2; }
+code .wa { color: #000000; }
+code .cn { color: #008080; }
+code .sc { color: #008080; }
+code .vs { color: #183691; }
+code .ss { color: #183691; }
+code .im { color: #000000; }
+code .va {color: #008080; }
+code .cf { color: #000000; }
+code .op { color: #000000; }
+code .bu { color: #000000; }
+code .ex { color: #000000; }
+code .pp { color: #999999; }
+code .at { color: #008080; }
+code .do { color: #969896; }
+code .an { color: #008080; }
+code .cv { color: #008080; }
+code .in { color: #008080; }
+</style>
+<style>
+body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 45px;
+  padding-top: 0px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1 id="data-creation">Data Creation</h1>
+<p>Jes Stevens, M.A. (October 03, 2019)</p>
+<h2 id="introduction">Introduction</h2>
+<p><a href="http://wumcrc.com">Washington University Medical Center Redevelopment Corporation</a> is a partnership between BJC Health Care and Washington University School of Medicine and works to improve the quality of life for the neighborhoods surrounding the medical campus. In order to achieve this goal in Forest Park Southeast and the Central West End , WUMCRC has invested millions of dollars toward regenerating the market for private investment in businesses and real estate, enhancing human and social service opportunities, and improving the level of physical and personal security.</p>
+<p>One way we work to improve the level of physical &amp; personal security is the analysis and distribution of data. The original source of this crime data is <a href="http://slmpd.org/crimereports.shtml">http://slmpd.org/crimereports.shtml</a>. This notebook uses primarily <code>compstatr</code> to access and clean the crime data.</p>
+<h2 id="r-markdown">R Markdown</h2>
+<h2 id="tidy-data">Tidy data</h2>
+<h3 id="get-crime-data">Get Crime Data</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">i &lt;-<span class="st"> </span><span class="kw">cs_create_index</span>()</a>
+<a class="sourceLine" id="cb1-2" title="2">yearlist18 &lt;-<span class="st"> </span><span class="kw">cs_get_data</span>(<span class="dt">year =</span> params<span class="op">$</span>pastyear, <span class="dt">index =</span> i)</a>
+<a class="sourceLine" id="cb1-3" title="3">yearlist19 &lt;-<span class="st"> </span><span class="kw">cs_get_data</span>(<span class="dt">year =</span> params<span class="op">$</span>year, <span class="dt">index =</span> i) <span class="co"># Constructs a table for finding a table of crime data</span></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">cs_validate</span>(yearlist18, <span class="dt">year =</span> <span class="dv">2018</span>)</a></code></pre></div>
+<pre><code>## [1] TRUE
+</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">cs_validate</span>(yearlist19, <span class="dt">year =</span> <span class="dv">2019</span>) <span class="co"># Identifies problems with SLMPD Data</span></a></code></pre></div>
+<pre><code>## [1] TRUE
+</code></pre>
+<h4 id="standardize-data-for-cleaning">Standardize Data for Cleaning</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">totalCrimes18 &lt;-<span class="st"> </span><span class="kw">cs_collapse</span>(yearlist18)</a>
+<a class="sourceLine" id="cb5-2" title="2">ytdCrimes19 &lt;-<span class="st"> </span><span class="kw">cs_collapse</span>(yearlist19) </a></code></pre></div>
+<h3 id="clean--categorize-data">Clean &amp; Categorize Data</h3>
+<h4 id="2019">2019</h4>
+<p><code>cs_filter_count</code> removes negative counts. Negative counts, -1, in the count column means that the crime, or charge in this specific observation has either been deemed unfounded, or the crime has been up coded. We do not want to map this data.</p>
+<p>Many of the analyses we conduct include comparisons between violent &amp; non-violent crime, comparisons on the amount of crimes happening in each crime cateogy over time, and if crimes occur during the day or at night. The following code ceates variables to conduct these analyses.</p>
+<p><code>cs_crime_cat</code> creates a variable with the names of the crime.</p>
+<p><code>cs_crime</code> creates a logic variable and codes categories of crimes as either <code>TRUE</code> or <code>FALSE</code> based on the input.</p>
+<p><code>cs_parse_date</code> creates two columns separating the <code>Date Occur</code> variable. The two colums are as follows: one contains the date - month, date, and year, and the other contains the hour and minute. This is used because crimes coded in the most recent month, can contain dates that occured, in previous months or years &amp; in this report we only want to map the crimes that occured in the past month.</p>
+<p><code>filter</code> is a <code>dplyr</code> function that filters out any dates that occur before the our selected date, and also filters out crimes that did not happen in either District 2 or district 5.</p>
+<p><code>mutate</code> adds a variable that codes and labels the days of the week for each crime that occurred, and creates another time of day variable.</p>
+<p><code>strptime</code> and <code>format</code> takes the new time variable and formats it to a character so that we can determine if the crime occured at day or at night, and creates a second coded variable that labels each observations as day or night based on the newly formated time variable.</p>
+<p><code>select</code> drops the unneeded variables.</p>
+<p><code>cs_missing_XY</code> determines what data does not have x &amp; y coordinates, and therefore cannot be accurately mapped.</p>
+<p><code>cs_replace0</code> replaces missing x &amp; y coordinates with <code>NA</code>, and drops the missing data.</p>
+<p><code>strptime</code> and <code>format</code> takes the new time variable and formats it to a character so that we can determine if the crime occured at day or at night, and creates a second coded variable that labels each observations as day or night based on the newly formated time variable.</p>
+<p><code>select</code> drops the unneeded variables.</p>
+<p><code>cs_missing_XY</code> determines what data does not have x &amp; y coordinates, and therefore cannot be accurately mapped.</p>
+<p><code>cs_replace0</code> replaces missing x &amp; y coordinates with <code>NA</code>, and drops the missing data.</p>
+<p><code>monthCrimes</code> is an object that holds crimes for the current month of this year.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">ytdCrimes19 &lt;-<span class="st"> </span>ytdCrimes19 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="st">  </span><span class="kw">cs_filter_count</span>(., <span class="dt">var =</span> count) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="st">  </span><span class="kw">cs_filter_crime</span>(., <span class="dt">var =</span> crime, <span class="st">&quot;part 1&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="st">  </span><span class="kw">cs_crime_cat</span>(., <span class="dt">var =</span> crime, crimeCatNum, <span class="st">&quot;numeric&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="st">  </span><span class="kw">cs_crime_cat</span>(., <span class="dt">var =</span> crime, crimeCatName, <span class="st">&quot;string&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="st">  </span><span class="kw">cs_crime</span>(., <span class="dt">var =</span> crime, violent, <span class="st">&quot;violent&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="st">  </span><span class="kw">cs_crime</span>(., <span class="dt">var =</span> crime, property, <span class="st">&quot;property&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-8" title="8"><span class="st">  </span><span class="kw">cs_parse_date</span>(., date_occur, <span class="dt">dateVar =</span> dateOcc, <span class="dt">timeVar =</span> timeOcc) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-9" title="9"><span class="st">  </span><span class="kw">filter</span>(district <span class="op">==</span><span class="st"> </span><span class="dv">2</span> <span class="op">|</span><span class="st"> </span>district <span class="op">==</span><span class="st"> </span><span class="dv">5</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-10" title="10"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">weekday =</span> <span class="kw">wday</span>(dateOcc, <span class="dt">label =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-11" title="11"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">monthVar =</span> dateOcc) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-12" title="12"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">tod =</span> timeOcc)</a>
+<a class="sourceLine" id="cb6-13" title="13"></a>
+<a class="sourceLine" id="cb6-14" title="14">ytdCrimes19<span class="op">$</span>monthVar &lt;-<span class="st"> </span><span class="kw">month</span>(<span class="kw">as.Date</span>(ytdCrimes19<span class="op">$</span>monthVar, <span class="dt">format=</span><span class="st">&quot;%d/%m/%Y&quot;</span>), <span class="dt">label =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb6-15" title="15"></a>
+<a class="sourceLine" id="cb6-16" title="16">ytdCrimes19<span class="op">$</span>neighborhood &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(ytdCrimes19<span class="op">$</span>neighborhood)</a>
+<a class="sourceLine" id="cb6-17" title="17">ytdCrimes19<span class="op">$</span>tod &lt;-<span class="st"> </span><span class="kw">strptime</span>(ytdCrimes19<span class="op">$</span>tod, <span class="dt">tz =</span> <span class="st">&quot;America/Chicago&quot;</span>, <span class="st">&quot;%H:%M&quot;</span>)</a>
+<a class="sourceLine" id="cb6-18" title="18">ytdCrimes19<span class="op">$</span>tod &lt;-<span class="st"> </span><span class="kw">format</span>(ytdCrimes19<span class="op">$</span>tod, <span class="dt">format =</span> <span class="st">&quot;%H%M%S&quot;</span>)</a>
+<a class="sourceLine" id="cb6-19" title="19"></a>
+<a class="sourceLine" id="cb6-20" title="20">ytdCrimes19 &lt;-<span class="st"> </span>ytdCrimes19 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-21" title="21"><span class="st">  </span><span class="kw">filter</span>(dateOcc <span class="op">&gt;=</span><span class="st"> </span><span class="kw">as.Date</span>(params<span class="op">$</span>ytd)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-22" title="22"><span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">dayNight =</span> <span class="kw">ifelse</span>(tod <span class="op">&gt;=</span><span class="st"> &quot;180000&quot;</span> <span class="op">&amp;</span><span class="st"> </span>tod <span class="op">&lt;</span><span class="st"> &quot;600000&quot;</span>, <span class="st">&quot;Night&quot;</span>, <span class="st">&quot;Day&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-23" title="23"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>dateTime, <span class="op">-</span>tod, <span class="op">-</span>flag_crime, <span class="op">-</span>flag_administrative, <span class="op">-</span>flag_unfounded, <span class="op">-</span>flag_cleanup)  <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-24" title="24"><span class="st">  </span><span class="kw">cs_missingXY</span>(., <span class="dt">varX =</span> x_coord, <span class="dt">varY =</span> y_coord, <span class="dt">newVar =</span> missing) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-25" title="25"><span class="st">  </span><span class="kw">cs_replace0</span>(., <span class="dt">var =</span> x_coord) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-26" title="26"><span class="st">  </span><span class="kw">cs_replace0</span>(., <span class="dt">var =</span> y_coord) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-27" title="27"><span class="st">  </span><span class="kw">filter</span>(., missing <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) </a>
+<a class="sourceLine" id="cb6-28" title="28"></a>
+<a class="sourceLine" id="cb6-29" title="29">monthCrimes19 &lt;-<span class="st"> </span>ytdCrimes19 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-30" title="30"><span class="st">    </span><span class="kw">filter</span>(dateOcc <span class="op">&gt;=</span><span class="st"> </span><span class="kw">as.Date</span>(params<span class="op">$</span>date))</a></code></pre></div>
+<h5 id="larcenies">Larcenies</h5>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">larceny &lt;-<span class="st"> </span>monthCrimes19 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="st">  </span><span class="kw">filter</span>(., crimeCatNum <span class="op">==</span><span class="st"> </span><span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb7-3" title="3"></a>
+<a class="sourceLine" id="cb7-4" title="4">larceny &lt;-<span class="st"> </span><span class="kw">mutate</span>(larceny, <span class="st">&quot;type&quot;</span> =<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;ALL OTHER&quot;</span>, description), <span class="st">&quot;All Other&quot;</span>, </a>
+<a class="sourceLine" id="cb7-5" title="5">                                    <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;BICYCLE&quot;</span>, description), <span class="st">&quot;Bicycle&quot;</span>, </a>
+<a class="sourceLine" id="cb7-6" title="6">                                    <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;FROM BUILDING&quot;</span>, description), <span class="st">&quot;From Building&quot;</span>, </a>
+<a class="sourceLine" id="cb7-7" title="7">                                    <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;FROM COIN&quot;</span>, description), <span class="st">&quot;From Coin Machine&quot;</span>, </a>
+<a class="sourceLine" id="cb7-8" title="8">                                    <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;FROM MTR VEH&quot;</span>, description), <span class="st">&quot;From Motor Vehicle&quot;</span>, </a>
+<a class="sourceLine" id="cb7-9" title="9">                                    <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;MTR VEH PARTS&quot;</span>, description), <span class="st">&quot;Motor Vehicle Parts&quot;</span>,</a>
+<a class="sourceLine" id="cb7-10" title="10">                                    <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;PURSE&quot;</span>, description), <span class="st">&quot;Purse Snatching&quot;</span>,</a>
+<a class="sourceLine" id="cb7-11" title="11">                                    <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;SHOPLIFT&quot;</span>, description), <span class="st">&quot;Shoplifting&quot;</span>,</a>
+<a class="sourceLine" id="cb7-12" title="12">                                    <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;FRM PRSN&quot;</span>, description), <span class="st">&quot;From Person&quot;</span>, <span class="ot">NA</span>))))))))))</a>
+<a class="sourceLine" id="cb7-13" title="13"></a>
+<a class="sourceLine" id="cb7-14" title="14">larceny &lt;-<span class="st"> </span><span class="kw">mutate</span>(larceny, <span class="st">&quot;value&quot;</span> =<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;UNDER&quot;</span>, description), <span class="st">&quot;Under $500&quot;</span>,</a>
+<a class="sourceLine" id="cb7-15" title="15">                                     <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">$500 - </span><span class="ch">\\</span><span class="st">$24,999&quot;</span>, description), <span class="st">&quot;$500 - $24,999&quot;</span>,</a>
+<a class="sourceLine" id="cb7-16" title="16">                                     <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;OVER </span><span class="ch">\\</span><span class="st">$25,000&quot;</span>, description), <span class="st">&quot;Over $25,000&quot;</span>, <span class="ot">NA</span>)))) </a></code></pre></div>
+<h4 id="2018">2018</h4>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">totalCrimes18 &lt;-<span class="st"> </span>totalCrimes18 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="st">  </span><span class="kw">cs_filter_count</span>(., <span class="dt">var =</span> count) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="st">  </span><span class="kw">cs_filter_crime</span>(., <span class="dt">var =</span> crime, <span class="st">&quot;part 1&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="st">  </span><span class="kw">cs_crime_cat</span>(., <span class="dt">var =</span> crime, crimeCatNum, <span class="st">&quot;numeric&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="st">  </span><span class="kw">cs_crime_cat</span>(., <span class="dt">var =</span> crime, crimeCatName, <span class="st">&quot;string&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="st">  </span><span class="kw">cs_crime</span>(., <span class="dt">var =</span> crime, violent, <span class="st">&quot;violent&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="st">  </span><span class="kw">cs_crime</span>(., <span class="dt">var =</span> crime, property, <span class="st">&quot;property&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="st">  </span><span class="kw">cs_parse_date</span>(., date_occur, <span class="dt">dateVar =</span> dateOcc, <span class="dt">timeVar =</span> timeOcc) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="st">  </span><span class="kw">filter</span>(district <span class="op">==</span><span class="st"> </span><span class="dv">2</span> <span class="op">|</span><span class="st"> </span>district <span class="op">==</span><span class="st"> </span><span class="dv">5</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-10" title="10"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">weekday =</span> <span class="kw">wday</span>(dateOcc, <span class="dt">label =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-11" title="11"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">monthVar =</span> dateOcc) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-12" title="12"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">tod =</span> timeOcc) </a>
+<a class="sourceLine" id="cb8-13" title="13"></a>
+<a class="sourceLine" id="cb8-14" title="14">totalCrimes18<span class="op">$</span>monthVar &lt;-<span class="st"> </span><span class="kw">month</span>(<span class="kw">as.Date</span>(totalCrimes18<span class="op">$</span>monthVar, <span class="dt">format=</span><span class="st">&quot;%d/%m/%Y&quot;</span>), <span class="dt">label =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb8-15" title="15"></a>
+<a class="sourceLine" id="cb8-16" title="16">totalCrimes18<span class="op">$</span>neighborhood &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(totalCrimes18<span class="op">$</span>neighborhood)</a>
+<a class="sourceLine" id="cb8-17" title="17"></a>
+<a class="sourceLine" id="cb8-18" title="18">totalCrimes18<span class="op">$</span>tod &lt;-<span class="st"> </span><span class="kw">strptime</span>(totalCrimes18<span class="op">$</span>tod, <span class="dt">tz =</span> <span class="st">&quot;America/Chicago&quot;</span>, <span class="st">&quot;%H:%M&quot;</span>)</a>
+<a class="sourceLine" id="cb8-19" title="19">totalCrimes18<span class="op">$</span>tod &lt;-<span class="st"> </span><span class="kw">format</span>(totalCrimes18<span class="op">$</span>tod, <span class="dt">format =</span> <span class="st">&quot;%H%M%S&quot;</span>)</a>
+<a class="sourceLine" id="cb8-20" title="20"></a>
+<a class="sourceLine" id="cb8-21" title="21">totalCrimes18 &lt;-<span class="st"> </span>totalCrimes18 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-22" title="22"><span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">dayNight =</span> <span class="kw">ifelse</span>(tod <span class="op">&gt;=</span><span class="st"> &quot;180000&quot;</span> <span class="op">&amp;</span><span class="st"> </span>tod <span class="op">&lt;</span><span class="st"> &quot;600000&quot;</span>, <span class="st">&quot;Night&quot;</span>, <span class="st">&quot;Day&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-23" title="23"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>dateTime, <span class="op">-</span>tod, <span class="op">-</span>flag_crime, <span class="op">-</span>flag_administrative, <span class="op">-</span>flag_unfounded, <span class="op">-</span>flag_cleanup) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-24" title="24"><span class="st">  </span><span class="kw">cs_missingXY</span>(., <span class="dt">varX =</span> x_coord, <span class="dt">varY =</span> y_coord, <span class="dt">newVar =</span> missing) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-25" title="25"><span class="st">  </span><span class="kw">cs_replace0</span>(., <span class="dt">var =</span> x_coord) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-26" title="26"><span class="st">  </span><span class="kw">cs_replace0</span>(., <span class="dt">var =</span> y_coord) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-27" title="27"><span class="st">  </span><span class="kw">filter</span>(., missing <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-28" title="28"><span class="st">  </span><span class="kw">filter</span>(dateOcc <span class="op">&gt;=</span><span class="st"> </span><span class="kw">as.Date</span>(params<span class="op">$</span>pastdate))</a>
+<a class="sourceLine" id="cb8-29" title="29"></a>
+<a class="sourceLine" id="cb8-30" title="30">monthCrimes18 &lt;-<span class="st"> </span>totalCrimes18 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-31" title="31"><span class="st">    </span><span class="kw">filter</span>(dateOcc <span class="op">&gt;=</span><span class="st"> </span><span class="kw">as.Date</span>(params<span class="op">$</span>pstdtmonth) <span class="op">&amp;</span><span class="st"> </span>dateOcc <span class="op">&lt;=</span><span class="st"> </span><span class="kw">as.Date</span>(params<span class="op">$</span>pstdtmonth2))</a>
+<a class="sourceLine" id="cb8-32" title="32"></a>
+<a class="sourceLine" id="cb8-33" title="33">ytdCrimes18 &lt;-<span class="st"> </span>totalCrimes18<span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-34" title="34"><span class="st">    </span><span class="kw">filter</span>(dateOcc <span class="op">&lt;=</span><span class="st"> </span><span class="kw">as.Date</span>(params<span class="op">$</span>pstdtmonth2))</a></code></pre></div>
+<h3 id="get-spatial-data">Get Spatial Data</h3>
+<h4 id="external-shapefiles">External Shapefiles</h4>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="co"># all crimes </span></a>
+<a class="sourceLine" id="cb9-2" title="2">totalCrimes18_sf &lt;-<span class="st"> </span><span class="kw">cs_projectXY</span>(totalCrimes18, <span class="dt">varX =</span> x_coord, <span class="dt">varY =</span> y_coord, <span class="dt">crs =</span> <span class="dv">102696</span>)</a>
+<a class="sourceLine" id="cb9-3" title="3">ytdCrimes18_sf &lt;-<span class="st"> </span><span class="kw">cs_projectXY</span>(ytdCrimes18, <span class="dt">varX =</span> x_coord, <span class="dt">varY =</span> y_coord, <span class="dt">crs =</span> <span class="dv">102696</span>)</a>
+<a class="sourceLine" id="cb9-4" title="4">ytdCrimes19_sf &lt;-<span class="st"> </span><span class="kw">cs_projectXY</span>(ytdCrimes19, <span class="dt">varX =</span> x_coord, <span class="dt">varY =</span> y_coord, <span class="dt">crs =</span> <span class="dv">102696</span>)</a>
+<a class="sourceLine" id="cb9-5" title="5"></a>
+<a class="sourceLine" id="cb9-6" title="6">monthCrimes18_sf &lt;-<span class="st"> </span><span class="kw">cs_projectXY</span>(monthCrimes18, <span class="dt">varX =</span> x_coord, <span class="dt">varY =</span> y_coord, <span class="dt">crs =</span> <span class="dv">102696</span>)</a>
+<a class="sourceLine" id="cb9-7" title="7">monthCrimes19_sf &lt;-<span class="st"> </span><span class="kw">cs_projectXY</span>(monthCrimes19, <span class="dt">varX =</span> x_coord, <span class="dt">varY =</span> y_coord, <span class="dt">crs =</span> <span class="dv">102696</span>)</a>
+<a class="sourceLine" id="cb9-8" title="8"></a>
+<a class="sourceLine" id="cb9-9" title="9">larceny_sf &lt;-<span class="st"> </span><span class="kw">cs_projectXY</span>(larceny, <span class="dt">varX =</span> x_coord, <span class="dt">varY =</span> y_coord, <span class="dt">crs =</span> <span class="dv">102696</span>)</a>
+<a class="sourceLine" id="cb9-10" title="10"></a>
+<a class="sourceLine" id="cb9-11" title="11"><span class="co"># med campus</span></a>
+<a class="sourceLine" id="cb9-12" title="12">mc_crimes_month18_sf &lt;-<span class="st"> </span><span class="kw">st_intersection</span>(monthCrimes18_sf, med_campus) </a></code></pre></div>
+<pre><code>## Warning: attribute variables are assumed to be spatially constant
+## throughout all geometries
+</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">mc_crimes_month18 &lt;-<span class="st"> </span>mc_crimes_month18_sf  <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="st">   </span><span class="kw">as.data.frame</span>() </a>
+<a class="sourceLine" id="cb11-3" title="3"></a>
+<a class="sourceLine" id="cb11-4" title="4">mc_crimes_month19_sf &lt;-<span class="st"> </span><span class="kw">st_intersection</span>(monthCrimes19_sf, med_campus)</a></code></pre></div>
+<pre><code>## Warning: attribute variables are assumed to be spatially constant
+## throughout all geometries
+</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">mc_crimes_month19 &lt;-<span class="st"> </span>mc_crimes_month19_sf  <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="st">   </span><span class="kw">as.data.frame</span>()</a>
+<a class="sourceLine" id="cb13-3" title="3"></a>
+<a class="sourceLine" id="cb13-4" title="4">mc_crimes_ytd18_sf &lt;-<span class="st"> </span><span class="kw">st_intersection</span>(ytdCrimes18_sf, med_campus) </a></code></pre></div>
+<pre><code>## Warning: attribute variables are assumed to be spatially constant
+## throughout all geometries
+</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">mc_crimes_ytd18 &lt;-<span class="st"> </span>mc_crimes_ytd18_sf <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="st">   </span><span class="kw">as.data.frame</span>() </a>
+<a class="sourceLine" id="cb15-3" title="3"></a>
+<a class="sourceLine" id="cb15-4" title="4">mc_crimes_ytd19_sf &lt;-<span class="st"> </span><span class="kw">st_intersection</span>(ytdCrimes19_sf, med_campus)</a></code></pre></div>
+<pre><code>## Warning: attribute variables are assumed to be spatially constant
+## throughout all geometries
+</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">mc_crimes_ytd19 &lt;-<span class="st"> </span>mc_crimes_ytd19_sf <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="st">   </span><span class="kw">as.data.frame</span>()</a>
+<a class="sourceLine" id="cb17-3" title="3"></a>
+<a class="sourceLine" id="cb17-4" title="4">mc_crimes_total18_sf &lt;-<span class="st"> </span><span class="kw">st_intersection</span>(totalCrimes18_sf, med_campus)</a></code></pre></div>
+<pre><code>## Warning: attribute variables are assumed to be spatially constant
+## throughout all geometries
+</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1">mc_crimes_total18 &lt;-<span class="st"> </span>mc_crimes_total18_sf <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb19-2" title="2"><span class="st">   </span><span class="kw">as.data.frame</span>()</a>
+<a class="sourceLine" id="cb19-3" title="3"></a>
+<a class="sourceLine" id="cb19-4" title="4">mc_larcenies_sf &lt;-<span class="st"> </span><span class="kw">st_intersection</span>(larceny_sf, med_campus)</a></code></pre></div>
+<pre><code>## Warning: attribute variables are assumed to be spatially constant
+## throughout all geometries
+</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1">mc_larcenies &lt;-<span class="st"> </span>mc_larcenies_sf <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-2" title="2"><span class="st">   </span><span class="kw">as.data.frame</span>()</a>
+<a class="sourceLine" id="cb21-3" title="3"></a>
+<a class="sourceLine" id="cb21-4" title="4"><span class="co"># cortex</span></a>
+<a class="sourceLine" id="cb21-5" title="5">ctx_crimes_sf &lt;-<span class="st"> </span><span class="kw">st_intersection</span>(monthCrimes19_sf, cortex)</a></code></pre></div>
+<pre><code>## Warning: attribute variables are assumed to be spatially constant
+## throughout all geometries
+</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="co"># police districts </span></a>
+<a class="sourceLine" id="cb23-2" title="2">dst_<span class="dv">2</span> &lt;-<span class="st"> </span>monthCrimes19 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-3" title="3"><span class="st">  </span><span class="kw">filter</span>(., neighborhood <span class="op">%in%</span><span class="st"> </span>dst2) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(., neighborhood) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-5" title="5"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-6" title="6"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">crimeTotal =</span> n) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-7" title="7"><span class="st">  </span><span class="kw">left_join</span>(nbhd_pop10, <span class="dt">by =</span> <span class="st">&quot;neighborhood&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">crimeRate =</span> (crimeTotal<span class="op">/</span>pop10)<span class="op">*</span><span class="dv">1000</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-9" title="9"><span class="st">  </span><span class="kw">drop_na</span>()</a>
+<a class="sourceLine" id="cb23-10" title="10"></a>
+<a class="sourceLine" id="cb23-11" title="11">dst_<span class="dv">5</span> &lt;-<span class="st"> </span>monthCrimes19 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-12" title="12"><span class="st">  </span><span class="kw">filter</span>(., neighborhood <span class="op">%in%</span><span class="st"> </span>dst5) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-13" title="13"><span class="st">  </span><span class="kw">group_by</span>(., neighborhood) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-14" title="14"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-15" title="15"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">crimeTotal =</span> n) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-16" title="16"><span class="st">  </span><span class="kw">left_join</span>(nbhd_pop10, <span class="dt">by =</span> <span class="st">&quot;neighborhood&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-17" title="17"><span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">crimeRate =</span> (crimeTotal<span class="op">/</span>pop10)<span class="op">*</span><span class="dv">1000</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-18" title="18"><span class="st">  </span><span class="kw">drop_na</span>()</a>
+<a class="sourceLine" id="cb23-19" title="19"></a>
+<a class="sourceLine" id="cb23-20" title="20">dst_<span class="dv">2</span>_pop_sf &lt;-<span class="st"> </span><span class="kw">left_join</span>(nhoods_sf, dst_<span class="dv">2</span>, <span class="dt">by =</span> <span class="st">&quot;neighborhood&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-21" title="21"><span class="st">  </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> <span class="dv">102696</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-22" title="22"><span class="st">  </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-23" title="23"><span class="st">  </span><span class="kw">subset</span>(., neighborhood <span class="op">!=</span><span class="st"> </span><span class="dv">88</span>)</a>
+<a class="sourceLine" id="cb23-24" title="24"></a>
+<a class="sourceLine" id="cb23-25" title="25">dst_<span class="dv">5</span>_pop_sf &lt;-<span class="st"> </span><span class="kw">left_join</span>(nhoods_sf, dst_<span class="dv">5</span>, <span class="dt">by =</span> <span class="st">&quot;neighborhood&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-26" title="26"><span class="st">  </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> <span class="dv">102696</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-27" title="27"><span class="st">  </span><span class="kw">drop_na</span>()</a>
+<a class="sourceLine" id="cb23-28" title="28"></a>
+<a class="sourceLine" id="cb23-29" title="29"><span class="co"># Save</span></a>
+<a class="sourceLine" id="cb23-30" title="30"><span class="kw">save</span>(totalCrimes18_sf, ytdCrimes18_sf, ytdCrimes19_sf, monthCrimes18_sf, monthCrimes19_sf, mc_crimes_month18_sf, mc_crimes_month19_sf, mc_crimes_ytd18_sf, mc_crimes_total18_sf, mc_crimes_ytd19_sf, mc_larcenies_sf, ctx_crimes_sf, dst_<span class="dv">2</span>_pop_sf, dst_<span class="dv">5</span>_pop_sf, <span class="dt">file =</span> <span class="kw">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;spatial-crime-data.rda&quot;</span>))</a>
+<a class="sourceLine" id="cb23-31" title="31"></a>
+<a class="sourceLine" id="cb23-32" title="32"><span class="kw">save</span>(ytdCrimes18, ytdCrimes19, monthCrimes18, monthCrimes19, totalCrimes18, larceny, mc_crimes_month18, mc_crimes_month19, mc_crimes_ytd18, mc_crimes_total18, mc_crimes_ytd19, mc_larcenies, dst_<span class="dv">2</span>, dst_<span class="dv">5</span>, <span class="dt">file =</span> <span class="kw">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;crime-data.rda&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>())</a></code></pre></div>
+
+</body>
+</html>
