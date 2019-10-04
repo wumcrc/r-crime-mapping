@@ -159,10 +159,181 @@ fpse_crimes_tidy <- mutate(fpse_crimes_tidy, "value" = ifelse(grepl("UNDER", des
                                                    ifelse(grepl("OVER \\$25,000", description), "Over $25,000", NA))))
 ```
 
-### Tables 
+### Graphs 
 
 ```{r}
-ggplot(fpse_crimes_tidy, aes(x=yearVar, y=count, group=yearVar)) +
-  geom_line() +
-  geom_point()
+fpse_crimes_tidy %>% 
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018) %>%
+  count() %>% 
+  ungroup() %>% 
+  ggplot( aes(x=yearVar, y=n)) +
+    geom_line(size = 1, color = "dark blue") + 
+    geom_point(color = "dark blue") +
+    ylim(0,600) +
+    geom_text(aes(label = n), 
+              vjust = -1.25,
+              color = "black") +
+    scale_x_continuous(breaks = c(2010, 2014, 2018), 
+                       label = c(2010, 2014, 2018)) +
+    labs(title = "Forest Park Southeast",
+          subtitle = "Total Crimes",
+         caption = "Data via St. Louis Metropolitan Police Department \n Plot by Washington University Medical Center Redevelopment",
+          x = "Year",
+          y = "Total Crimes") +
+    theme_classic() +
+    theme(axis.text.x = element_text(colour = "grey20", size = 12, angle = 45, hjust = 1.25, vjust = 1.25),
+                        axis.text.y = element_text(colour = "grey20", size = 12),
+          text = element_text(size = 14), 
+          legend.position = "none")
+
+ggsave(here("results", "multi-year-analysis", "fpse_crime_total.jpeg"), dpi = 500)
+```
+
+
+```{r}
+fpse_crimes_tidy %>% 
+  group_by(yearVar, crimeCatName) %>% 
+  filter(., yearVar <= 2018) %>%
+  count(crimeCatName) %>% 
+  ungroup() %>% 
+  ggplot( aes(x=yearVar, y=n, color = crimeCatName)) +
+    geom_line(size = 1) + 
+    geom_point() +
+    ylim(0,400) +
+    geom_text(aes(label = n), 
+              vjust = -1, 
+              size = 2) +
+    scale_x_continuous(breaks = c(2010, 2014, 2018), 
+                       label = c(2010, 2014, 2018)) +
+    facet_wrap(facets = vars(crimeCatName)) + 
+    labs(title = "Forest Park Southeast",
+          subtitle = "Crimes by Year & Category",
+         caption = "Data via St. Louis Metropolitan Police Department \n Plot by Washington University Medical Center Redevelopment",
+          x = "Year",
+          y = "Total Crimes") +
+    theme_classic() +
+    theme(axis.text.x = element_text(colour = "grey20", size = 12, angle = 45, hjust = 1.25, vjust = 1.25),
+                        axis.text.y = element_text(colour = "grey20", size = 12),
+          text = element_text(size = 14), 
+          legend.position = "none")
+
+ggsave(here("results", "multi-year-analysis", "fpse_crime_cat.jpeg"), dpi = 500)
+```
+
+```{r}
+fpse_crimes_tidy %>% 
+  group_by(yearVar, violent) %>%  
+  filter(., yearVar <= 2018 & violent == TRUE) %>%
+  count() %>%
+  ungroup() %>% 
+  ggplot(aes(x=yearVar, y=n)) +
+    geom_line(size = 1, color = "dark red") + 
+    geom_point(color = "dark red") +
+    ylim(0,100) +
+    geom_text(aes(label = n), 
+              vjust = -1.25, 
+              size = 2) +
+    scale_x_continuous(breaks = c(2010, 2014, 2018), 
+                       label = c(2010, 2014, 2018)) +
+    labs(title = "Forest Park Southeast",
+          subtitle = "Violent Crimes",
+         caption = "Data via St. Louis Metropolitan Police Department \n Plot by Washington University Medical Center Redevelopment",
+          x = "Year",
+          y = "Number of Crimes") +
+    theme_classic() +
+    theme(axis.text.x = element_text(colour = "grey20", size = 12, angle = 45, hjust = 1.25, vjust = 1.25),
+                        axis.text.y = element_text(colour = "grey20", size = 12),
+          text = element_text(size = 14))
+
+ggsave(here("results", "multi-year-analysis", "fpse_crime_violent.jpeg"), dpi = 500)
+```
+
+### Graphs 
+
+```{r}
+cwe_crimes_tidy %>% 
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018) %>%
+  count() %>% 
+  ungroup() %>% 
+  ggplot( aes(x=yearVar, y=n)) +
+    geom_line(size = 1, color = "dark blue") + 
+    geom_point(color = "dark blue") +
+    ylim(0,2000) +
+    geom_text(aes(label = n), 
+              vjust = -1.25,
+              color = "black") +
+    scale_x_continuous(breaks = c(2010, 2014, 2018), 
+                       label = c(2010, 2014, 2018)) +
+    labs(title = "Central West End",
+          subtitle = "Total Crimes",
+         caption = "Data via St. Louis Metropolitan Police Department \n Plot by Washington University Medical Center Redevelopment",
+          x = "Year",
+          y = "Total Crimes") +
+    theme_classic() + 
+    theme(axis.text.x = element_text(colour = "grey20", size = 12, angle = 45, hjust = 1.25, vjust = 1.25),
+                        axis.text.y = element_text(colour = "grey20", size = 12),
+          text = element_text(size = 14), 
+          legend.position = "none")
+
+ggsave(here("results", "multi-year-analysis", "cwe_crime_total.jpeg"), dpi = 500)
+```
+
+```{r}
+cwe_crimes_tidy %>% 
+  group_by(yearVar, crimeCatName) %>% 
+  filter(., yearVar <= 2018) %>%
+  count(crimeCatName) %>% 
+  ungroup() %>% 
+  ggplot( aes(x=yearVar, y=n, color = crimeCatName)) +
+    geom_line(size = 1) + 
+    geom_point() +
+    ylim(0,1500) +
+    geom_text(aes(label = n), 
+              vjust = -1,
+              size = 2,
+              color = "black") +
+    scale_x_continuous(breaks = c(2010, 2014, 2018), 
+                       label = c(2010, 2014, 2018)) +
+    facet_wrap(facets = vars(crimeCatName)) + 
+    labs(title = "Central West End",
+          subtitle = "Crimes by Year & Category",
+         caption = "Data via St. Louis Metropolitan Police Department \n Plot by Washington University Medical Center Redevelopment",
+          x = "Year",
+          y = "Total Crimes") +
+    theme_classic() +
+    theme(axis.text.x = element_text(colour = "grey20", size = 12, angle = 45, hjust = 1.25, vjust = 1.25),
+                        axis.text.y = element_text(colour = "grey20", size = 12),
+          text = element_text(size = 14), 
+          legend.position = "none")
+
+ggsave(here("results", "multi-year-analysis", "cwe_crime_cat.jpeg"), dpi = 500)
+```
+
+```{r}
+cwe_crimes_tidy %>% 
+  group_by(yearVar, violent) %>%  
+  filter(., yearVar <= 2018 & violent == TRUE) %>%
+  count() %>% 
+  ungroup() %>% 
+  ggplot(aes(x=yearVar, y=n)) +
+    geom_line(size = 1, color = "dark red") + 
+    geom_point(color = "dark red") +
+    ylim(0,200) +
+    geom_text(aes(label = n), 
+              vjust = -1.25,
+              color = "black") +
+    scale_x_continuous(breaks = c(2010, 2014, 2018), 
+                       label = c(2010, 2014, 2018)) +
+    labs(title = "Central West End",
+          subtitle = "Violent Crimes",
+         caption = "Data via St. Louis Metropolitan Police Department \n Plot by Washington University Medical Center Redevelopment",
+          x = "Year",
+          y = "Number of Crimes") +
+    theme(axis.text.x = element_text(colour = "grey20", size = 12, angle = 45, hjust = 1.25, vjust = 1.25),
+                        axis.text.y = element_text(colour = "grey20", size = 12),
+          text = element_text(size = 14))
+
+ggsave(here("results", "multi-year-analysis", "cwe_crime_violent.jpeg"), dpi = 500)
 ```
