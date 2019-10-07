@@ -1,0 +1,258 @@
+---
+title: "Population Data"
+author: "Jes Stevens"
+date: "10/7/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(tigris_use_cache = TRUE)
+```
+
+# Load Dependencies
+
+```{r cars}
+library(areal)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(sf)
+library(tidycensus)
+library(here)
+
+# Load Library 
+library(compstatr)
+library(dplyr)
+library(lubridate)
+library(writexl)
+library(here)
+
+# tidyverse packages
+library(ggplot2)       # plotting data
+library(stringr)       # wrappers for common string operations
+library(tidyr)         # tidy data
+library(dplyr)         # data manipulation
+library(magrittr)      # pipe operator
+library(readxl)        # read & write excel files
+library(lubridate)     # time data manipulation
+library(scales)
+
+# spatial packages
+library(tmap)         # map layouts
+library(tmaptools)    # tools for handeling spatial
+library(oldtmaptools) # deprecated toolds for spatial analysis
+library(sf)           # spatial data tools
+library(ceramic)      # download online imagery tiles
+library(compstatr)    # tools for STL crime data
+library(raster)       # geograpic data analysis & modeling
+
+# other packages
+library(here)         # file path management
+library(janitor)      # tools for examining data
+library(RColorBrewer) # cynthia brewer color palettes
+library(viridis)      # color palettes
+library(flextable)   # exporting pretty tables
+library(htmltools)
+library(knitr)
+
+st_read(here("data", "external", "stl_neighborhoods", "nbhds.shp")) %>%
+  st_transform(crs = 26915) %>%
+  filter(NHD_NUM <= 79) %>%
+  select(NHD_NUM, NHD_NAME) -> nhoods
+
+# Load Data
+load(file = here("data", "crime-data", "total-crimes-10yrs.rda"))
+```
+
+# Data Cleaning
+## FPSE 
+
+```{r fpse data}
+# Extract FPSE
+fpse_crimes <- filter(crimes, neighborhood == 39)
+
+# Add Crime Details 
+fpse_crimes_tidy <- fpse_crimes %>% 
+  cs_filter_count(., var = count) %>%                                           # Removes Negative Counts
+  cs_filter_crime(., var = crime, "part 1") %>%                                 # Filters Part 1 Crimes 
+  cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%                      
+  cs_crime_cat(., var = crime, crimeCatName, "string") %>%                      # Labels Crime Categories
+  cs_crime(., var = crime, violent, "violent") %>%                              # Labels Violent Crimes 
+  cs_crime(., var = crime, property, "property") %>%                            # Labels Property Crimes
+  cs_crime(., var = crime, larceny, 6) %>%                                      # Labels Larceny Crimes
+  cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%        # Parses Date Data
+  mutate(weekday = wday(dateOcc, label = TRUE)) %>%                             # Labels Days of the Week
+  mutate(monthVar = dateOcc) %>%
+  mutate(yearVar = dateOcc) %>%
+  mutate(tod = timeOcc)
+
+fpse_crimes_tidy$monthVar <- month(as.Date(fpse_crimes_tidy$monthVar, 
+                                      format="%d/%m/%Y"), label = TRUE)
+
+fpse_crimes_tidy$yearVar <- year(as.Date(fpse_crimes_tidy$yearVar, 
+                                      format="%Y"))
+
+fpse_crimes_tidy$tod <- strptime(fpse_crimes_tidy$tod, 
+                            tz = "America/Chicago", "%H:%M")
+
+fpse_crimes_tidy$tod <- format(fpse_crimes_tidy$tod, 
+                          format = "%H%M%S")
+
+fpse_crimes_tidy <- fpse_crimes_tidy %>%
+  mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
+  dplyr::select(-dateTime, -tod, -flag_crime, 
+                -flag_administrative, -flag_unfounded, -flag_cleanup)  %>%
+  cs_missingXY(., varX = x_coord, varY = y_coord, newVar = missing) %>% 
+  cs_replace0(., var = x_coord) %>%
+  cs_replace0(., var = y_coord) 
+
+fpse_crimes_tidy <- mutate(fpse_crimes_tidy, "type" = ifelse(grepl("ALL OTHER", description), "All Other", 
+                                           ifelse(grepl("BICYCLE", description), "Bicycle", 
+                                                  ifelse(grepl("FROM BUILDING", description), "From Building", 
+                                                         ifelse(grepl("FROM COIN", description), "From Coin Machine", 
+                                                                ifelse(grepl("FROM MTR VEH", description), "From Motor Vehicle", 
+                                                                       ifelse(grepl("MTR VEH PARTS", description), "Motor Vehicle Parts",
+                                                                              ifelse(grepl("PURSE", description), "Purse Snatching",
+                                                                                     ifelse(grepl("SHOPLIFT", description), "Shoplifting",
+                                                                                            ifelse(grepl("FRM PRSN", description), "From Person", NA))))))))))
+
+fpse_crimes_tidy <- mutate(fpse_crimes_tidy, "value" = ifelse(grepl("UNDER", description), "Under $500",
+                                            ifelse(grepl("\\$500 - \\$24,999", description), "$500 - $24,999",
+                                                   ifelse(grepl("OVER \\$25,000", description), "Over $25,000", NA))))
+```
+
+# download 2017 ACS data
+
+```{r}
+v07 <- load_variables(2007, "acs5", cache = TRUE)
+v17 <- load_variables(2017, "acs5", cache = TRUE)
+```
+
+
+```{r, echo=FALSE}
+get_acs(geography = "tract", year = 2017, variables = "B01003_001", state = 29, county = 510, geometry = TRUE) %>%
+  select(GEOID, estimate, moe) %>%
+  st_transform(crs = 26915) -> stl17
+
+get_acs(geography = "tract", year = 2012, variables = "B01003_001", state = 29, county = 510, geometry = TRUE) %>%
+  select(GEOID, estimate, moe) %>%
+  st_transform(crs = 26915) -> stl12
+
+get_acs(geography = "tract", year = 2009, variables = "B01003_001", state = 29, county = 510, geometry = TRUE) %>%
+  select(GEOID, estimate, moe) %>%
+  st_transform(crs = 26915) -> stl09
+```
+
+```{r}
+ar_validate(stl12, nhoods, "pop12", method = "aw", verbose = TRUE)
+```
+
+
+```{r}
+nhoods %>%
+  aw_interpolate(tid = NHD_NUM, source = stl17, sid = GEOID, 
+                 weight = "sum", output = "tibble", extensive = "estimate") %>%
+  select(NHD_NUM, estimate) %>% 
+  mutate(., year = "2017") -> nhoods17
+
+nhoods %>%
+  aw_interpolate(tid = NHD_NUM, source = stl12, sid = GEOID, 
+                 weight = "sum", output = "tibble", extensive = "estimate") %>%
+  select(NHD_NUM, estimate) %>% 
+  mutate(., year = "2012") -> nhoods12
+
+nhoods %>%
+  aw_interpolate(tid = NHD_NUM, source = stl09, sid = GEOID, 
+                 weight = "sum", output = "tibble", extensive = "estimate") %>%
+  select(NHD_NUM, estimate) %>% 
+  mutate(., year = "2009") -> nhoods09
+```
+
+```{r}
+full_join(nhoods09, nhoods12) -> nhoodpop1
+full_join(nhoodpop1, nhoods17) -> nhoodPop
+```
+
+```{r}
+nhoodPop %>% 
+  filter(., NHD_NUM == 38) %>% 
+  mutate(., neighborhood = as.character(NHD_NUM)) %>%
+  ggplot(aes(x=year, y=estimate, fill = neighborhood)) +
+    geom_bar(stat = "identity", position = "dodge", color = "black") + 
+    geom_text(aes(label = round(estimate, digits = 0)), 
+              vjust = 2,
+              color = "black") +
+    labs(title = "Neighborhood Population",
+          subtitle = "Central West End",
+         caption = "Data via American Community Survey, 5 year estimates \n Plot by Washington University Medical Center Redevelopment",
+          x = "Year",
+          y = "Population") +
+    theme_classic() +
+    theme(axis.text.x = element_text(colour = "grey20", size = 12, angle = 45, hjust = 1.25, vjust = 1.25),
+                        axis.text.y = element_text(colour = "grey20", size = 12),
+          text = element_text(size = 14),
+          legend.position = "none")
+```
+
+```{r}
+nhoodPop %>% 
+  filter(., NHD_NUM == 39) %>% 
+  mutate(., neighborhood = as.character(NHD_NUM)) %>%
+  ggplot(aes(x=year, y=estimate)) +
+    geom_bar(stat = "identity", position = "dodge", color = "black", fill = "#00BFC4") + 
+    geom_text(aes(label = round(estimate, digits = 0)), 
+              vjust = 2,
+              color = "black") +
+    labs(title = "Neighborhood Population",
+          subtitle = "Forest Park Southeast",
+         caption = "Data via American Community Survey, 5 year estimates \n Plot by Washington University Medical Center Redevelopment",
+          x = "Year",
+          y = "Population") +
+    scale_x_discrete(labels = c("2009" = "2005 - 2009", "2012" = "2008 - 2012", "2017" = "2013 - 2017")) +
+    theme_classic() +
+    theme(axis.text.x = element_text(colour = "grey20", size = 12),
+                        axis.text.y = element_text(colour = "grey20", size = 12),
+          text = element_text(size = 14),
+          legend.position = "none")
+```
+
+```{r}
+nhoodPop %>% 
+  filter(., NHD_NUM == 39) %>% 
+  mutate(., neighborhood = as.character(NHD_NUM)) %>% 
+  mutate(., year = as.numeric(year)) -> fpsePop
+```
+
+```{r}
+fpse_crimes_tidy %>% 
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018) %>%
+  count() %>% 
+  rename(., year = yearVar) -> fpse_crimes_count
+
+left_join(fpsePop, fpse_crimes_count, by = "year")  -> fpse
+
+
+
+ggplot(data=test_data_long,
+       aes(x=date, y=value, colour=variable)) +
+       geom_line()
+```
+
+```{r}
+fpse %>%
+  mutate(., year = as.character(year)) %>%
+  ggplot(aes(year)) + 
+    geom_line(aes(y = n, color = "dark red"), group = 1) + 
+    geom_line(aes(y = estimate, color = "dark blue"), group = 1) +
+    labs(title = "Forest Park Southeast",
+         caption = "Data via American Community Survey, 5 year estimates \n Plot by Washington University Medical Center Redevelopment",
+          x = "Year",
+          y = "Population & Total Crimes") + 
+  scale_color_discrete(labels = c("Population", "Total Crimes")) +
+  theme_classic() +
+  theme(legend.title = element_blank())
+
+ggsave("results/multi-year-analysis/fpse_crime_population.jpeg", dpi = 500)
+```
