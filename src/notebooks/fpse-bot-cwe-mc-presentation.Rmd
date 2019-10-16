@@ -132,7 +132,7 @@ totalCrimes18 %>%
 
 ytdCrimes19 %>%
   filter(., neighborhood == 39) %>%
-  group_by(monthVar, .drop = FALSE) %>%
+  group_by(monthVar) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
@@ -156,6 +156,19 @@ flextable(fpse_2019) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
   autofit()
 ```
+```{r}
+part1crimes <- c("Aggravated Assault", "Arson", "Burgalry", "Homicide", "Larceny", "Motor Vehicle Theft", "Rape", "Robbery")
+```
+
+```{r}
+for (chr in part1crimes) { 
+  if(fpse_2019$`Part 1 Crimes` != chr)  
+    add_row(fpse_2019, `Part 1 Crimes` == chr) 
+  } -> fortest
+
+
+```
+
 
 ## Forest Park Southeast: Summary Tables
 
