@@ -63,6 +63,8 @@ load(file = here("data", "basemap-files", "nbhd-boundaries.rda"))
 colkeys18 <- totalCrimes18$monthVar
 colkeys19 <- ytdCrimes19$monthVar
 colkeystotal <- c("Total")
+part1crimes <- c("Aggravated Assault", "Arson", "Burgalry", "Homicide", "Larceny", "Motor Vehicle Theft", "Robbery")
+
 # tmap_options()
 ```
 
@@ -124,11 +126,7 @@ totalCrimes18 %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> fpse_2018
+  replace(., is.na(.), 0)  -> fpse_2018
 
 ytdCrimes19 %>%
   filter(., neighborhood == 39) %>%
@@ -136,14 +134,24 @@ ytdCrimes19 %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> fpse_2019
+  replace(., is.na(.), 0) -> fpse_2019
 ```
 
 ```{r FPSE Total Crimes Flextable 2018, echo = FALSE}
+part1crimes[!(part1crimes %in% fpse_2018$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(fpse_2018, crimeCatName = missing_category) -> fpse_2018
+}
+
+fpse_2018 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> fpse_2018
+
 flextable(fpse_2018) %>%
   colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
@@ -151,23 +159,27 @@ flextable(fpse_2018) %>%
 ```
 
 ```{r FPSE Total Crimes Flextable 2019, echo = FALSE}
+part1crimes[!(part1crimes %in% fpse_2019$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(fpse_2019, crimeCatName = missing_category) -> fpse_2019
+}
+
+fpse_2019 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> fpse_2019
+
 flextable(fpse_2019) %>%
   colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
   autofit()
 ```
-```{r}
-part1crimes <- c("Aggravated Assault", "Arson", "Burgalry", "Homicide", "Larceny", "Motor Vehicle Theft", "Rape", "Robbery")
-```
-
-```{r}
-for (chr in part1crimes) { 
-  if(fpse_2019$`Part 1 Crimes` != chr)  
-    add_row(fpse_2019, `Part 1 Crimes` == chr) 
-  } -> fortest
 
 
-```
 
 
 ## Forest Park Southeast: Summary Tables
@@ -279,9 +291,9 @@ sprint_1 <- sprintf("%s total crimes in %s %s",
 sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
                     pct_chg_mth, params$month, params$pastyear, tc18)
 #sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
-                    cap19, params$month, params$year)
+                    #cap19, params$month, params$year)
 #sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
-                    pct_chg_cap, params$month, params$pastyear, cap18)
+                    #pct_chg_cap, params$month, params$pastyear, cap18)
 sprint_5 <- sprintf("%s total crimes in %s", 
                     tc_ytdCurrent, params$year)
 sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
@@ -310,11 +322,7 @@ totalCrimes18 %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> bot_2018
+  replace(., is.na(.), 0) -> bot_2018
 
 ytdCrimes19 %>%
   filter(., neighborhood == 28) %>%
@@ -322,14 +330,25 @@ ytdCrimes19 %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> bot_2019
+  replace(., is.na(.), 0) -> bot_2019
 ```
 
+
 ```{r BOT Total Crimes Flextable 2018, echo = FALSE}
+part1crimes[!(part1crimes %in% bot_2018$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(bot_2018, crimeCatName = missing_category) -> bot_2018
+}
+
+bot_2018 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> bot_2018
+
 flextable(bot_2018) %>%
   colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
@@ -337,6 +356,20 @@ flextable(bot_2018) %>%
 ```
 
 ```{r BOT Total Crimes Flextable 2019, echo = FALSE}
+part1crimes[!(part1crimes %in% bot_2019$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(bot_2018, crimeCatName = missing_category) -> bot_2019
+}
+
+bot_2019 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> bot_2019
+
 flextable(bot_2019) %>%
   colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
@@ -593,11 +626,7 @@ totalCrimes18 %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> cwe_2018
+  replace(., is.na(.), 0) -> cwe_2018
 
 ytdCrimes19 %>%
   filter(., neighborhood == 38) %>%
@@ -605,14 +634,24 @@ ytdCrimes19 %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> cwe_2019
+  replace(., is.na(.), 0) -> cwe_2019
 ```
 
 ```{r CWE Total Crimes Flextable 2018, echo = FALSE}
+part1crimes[!(part1crimes %in% cwe_2018$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(cwe_2018, crimeCatName = missing_category) -> cwe_2018
+}
+
+cwe_2018 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> cwe_2018
+
 flextable(cwe_2018) %>%
   colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
@@ -620,6 +659,20 @@ flextable(cwe_2018) %>%
 ```
 
 ```{r CWE Total Crimes Flextable 2019, echo = FALSE}
+part1crimes[!(part1crimes %in% cwe_2019$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(fpse_2019, crimeCatName = missing_category) -> cwe_2019
+}
+
+cwe_2019 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> cwe_2019
+
 flextable(cwe_2019) %>%
   colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
@@ -765,25 +818,32 @@ mc_crimes_total18 %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
   replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> mc_2018
+  rename(., "Part 1 Crimes" = crimeCatName) -> mc_2018
 
 mc_crimes_ytd19 %>%
   group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> mc_2019
+  replace(., is.na(.), 0) -> mc_2019
 ```
 
 ```{r WUMC Total Crimes Flextable 2018, echo = FALSE}
+part1crimes[!(part1crimes %in% mc_2018$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(mc_2018, crimeCatName = missing_category) -> mc_2018
+}
+
+mc_2018 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> mc_2018
+
 flextable(mc_2018) %>%
   colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
@@ -791,6 +851,20 @@ flextable(mc_2018) %>%
 ```
 
 ```{r WUMC Total Crimes Flextable 2019, echo = FALSE}
+part1crimes[!(part1crimes %in% mc_2019$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(mc_2019, crimeCatName = missing_category) -> mc_2019
+}
+
+mc_2019 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> mc_2019
+
 flextable(mc_2019) %>%
   colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
