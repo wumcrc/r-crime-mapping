@@ -88,14 +88,22 @@ pct_chg_ytd <- percent(pct_chg_ytd)
 pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
 pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 
-sprint_1 <- sprintf("%s total crimes in September 2019", tc19)
-sprint_2 <- sprintf("%s change compared to September 2018 (%s total crimes)", pct_chg_mth, tc18)
-sprint_3 <- sprintf("%s crime(s) against persons in September 2019", cap19)
-sprint_4 <- sprintf("%s change compared to September 2018 (%s crimes against persons)", pct_chg_cap, cap18)
-sprint_5 <- sprintf("%s total crimes in 2019", tc_ytdCurrent)
-sprint_6 <- sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
-sprint_7 <- sprintf("%s crime(s) against persons in 2019", cap19_ytd)
-sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+sprint_1 <- sprintf("%s total crimes in %s %s", 
+                    tc19, params$month, params$year)
+sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
+                    pct_chg_mth, params$month, params$pastyear, tc18)
+sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
+                    cap19, params$month, params$year)
+sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
+                    pct_chg_cap, params$month, params$pastyear, cap18)
+sprint_5 <- sprintf("%s total crimes in %s", 
+                    tc_ytdCurrent, params$year)
+sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
+                    pct_chg_ytd, params$pastyear, tc_ytd18)
+sprint_7 <- sprintf("%s crime(s) against persons in %s", 
+                    cap19_ytd, params$year)
+sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", 
+                    pct_chg_ytd_cap, params$pastyear, cap18_ytd)
 ```
 
 - **`r sprint_1`**
@@ -253,14 +261,22 @@ pct_chg_ytd <- percent(pct_chg_ytd)
 pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
 pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 
-sprint_1 <- sprintf("%s total crimes in September 2019", tc19)
-sprint_2 <- sprintf("%s change compared to September 2018 (%s total crimes)", pct_chg_mth, tc18)
-# sprint_3 <- sprintf("%s crime(s) against persons in September 2019", cap19)
-# sprint_4 <- sprintf("%s change compared to September 2018 (%s crimes against persons)", pct_chg_cap, cap18)
-sprint_5 <- sprintf("%s total crimes in 2019", tc_ytdCurrent)
-sprint_6 <- sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
-sprint_7 <- sprintf("%s crime(s) against persons in 2019", cap19_ytd)
-sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+sprint_1 <- sprintf("%s total crimes in %s %s", 
+                    tc19, params$month, params$year)
+sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
+                    pct_chg_mth, params$month, params$pastyear, tc18)
+#sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
+                    cap19, params$month, params$year)
+#sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
+                    pct_chg_cap, params$month, params$pastyear, cap18)
+sprint_5 <- sprintf("%s total crimes in %s", 
+                    tc_ytdCurrent, params$year)
+sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
+                    pct_chg_ytd, params$pastyear, tc_ytd18)
+sprint_7 <- sprintf("%s crime(s) against persons in %s", 
+                    cap19_ytd, params$year)
+sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", 
+                    pct_chg_ytd_cap, params$pastyear, cap18_ytd)
 ```
 
 - **`r sprint_1`**
@@ -485,12 +501,22 @@ dst_2_maxT <- dst_2_pop_sf[which.max(dst_2_pop_sf$crimeTotal),]
 dst_2_max_tot_nhd <- print(dst_2_maxT$NHD_NAME, max.levels = 0)
 dst_2_max_tot <- print(dst_2_maxT$crimeTotal, max.levels = 0)
 
-sprint_1 <- sprintf("The minimum number of crimes in one neighborhood was %s (%s)", dst_2_min_tot, dst_2_min_tot_nhd)
-sprint_2 <- sprintf("The maximum number of crimes in one neighborhood was %s (%s)", dst_2_max_tot, dst_2_max_tot_nhd)
-sprint_3 <- sprintf("The mean number of crimes in one neighborhood was %s", round(dst_2_total_mean, digits = 2))
-sprint_4 <- sprintf("The minimum rate of crimes in one neighborhood was %s (%s)", round(dst_2_min_rate, digits = 2), dst_2_min_rate_nhd)
-sprint_5 <- sprintf("The maximum rate of crimes in one neighborhood was %s (%s)", round(dst_2_max_rate, digits = 2), dst_2_max_rate_nhd)
-sprint_6 <- sprintf("The mean rate of crimes in one neighborhood was %s", round(dst_2_rate_mean, digits = 2))
+sprint_1 <- sprintf("%s total crimes in %s %s", 
+                    tc19, params$month, params$year)
+sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
+                    pct_chg_mth, params$month, params$pastyear, tc18)
+sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
+                    cap19, params$month, params$year)
+sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
+                    pct_chg_cap, params$month, params$pastyear, cap18)
+sprint_5 <- sprintf("%s total crimes in %s", 
+                    tc_ytdCurrent, params$year)
+sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
+                    pct_chg_ytd, params$pastyear, tc_ytd18)
+sprint_7 <- sprintf("%s crime(s) against persons in %s", 
+                    cap19_ytd, params$year)
+sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", 
+                    pct_chg_ytd_cap, params$pastyear, cap18_ytd)
 ```
 
 ## District 2: Density Map Explanation
@@ -691,14 +717,22 @@ pct_chg_ytd <- percent(pct_chg_ytd)
 pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
 pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 
-sprint_1 <- sprintf("%s total crimes in September 2019", tc19)
-sprint_2 <- sprintf("%s change compared to September 2018 (%s total crimes)", pct_chg_mth, tc18)
-sprint_3 <- sprintf("%s crime(s) against persons in September 2019", cap19)
-sprint_4 <- sprintf("%s change compared to September 2018 (%s crimes against persons)", pct_chg_cap, cap18)
-sprint_5 <- sprintf("%s total crimes in 2019", tc_ytdCurrent)
-sprint_6 <- sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
-sprint_7 <- sprintf("%s crime(s) against persons in 2019", cap19_ytd)
-sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+sprint_1 <- sprintf("%s total crimes in %s %s", 
+                    tc19, params$month, params$year)
+sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
+                    pct_chg_mth, params$month, params$pastyear, tc18)
+sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
+                    cap19, params$month, params$year)
+sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
+                    pct_chg_cap, params$month, params$pastyear, cap18)
+sprint_5 <- sprintf("%s total crimes in %s", 
+                    tc_ytdCurrent, params$year)
+sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
+                    pct_chg_ytd, params$pastyear, tc_ytd18)
+sprint_7 <- sprintf("%s crime(s) against persons in %s", 
+                    cap19_ytd, params$year)
+sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", 
+                    pct_chg_ytd_cap, params$pastyear, cap18_ytd)
 ```
 
 - **`r sprint_1`**
