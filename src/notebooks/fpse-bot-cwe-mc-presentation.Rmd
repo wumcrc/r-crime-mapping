@@ -1,6 +1,6 @@
 ---
 title: "Forest Park Southeast, Botanical Heights, Central West End, Medical Campus"
-subtitle: "Monthly Crime report: August 2019" 
+subtitle: "Monthly Crime report: September 2019" 
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
@@ -9,10 +9,10 @@ output:
     reference_doc: wumc-template.pptx
 always_allow_html: yes
 params:
-  month: August
+  month: September
   pastyear: 2018
   year: 2019
-  date: "2019-08-01"
+  date: "2019-09-01"
   pastdate: "2018-01-01"
 ---
 
@@ -112,7 +112,7 @@ sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against 
 ```{r FPSE Year Comps Prep, include=FALSE}
 totalCrimes18 %>%
   filter(., neighborhood == 39) %>%
-  group_by(monthVar) %>%
+  group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
@@ -124,7 +124,7 @@ totalCrimes18 %>%
 
 ytdCrimes19 %>%
   filter(., neighborhood == 39) %>%
-  group_by(monthVar) %>%
+  group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
 
   rename(., "Number of Crimes" = n) %>%
@@ -155,28 +155,28 @@ flextable(fpse_2019) %>%
 ```{r FPSE Tables Prep, include = FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 39) %>%
-  group_by(crimeCatName) %>%
+  group_by(crimeCatName, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> fpse_crimeCat
 
 monthCrimes19 %>%
   filter(., neighborhood == 39) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fpse_weekDay
 
 monthCrimes19 %>%
   filter(., neighborhood == 39) %>%
-  group_by(violent) %>%
+  group_by(violent, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> fpse_violent
 
 monthCrimes19 %>%
   filter(., neighborhood == 39) %>%
-  group_by(dayNight) %>%
+  group_by(dayNight, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_dayNight
@@ -247,8 +247,8 @@ cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 28 & ytdCrimes19$crime
 
 pct_chg_mth <- (tc19 - tc18)/tc18
 pct_chg_mth <- percent(pct_chg_mth)
-pct_chg_cap <- (cap19 - cap18)/cap18
-pct_chg_cap <- percent(pct_chg_cap)
+# pct_chg_cap <- (cap19 - cap18)/cap18
+# pct_chg_cap <- percent(pct_chg_cap)
 pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
 pct_chg_ytd <- percent(pct_chg_ytd)
 pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
@@ -256,8 +256,8 @@ pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 
 sprint_1 <- sprintf("%s total crimes in August 2019", tc19)
 sprint_2 <- sprintf("%s change compared to August 2018 (%s total crimes)", pct_chg_mth, tc18)
-sprint_3 <- sprintf("%s crime(s) against persons in August 2019", cap19)
-sprint_4 <- sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
+# sprint_3 <- sprintf("%s crime(s) against persons in August 2019", cap19)
+# sprint_4 <- sprintf("%s change compared to August 2018 (%s crimes against persons)", pct_chg_cap, cap18)
 sprint_5 <- sprintf("%s total crimes in 2019", tc_ytdCurrent)
 sprint_6 <- sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
 sprint_7 <- sprintf("%s crime(s) against persons in 2019", cap19_ytd)
@@ -278,7 +278,7 @@ sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against 
 ```{r BOT Year Comps Prep, include=FALSE}
 totalCrimes18 %>%
   filter(., neighborhood == 28) %>%
-  group_by(monthVar) %>%
+  group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
@@ -290,7 +290,7 @@ totalCrimes18 %>%
 
 ytdCrimes19 %>%
   filter(., neighborhood == 28) %>%
-  group_by(monthVar) %>%
+  group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
@@ -320,21 +320,21 @@ flextable(bot_2019) %>%
 ```{r BOT Tables Prep, include = FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 28) %>%
-  group_by(crimeCatName) %>%
+  group_by(crimeCatName, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> bot_crimeCat
 
 monthCrimes19 %>%
   filter(., neighborhood == 28) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> bot_weekDay
 
 monthCrimes19 %>%
   filter(., neighborhood == 28) %>%
-  group_by(violent) %>%
+  group_by(violent, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> bot_violent
@@ -342,7 +342,7 @@ monthCrimes19 %>%
 
 monthCrimes19 %>%
   filter(., neighborhood == 28) %>%
-  group_by(dayNight) %>%
+  group_by(dayNight, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> bot_dayNight
@@ -402,7 +402,7 @@ knitr::include_graphics(here("results", params$year, params$month, "bot", "bot_t
 ```{r BOT Crime by Weekday - Graph Prep, include = FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 28) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
   ggplot(., aes(x=weekday, y=n, group=1)) +
     geom_line(color="blue") +
@@ -551,7 +551,7 @@ sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against 
 ```{r CWE Year Comps Prep,include=FALSE}
 totalCrimes18 %>%
   filter(., neighborhood == 38) %>%
-  group_by(monthVar) %>%
+  group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
@@ -563,7 +563,7 @@ totalCrimes18 %>%
 
 ytdCrimes19 %>%
   filter(., neighborhood == 38) %>%
-  group_by(monthVar) %>%
+  group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
@@ -593,28 +593,28 @@ flextable(cwe_2019) %>%
 ```{r CWE Tables Prep, include = FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 38) %>%
-  group_by(crimeCatName) %>%
+  group_by(crimeCatName, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> cwe_crimeCat
 
 monthCrimes19 %>%
   filter(., neighborhood == 38) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> cwe_weekDay
 
 monthCrimes19 %>%
   filter(., neighborhood == 38) %>%
-  group_by(violent) %>%
+  group_by(violent, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> cwe_violent
 
 monthCrimes19 %>%
   filter(., neighborhood == 38) %>%
-  group_by(dayNight) %>%
+  group_by(dayNight, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> cwe_dayNight
@@ -715,7 +715,7 @@ sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against 
 
 ```{r WUMC Year Comps Prep, include = FALSE}
 mc_crimes_total18 %>%
-  group_by(monthVar) %>%
+  group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
@@ -726,7 +726,7 @@ mc_crimes_total18 %>%
   adorn_totals(., "row", name = "Total") -> mc_2018
 
 mc_crimes_ytd19 %>%
-  group_by(monthVar) %>%
+  group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
@@ -755,25 +755,25 @@ flextable(mc_2019) %>%
 
 ```{r WUMC Summary Tables Prep, include = FALSE}
 mc_crimes_month19 %>%
-  group_by(crimeCatName) %>%
+  group_by(crimeCatName, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> mc_crimeCat
 
 mc_crimes_month19 %>%
-  group_by(dayNight) %>%
+  group_by(dayNight, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> mc_dayNight
 
 mc_larcenies %>%
-  group_by(type) %>%
+  group_by(type, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> mc_larcenies_cat
 
 mc_larcenies %>%
-  group_by(value) %>%
+  group_by(value, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Monetary Value" = value) -> mc_larcenies_val
@@ -1110,28 +1110,28 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 ```{r FPSE Larceny Breakdown Prep, include = FALSE}
 larceny %>%
   filter(., neighborhood == 39) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> fpse_larcenies_weekDay
 
 larceny %>%
   filter(., neighborhood == 39) %>%
-  group_by(dayNight) %>%
+  group_by(dayNight, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> fpse_larcenies_dayNight
 
 larceny %>%
   filter(., neighborhood == 39) %>%
-  group_by(type) %>%
+  group_by(type, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> fpse_larcenies_type
 
 larceny %>%
   filter(., neighborhood == 39) %>%
-  group_by(value) %>%
+  group_by(value, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Monetary" = value) -> fpse_larcenies_value
@@ -1156,7 +1156,7 @@ flextable(fpse_larcenies_value) %>%
 ```{r FPSE Crime by Weekday Graph Prep, include= FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 39) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
   ggplot(., aes(x=weekday, y=n, group=1)) +
     geom_line(color="blue") +
@@ -1175,7 +1175,7 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 ```{r FPSE Crime by Time of Day Graph Prep, include = FALSE }
 monthCrimes19 %>%
   filter(., neighborhood == 39) %>%
-  group_by(dayNight) %>%
+  group_by(dayNight, .drop = FALSE) %>%
   count() %>%
   ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
     geom_bar(stat="identity", position=position_dodge(), colour="black") +
@@ -1194,7 +1194,7 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 ```{r FPSE Crime by Category Weekday Graph Prep, include= FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 39) %>%
-  group_by(crimeCatName) %>%
+  group_by(crimeCatName, .drop = FALSE) %>%
   ggplot(., aes(weekday)) +
     geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
     xlab("Day of Week") + ylab("Total Crimes") +
@@ -1322,28 +1322,28 @@ knitr::include_graphics(here("results", params$year, params$month, "cwe", "cwe_d
 ```{r CWE Larceny Breakdown Prep, include = FALSE}
 larceny %>%
   filter(., neighborhood == 38) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> cwe_larcenies_weekDay
 
 larceny %>%
   filter(., neighborhood == 38) %>%
-  group_by(dayNight) %>%
+  group_by(dayNight, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> cwe_larcenies_dayNight
 
 larceny %>%
   filter(., neighborhood == 38) %>%
-  group_by(type) %>%
+  group_by(type, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> cwe_larcenies_type
 
 larceny %>%
   filter(., neighborhood == 38) %>%
-  group_by(value) %>%
+  group_by(value, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Monetary Value" = value) -> cwe_larcenies_value
@@ -1369,7 +1369,7 @@ flextable(cwe_larcenies_value) %>%
 ```{r CWE Crime by Weekday Graph Prep, include = FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 38) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
   ggplot(., aes(x=weekday, y=n, group=1)) +
     geom_line(color="blue") +
@@ -1388,7 +1388,7 @@ knitr::include_graphics(here("results", params$year, params$month, "cwe", "cwe_c
 ```{r CWE Crime by Time of Day Graph Prep, include = FALSE }
 monthCrimes19 %>%
   filter(., neighborhood == 38) %>%
-  group_by(dayNight) %>%
+  group_by(dayNight, .drop = FALSE) %>%
   count() %>%
   ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
     geom_bar(stat="identity", position=position_dodge(), colour="black") +
@@ -1407,7 +1407,7 @@ knitr::include_graphics(here("results", params$year, params$month, "cwe", "cwe_c
 ```{r CWE Crime by Category Weekday Graph Prep, include= FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 38) %>%
-  group_by(crimeCatName) %>%
+  group_by(crimeCatName, .drop = FALSE) %>%
   ggplot(., aes(weekday)) +
     geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
     xlab("Day of Week") + ylab("Total Crimes") +

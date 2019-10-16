@@ -1,6 +1,6 @@
 ---
 title: "Academy, Fountain Park, Lewis Place Place, Vandeventer"
-subtitle: "Monthly Crime report: August 2019" 
+subtitle: "Monthly Crime report: September 2019" 
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
@@ -9,10 +9,10 @@ output:
     reference_doc: wumc-template.pptx
 always_allow_html: yes
 params:
-  month: August
+  month: September
   pastyear: 2018
   year: 2019
-  date: "2019-08-01"
+  date: "2019-09-01"
   pastdate: "2018-01-01"
 ---
 
