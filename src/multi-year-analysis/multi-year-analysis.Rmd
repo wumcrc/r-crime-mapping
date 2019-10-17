@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Multi-Year Ananlysis"
 author: "Jes Stevens"
 date: "10/4/2019"
 output: html_document
@@ -46,7 +46,7 @@ library(knitr)
 load(file = here("data", "crime-data", "total-crimes-10yrs.rda"))
 ```
 
-# Data Cleaning
+# Individual Analysis
 ## CWE 
 
 ```{r cwe data, include=FALSE}
@@ -337,3 +337,7 @@ cwe_crimes_tidy %>%
 
 ggsave(here("results", "multi-year-analysis", "cwe_crime_violent.jpeg"), dpi = 500)
 ```
+
+ 
+
+
