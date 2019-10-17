@@ -1,0 +1,136 @@
+---
+title: "Rolling Means"
+author: "Jes Stevens"
+date: "10/17/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+### Setup 
+```{r setup, include=FALSE}
+# Load Library 
+library(compstatr)
+library(dplyr)
+library(lubridate)
+library(writexl)
+library(here)
+
+# tidyverse packages
+library(tidyverse)
+library(ggplot2)       # plotting data
+library(stringr)       # wrappers for common string operations
+library(tidyr)         # tidy data
+library(dplyr)         # data manipulation
+library(magrittr)      # pipe operator
+library(readxl)        # read & write excel files
+library(lubridate)     # time data manipulation
+library(scales)
+
+# spatial packages
+library(tmap)         # map layouts
+library(tmaptools)    # tools for handeling spatial
+library(oldtmaptools) # deprecated toolds for spatial analysis
+library(sf)           # spatial data tools
+library(ceramic)      # download online imagery tiles
+library(compstatr)    # tools for STL crime data
+library(raster)       # geograpic data analysis & modeling
+
+# other packages
+library(here)         # file path management
+library(janitor)      # tools for examining data
+library(RColorBrewer) # cynthia brewer color palettes
+library(viridis)      # color palettes
+library(flextable)   # exporting pretty tables
+library(htmltools)
+library(knitr)
+library(fpp2)           # working with time series data
+library(zoo)            # working with time series data
+
+# Load Data
+load(file = here("data", "crime-data", "total-crimes-10yrs.rda"))
+```
+
+
+```{r }
+savings <- economics %>%
+  select(date, srate = psavert) %>%
+  mutate(srate_ma01 = rollmean(srate, k = 13, fill = NA),
+         srate_ma02 = rollmean(srate, k = 25, fill = NA),
+         srate_ma03 = rollmean(srate, k = 37, fill = NA),
+         srate_ma05 = rollmean(srate, k = 61, fill = NA),
+         srate_ma10 = rollmean(srate, k = 121, fill = NA))
+
+savings
+```
+
+# Rolling Averages
+
+```{r}
+crimes %>% 
+  cs_filter_count(., var = count) %>%                                           # Removes Negative Counts
+  cs_filter_crime(., var = crime, "part 1") %>%                                 # Filters Part 1 Crimes 
+  cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%                      
+  cs_crime_cat(., var = crime, crimeCatName, "string") %>%                      # Labels Crime Categories
+  cs_crime(., var = crime, violent, "violent") %>%                              # Labels Violent Crimes 
+  cs_crime(., var = crime, property, "property") %>%                            # Labels Property Crimes
+  cs_crime(., var = crime, larceny, 6) %>%                                      # Labels Larceny Crimes
+  cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%        # Parses Date Data
+  mutate(weekday = wday(dateOcc, label = TRUE)) %>%                             # Labels Days of the Week
+  mutate(monthVar = dateOcc) %>%
+  mutate(yearVar = dateOcc) %>%
+  mutate(tod = timeOcc) -> crimes
+
+crimes$monthVar <- month(as.Date(crimes$monthVar, 
+                                      format="%d/%m/%Y"), label = TRUE)
+
+crimes$yearVar <- year(as.Date(crimes$yearVar, 
+                                      format="%Y"))
+
+crimes$tod <- strptime(crimes$tod, 
+                            tz = "America/Chicago", "%H:%M")
+
+crimes$tod <- format(crimes$tod, 
+                          format = "%H%M%S")
+
+crimes <- crimes %>%
+  mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
+  dplyr::select(-dateTime, -tod, -flag_crime, 
+                -flag_administrative, -flag_unfounded, -flag_cleanup)  %>%
+  cs_missingXY(., varX = x_coord, varY = y_coord, newVar = missing) %>% 
+  cs_replace0(., var = x_coord) %>%
+  cs_replace0(., var = y_coord) 
+
+crimes <- mutate(crimes, "type" = ifelse(grepl("ALL OTHER", description), "All Other", 
+                                           ifelse(grepl("BICYCLE", description), "Bicycle", 
+                                                  ifelse(grepl("FROM BUILDING", description), "From Building", 
+                                                         ifelse(grepl("FROM COIN", description), "From Coin Machine", 
+                                                                ifelse(grepl("FROM MTR VEH", description), "From Motor Vehicle", 
+                                                                       ifelse(grepl("MTR VEH PARTS", description), "Motor Vehicle Parts",
+                                                                              ifelse(grepl("PURSE", description), "Purse Snatching",
+                                                                                     ifelse(grepl("SHOPLIFT", description), "Shoplifting",
+                                                                                            ifelse(grepl("FRM PRSN", description), "From Person", NA))))))))))
+
+crimes <- mutate(crimes, "value" = ifelse(grepl("UNDER", description), "Under $500",
+                                            ifelse(grepl("\\$500 - \\$24,999", description), "$500 - $24,999",
+                                                   ifelse(grepl("OVER \\$25,000", description), "Over $25,000", NA))))
+
+
+```
+
+```{r}
+fpse_crimes <- filter(crimes, neighborhood == 39)
+cwe_crimes <- filter(crimes, neighborhood == 38)
+dbp_crimes <- filter(crimes, neighborhood == 47) 
+sdb_crimes <- filter(crimes, neighborhood == 46)
+we_crimes <- filter(crimes, neighborhood == 48)
+vp_crimes <- filter(crimes, neighborhood == 49)
+ac_crimes <- filter(crimes, neighborhood == 51)
+fp_crimes <- filter(crimes, neighborhood == 53)
+lp_crimes <- filter(crimes, neighborhood == 54)
+vd_crimes <- filter(crimes, neighborhood == 58)
+```
