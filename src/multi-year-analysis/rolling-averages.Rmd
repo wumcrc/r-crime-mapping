@@ -21,7 +21,6 @@ library(writexl)
 library(here)
 
 # tidyverse packages
-library(tidyverse)
 library(ggplot2)       # plotting data
 library(stringr)       # wrappers for common string operations
 library(tidyr)         # tidy data
@@ -55,22 +54,9 @@ library(zoo)            # working with time series data
 load(file = here("data", "crime-data", "total-crimes-10yrs.rda"))
 ```
 
-
-```{r }
-savings <- economics %>%
-  select(date, srate = psavert) %>%
-  mutate(srate_ma01 = rollmean(srate, k = 13, fill = NA),
-         srate_ma02 = rollmean(srate, k = 25, fill = NA),
-         srate_ma03 = rollmean(srate, k = 37, fill = NA),
-         srate_ma05 = rollmean(srate, k = 61, fill = NA),
-         srate_ma10 = rollmean(srate, k = 121, fill = NA))
-
-savings
-```
-
 # Rolling Averages
 
-```{r}
+```{r Crime Data Prep}
 crimes %>% 
   cs_filter_count(., var = count) %>%                                           # Removes Negative Counts
   cs_filter_crime(., var = crime, "part 1") %>%                                 # Filters Part 1 Crimes 
@@ -122,7 +108,7 @@ crimes <- mutate(crimes, "value" = ifelse(grepl("UNDER", description), "Under $5
 
 ```
 
-```{r}
+```{r Filter Crime Data By Neighborhood}
 fpse_crimes <- filter(crimes, neighborhood == 39)
 cwe_crimes <- filter(crimes, neighborhood == 38)
 dbp_crimes <- filter(crimes, neighborhood == 47) 
@@ -134,3 +120,29 @@ fp_crimes <- filter(crimes, neighborhood == 53)
 lp_crimes <- filter(crimes, neighborhood == 54)
 vd_crimes <- filter(crimes, neighborhood == 58)
 ```
+
+
+```{r Rolling Averages Example}
+savings <- economics %>%
+  select(date, srate = psavert) %>%
+  mutate(srate_ma01 = rollmean(srate, k = 13, fill = NA),
+         srate_ma02 = rollmean(srate, k = 25, fill = NA),
+         srate_ma03 = rollmean(srate, k = 37, fill = NA),
+         srate_ma05 = rollmean(srate, k = 61, fill = NA),
+         srate_ma10 = rollmean(srate, k = 121, fill = NA))
+
+savings
+```
+
+```{r}
+fpse_crimes %>% 
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018) %>%
+  count() -> fpse_table
+
+fpse_df <- as.data.frame(fpse_table)
+
+fpse_df <- fpse_df %>% 
+  mutate(n01 = rollmean(n, k = 3, fill = NA))
+```
+
