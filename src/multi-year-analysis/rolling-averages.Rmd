@@ -54,8 +54,10 @@ library(zoo)            # working with time series data
 load(file = here("data", "crime-data", "total-crimes-10yrs.rda"))
 ```
 
+
 # Rolling Averages
 
+## Data Prep 
 ```{r Crime Data Prep}
 crimes %>% 
   cs_filter_count(., var = count) %>%                                           # Removes Negative Counts
@@ -121,6 +123,7 @@ lp_crimes <- filter(crimes, neighborhood == 54)
 vd_crimes <- filter(crimes, neighborhood == 58)
 ```
 
+
 ## FPSE
 
 ```{r}
@@ -153,32 +156,39 @@ fpse_df %>%
 ggsave(here("results/multi-year-analysis/fpse_rollmean.jpeg"), dpi = 500)
 ```
 
+### Violent 
+
 ```{r}
 fpse_crimes %>% 
-  group_by(crimeCatName, yearVar) %>%
+  filter(., violent == TRUE) %>%
+  group_by(yearVar) %>% 
   filter(., yearVar <= 2018 ) %>%
-  count() -> fpse_cat_table
+  count() -> fpse_vlnt_table
 
-fpse_cat_df <- as.data.frame(fpse_cat_table)
+fpse_df_vlnt <- as.data.frame(fpse_vlnt_table)
 
-fpse_cat_df <- fpse_cat_df %>% 
-  filter(., crimeCatName == "Aggravated Assault") %>%
+fpse_df_vlnt <- fpse_df_vlnt %>% 
   mutate(n01 = rollmean(n, k = 3, fill = NA, align = "right"))
+```
 
-fpse_cat_df %>%
+```{r}
+fpse_df_vlnt %>%
   gather(Crimes, value, n:n01) %>%
   ggplot(aes(yearVar, value, color = Crimes)) +
   geom_line() + 
   geom_point() + 
   labs(title = "Forest Park Southeast",
-       subtitle = "Aggravated Assault - 3 Year Rolling Crime Averages",
+       subtitle = "3 Year Rolling Violent Crime Averages",
        x = "Year", 
        y = "Number of Crimes") +
   scale_color_discrete(name="",
                        breaks = c("n", "n01"),
                        labels = c("Total Crimes", "3 Year Rolling Average")) +
   theme_classic()
+
+ggsave(here("results/multi-year-analysis/fpse_rollmean_vlnt.jpeg"), dpi = 500)
 ```
+
 
 ## CWE
 
@@ -210,6 +220,38 @@ cwe_df %>%
   theme_classic()
 
 ggsave(here("results/multi-year-analysis/cwe_rollmean.jpeg"), dpi = 500)
+```
+### Violent 
+
+```{r}
+cwe_crimes %>% 
+  filter(., violent == TRUE) %>%
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018 ) %>%
+  count() -> cwe_vlnt_table
+
+cwe_df_vlnt <- as.data.frame(cwe_vlnt_table)
+
+cwe_df_vlnt <- cwe_df_vlnt %>% 
+  mutate(n01 = rollmean(n, k = 3, fill = NA, align = "right"))
+```
+
+```{r}
+cwe_df_vlnt %>%
+  gather(Crimes, value, n:n01) %>%
+  ggplot(aes(yearVar, value, color = Crimes)) +
+  geom_line() + 
+  geom_point() + 
+  labs(title = "Central West End",
+       subtitle = "3 Year Rolling Violent Crime Averages",
+       x = "Year", 
+       y = "Number of Crimes") +
+  scale_color_discrete(name="",
+                       breaks = c("n", "n01"),
+                       labels = c("Total Crimes", "3 Year Rolling Average")) +
+  theme_classic()
+
+ggsave(here("results/multi-year-analysis/cwe_rollmean_vlnt.jpeg"), dpi = 500)
 ```
 
 ## DeBaliviere Place
@@ -244,6 +286,39 @@ dbp_df %>%
 ggsave(here("results/multi-year-analysis/dbp_rollmean.jpeg"), dpi = 500)
 ```
 
+### Violent 
+
+```{r}
+dbp_crimes %>% 
+  filter(., violent == TRUE) %>%
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018 ) %>%
+  count() -> dbp_vlnt_table
+
+dbp_df_vlnt <- as.data.frame(dbp_vlnt_table)
+
+dbp_df_vlnt <- dbp_df_vlnt %>% 
+  mutate(n01 = rollmean(n, k = 3, fill = NA, align = "right"))
+```
+
+```{r}
+dbp_df_vlnt %>%
+  gather(Crimes, value, n:n01) %>%
+  ggplot(aes(yearVar, value, color = Crimes)) +
+  geom_line() + 
+  geom_point() + 
+  labs(title = "DeBaliviere Place",
+       subtitle = "3 Year Rolling Violent Crime Averages",
+       x = "Year", 
+       y = "Number of Crimes") +
+  scale_color_discrete(name="",
+                       breaks = c("n", "n01"),
+                       labels = c("Total Crimes", "3 Year Rolling Average")) +
+  theme_classic()
+
+ggsave(here("results/multi-year-analysis/dbp_rollmean_vlnt.jpeg"), dpi = 500)
+```
+
 ## Skinker DeBaliviere 
 
 ```{r}
@@ -275,6 +350,39 @@ sdb_df %>%
 
 ggsave(here("results/multi-year-analysis/sdb_rollmean.jpeg"), dpi = 500)
 ```
+### Violent 
+
+```{r}
+sdb_crimes %>% 
+  filter(., violent == TRUE) %>%
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018 ) %>%
+  count() -> sdb_vlnt_table
+
+sdb_df_vlnt <- as.data.frame(sdb_vlnt_table)
+
+sdb_df_vlnt <- sdb_df_vlnt %>% 
+  mutate(n01 = rollmean(n, k = 3, fill = NA, align = "right"))
+```
+
+```{r}
+sdb_df_vlnt %>%
+  gather(Crimes, value, n:n01) %>%
+  ggplot(aes(yearVar, value, color = Crimes)) +
+  geom_line() + 
+  geom_point() + 
+  labs(title = "Skinker DeBaliviere",
+       subtitle = "3 Year Rolling Violent Crime Averages",
+       x = "Year", 
+       y = "Number of Crimes") +
+  scale_color_discrete(name="",
+                       breaks = c("n", "n01"),
+                       labels = c("Total Crimes", "3 Year Rolling Average")) +
+  theme_classic()
+
+ggsave(here("results/multi-year-analysis/sdb_rollmean_vlnt.jpeg"), dpi = 500)
+```
+
 
 ## West End 
 
@@ -306,6 +414,39 @@ we_df %>%
   theme_classic()
 
 ggsave(here("results/multi-year-analysis/we_rollmean.jpeg"), dpi = 500)
+```
+
+### Violent 
+
+```{r}
+we_crimes %>% 
+  filter(., violent == TRUE) %>%
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018 ) %>%
+  count() -> we_vlnt_table
+
+we_df_vlnt <- as.data.frame(we_vlnt_table)
+
+we_df_vlnt <- we_df_vlnt %>% 
+  mutate(n01 = rollmean(n, k = 3, fill = NA, align = "right"))
+```
+
+```{r}
+we_df_vlnt %>%
+  gather(Crimes, value, n:n01) %>%
+  ggplot(aes(yearVar, value, color = Crimes)) +
+  geom_line() + 
+  geom_point() + 
+  labs(title = "West End",
+       subtitle = "3 Year Rolling Violent Crime Averages",
+       x = "Year", 
+       y = "Number of Crimes") +
+  scale_color_discrete(name="",
+                       breaks = c("n", "n01"),
+                       labels = c("Total Crimes", "3 Year Rolling Average")) +
+  theme_classic()
+
+ggsave(here("results/multi-year-analysis/we_rollmean_vlnt.jpeg"), dpi = 500)
 ```
 
 ## Visitation Park 
@@ -340,6 +481,39 @@ vp_df %>%
 ggsave(here("results/multi-year-analysis/vp_rollmean.jpeg"), dpi = 500)
 ```
 
+### Violent 
+
+```{r}
+vp_crimes %>% 
+  filter(., violent == TRUE) %>%
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018 ) %>%
+  count() -> vp_vlnt_table
+
+vp_df_vlnt <- as.data.frame(vp_vlnt_table)
+
+vp_df_vlnt <- vp_df_vlnt %>% 
+  mutate(n01 = rollmean(n, k = 3, fill = NA, align = "right"))
+```
+
+```{r}
+vp_df_vlnt %>%
+  gather(Crimes, value, n:n01) %>%
+  ggplot(aes(yearVar, value, color = Crimes)) +
+  geom_line() + 
+  geom_point() + 
+  labs(title = "Visitation Park",
+       subtitle = "3 Year Rolling Violent Crime Averages",
+       x = "Year", 
+       y = "Number of Crimes") +
+  scale_color_discrete(name="",
+                       breaks = c("n", "n01"),
+                       labels = c("Total Crimes", "3 Year Rolling Average")) +
+  theme_classic()
+
+ggsave(here("results/multi-year-analysis/vp_rollmean_vlnt.jpeg"), dpi = 500)
+```
+
 ## Academy 
 
 ```{r}
@@ -370,6 +544,39 @@ ac_df %>%
   theme_classic()
 
 ggsave(here("results/multi-year-analysis/ac_rollmean.jpeg"), dpi = 500)
+```
+
+### Violent 
+
+```{r}
+ac_crimes %>% 
+  filter(., violent == TRUE) %>%
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018 ) %>%
+  count() -> ac_vlnt_table
+
+ac_df_vlnt <- as.data.frame(ac_vlnt_table)
+
+ac_df_vlnt <- ac_df_vlnt %>% 
+  mutate(n01 = rollmean(n, k = 3, fill = NA, align = "right"))
+```
+
+```{r}
+ac_df_vlnt %>%
+  gather(Crimes, value, n:n01) %>%
+  ggplot(aes(yearVar, value, color = Crimes)) +
+  geom_line() + 
+  geom_point() + 
+  labs(title = "Academy",
+       subtitle = "3 Year Rolling Violent Crime Averages",
+       x = "Year", 
+       y = "Number of Crimes") +
+  scale_color_discrete(name="",
+                       breaks = c("n", "n01"),
+                       labels = c("Total Crimes", "3 Year Rolling Average")) +
+  theme_classic()
+
+ggsave(here("results/multi-year-analysis/ac_rollmean_vlnt.jpeg"), dpi = 500)
 ```
 
 ## Fountain Park 
@@ -404,6 +611,39 @@ fp_df %>%
 ggsave(here("results/multi-year-analysis/fp_rollmean.jpeg"), dpi = 500)
 ```
 
+### Violent 
+
+```{r}
+fp_crimes %>% 
+  filter(., violent == TRUE) %>%
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018 ) %>%
+  count() -> fp_vlnt_table
+
+fp_df_vlnt <- as.data.frame(fp_vlnt_table)
+
+fp_df_vlnt <- fp_df_vlnt %>% 
+  mutate(n01 = rollmean(n, k = 3, fill = NA, align = "right"))
+```
+
+```{r}
+fp_df_vlnt %>%
+  gather(Crimes, value, n:n01) %>%
+  ggplot(aes(yearVar, value, color = Crimes)) +
+  geom_line() + 
+  geom_point() + 
+  labs(title = "Fountain Park",
+       subtitle = "3 Year Rolling Violent Crime Averages",
+       x = "Year", 
+       y = "Number of Crimes") +
+  scale_color_discrete(name="",
+                       breaks = c("n", "n01"),
+                       labels = c("Total Crimes", "3 Year Rolling Average")) +
+  theme_classic()
+
+ggsave(here("results/multi-year-analysis/fp_rollmean_vlnt.jpeg"), dpi = 500)
+```
+
 ## Lewis Place 
 
 ```{r}
@@ -434,6 +674,39 @@ lp_df %>%
   theme_classic()
 
 ggsave(here("results/multi-year-analysis/lp_rollmean.jpeg"), dpi = 500)
+```
+
+### Violent 
+
+```{r}
+lp_crimes %>% 
+  filter(., violent == TRUE) %>%
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018 ) %>%
+  count() -> lp_vlnt_table
+
+lp_df_vlnt <- as.data.frame(lp_vlnt_table)
+
+lp_df_vlnt <- lp_df_vlnt %>% 
+  mutate(n01 = rollmean(n, k = 3, fill = NA, align = "right"))
+```
+
+```{r}
+lp_df_vlnt %>%
+  gather(Crimes, value, n:n01) %>%
+  ggplot(aes(yearVar, value, color = Crimes)) +
+  geom_line() + 
+  geom_point() + 
+  labs(title = "Lewis Place",
+       subtitle = "3 Year Rolling Violent Crime Averages",
+       x = "Year", 
+       y = "Number of Crimes") +
+  scale_color_discrete(name="",
+                       breaks = c("n", "n01"),
+                       labels = c("Total Crimes", "3 Year Rolling Average")) +
+  theme_classic()
+
+ggsave(here("results/multi-year-analysis/lp_rollmean_vlnt.jpeg"), dpi = 500)
 ```
 
 ## Vandeventer
@@ -467,3 +740,37 @@ vd_df %>%
 
 ggsave(here("results/multi-year-analysis/vd_rollmean.jpeg"), dpi = 500)
 ```
+
+### Violent 
+
+```{r}
+vd_crimes %>% 
+  filter(., violent == TRUE) %>%
+  group_by(yearVar) %>% 
+  filter(., yearVar <= 2018 ) %>%
+  count() -> vd_vlnt_table
+
+vd_df_vlnt <- as.data.frame(vd_vlnt_table)
+
+vd_df_vlnt <- vd_df_vlnt %>% 
+  mutate(n01 = rollmean(n, k = 3, fill = NA, align = "right"))
+```
+
+```{r}
+vd_df_vlnt %>%
+  gather(Crimes, value, n:n01) %>%
+  ggplot(aes(yearVar, value, color = Crimes)) +
+  geom_line() + 
+  geom_point() + 
+  labs(title = "Vandeventer",
+       subtitle = "3 Year Rolling Violent Crime Averages",
+       x = "Year", 
+       y = "Number of Crimes") +
+  scale_color_discrete(name="",
+                       breaks = c("n", "n01"),
+                       labels = c("Total Crimes", "3 Year Rolling Average")) +
+  theme_classic()
+
+ggsave(here("results/multi-year-analysis/vd_rollmean_vlnt.jpeg"), dpi = 500)
+```
+
