@@ -64,7 +64,7 @@ colkeys18 <- totalCrimes18$monthVar
 colkeys19 <- ytdCrimes19$monthVar
 colkeystotal <- c("Total")
 part1crimes <- c("Aggravated Assault", "Arson", "Burgalry", "Homicide", "Larceny", "Motor Vehicle Theft", "Robbery")
-
+wkdys <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 # tmap_options()
 ```
 
