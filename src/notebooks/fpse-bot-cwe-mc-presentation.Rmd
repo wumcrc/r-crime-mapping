@@ -1,6 +1,6 @@
 ---
 title: "Forest Park Southeast, Botanical Heights, Central West End, Medical Campus"
-subtitle: "Monthly Crime report: September 2019" 
+subtitle: "Monthly Crime report: October 2019" 
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
@@ -9,10 +9,10 @@ output:
     reference_doc: wumc-template.pptx
 always_allow_html: yes
 params:
-  month: September
+  month: October
   pastyear: 2018
   year: 2019
-  date: "2019-09-01"
+  date: "2019-10-01"
   pastdate: "2018-01-01"
 ---
 
@@ -68,7 +68,7 @@ colkeysdys <- totalCrimes18$weekday
 colkeystotal <- c("Total")
 part1crimes <- c("Aggravated Assault", "Arson", "Burgalry", "Homicide", "Larceny", "Motor Vehicle Theft", "Robbery")
 wkdys <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-# tmap_options()
+#tmap_options()
 ```
 
 ## Forest Park Southeast: Summary Notes
