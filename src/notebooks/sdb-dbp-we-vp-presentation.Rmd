@@ -591,46 +591,6 @@ flextable(we_2019) %>%
   autofit()
 ```
 
-```{r WE Year Comps Prep,include=FALSE}
-totalCrimes18 %>%
-  filter(., neighborhood == 48) %>%
-  group_by(monthVar) %>%
-  count(crimeCatName) %>%
-  rename(., "Number of Crimes" = n) %>%
-  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> we_2018
-
-ytdCrimes19 %>%
-  filter(., neighborhood == 48) %>%
-  group_by(monthVar) %>%
-  count(crimeCatName) %>%
-  rename(., "Number of Crimes" = n) %>%
-  pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> we_2019
-```
-
-```{r WE Total Crimes Flextable 2018, echo = FALSE}
-flextable(we_2018) %>%
-  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
-  autofit()
-```
-
-```{r WE Total Crimes Flextable 2019, echo = FALSE}
-flextable(we_2019) %>%
-  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
-  autofit()
-```
-
 ## West End: Summary Tables
 
 ```{r WE Tables Prep, include = FALSE}
@@ -643,10 +603,24 @@ monthCrimes19 %>%
 
 monthCrimes19 %>%
   filter(., neighborhood == 48) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
+  rename(., "Number of Crimes" = n) %>%
+  replace(., is.na(.), 0) -> we_weekDay
+
+wkdys[!(wkdys %in% we_weekDay$weekday)] -> missing_category_days
+is_empty(missing_category_days) -> test
+
+as.data.frame(we_weekDay) -> we_weekDay
+
+if(test == FALSE) {
+   add_row(we_weekDay, weekday = missing_category_days) -> we_weekDay
+}
+
+we_weekDay %>% 
+  replace(., is.na(.), 0) %>%
   adorn_totals(., "row", name = "Total") %>%
-  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> we_weekDay
+  rename(., "Day of the Week" = weekday) -> we_weekDay
 
 monthCrimes19 %>%
   filter(., neighborhood == 48) %>%
@@ -764,18 +738,14 @@ sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against 
 
 ## Visitation Park: Year to Year Comparison
 
-```{r VP Year Comps Prep, include=FALSE}
+```{r vp Year Comps Prep, include=FALSE}
 totalCrimes18 %>%
   filter(., neighborhood == 49) %>%
-  group_by(monthVar) %>%
+  group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> vp_2018
+  replace(., is.na(.), 0)  -> vp_2018
 
 ytdCrimes19 %>%
   filter(., neighborhood == 49) %>%
@@ -783,19 +753,45 @@ ytdCrimes19 %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  rename(., "Part 1 Crimes" = crimeCatName) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") -> vp_2019
+  replace(., is.na(.), 0) -> vp_2019
 ```
 
-```{r VP Total Crimes Flextable 2018, echo = FALSE}
+```{r vp Total Crimes Flextable 2018, echo = FALSE}
+part1crimes[!(part1crimes %in% vp_2018$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(vp_2018, crimeCatName = missing_category) -> vp_2018
+}
+
+vp_2018 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> vp_2018
+
 flextable(vp_2018) %>%
+  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
+  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
   autofit()
 ```
 
-```{r VP Total Crimes Flextable 2019, echo = FALSE}
+```{r vp Total Crimes Flextable 2019, echo = FALSE}
+part1crimes[!(part1crimes %in% vp_2019$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(vp_2019, crimeCatName = missing_category) -> vp_2019
+}
+
+vp_2019 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> vp_2019
+
 flextable(vp_2019) %>%
   colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
   colformat_num(., col_keys = colkeystotal, digits = 0) %>%
@@ -814,10 +810,24 @@ monthCrimes19 %>%
 
 monthCrimes19 %>%
   filter(., neighborhood == 49) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
+  rename(., "Number of Crimes" = n) %>%
+  replace(., is.na(.), 0) -> vp_weekDay
+
+wkdys[!(wkdys %in% vp_weekDay$weekday)] -> missing_category_days
+is_empty(missing_category_days) -> test
+
+as.data.frame(vp_weekDay) -> vp_weekDay
+
+if(test == FALSE) {
+   add_row(vp_weekDay, weekday = missing_category_days) -> vp_weekDay
+}
+
+vp_weekDay %>% 
+  replace(., is.na(.), 0) %>%
   adorn_totals(., "row", name = "Total") %>%
-  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> vp_weekDay
+  rename(., "Day of the Week" = weekday) -> vp_weekDay
 
 monthCrimes19 %>%
   filter(., neighborhood == 49) %>%
@@ -1114,9 +1124,20 @@ flextable(sdb_larcenies_value) %>%
 ```{r SDB Crime by Weekday Graph Prep, include= FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 46) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
-  ggplot(., aes(x=weekday, y=n, group=1)) +
+  replace(., is.na(.), 0) -> sdb_weekDay
+
+wkdys[!(wkdys %in% sdb_weekDay$weekday)] -> missing_category_days
+is_empty(missing_category_days) -> test
+
+as.data.frame(sdb_weekDay) -> sdb_weekDay
+
+if(test == FALSE) {
+   add_row(sdb_weekDay, weekday = missing_category_days) -> sdb_weekDay
+}
+
+  ggplot(sdb_weekDay, aes(x=weekday, y=n, group = 1)) +
     geom_line(color="blue") +
     geom_point() +
     xlab("Day of Week") + ylab("Total Crimes")
@@ -1326,9 +1347,20 @@ flextable(dbp_larcenies_value) %>%
 ```{r DBP Crime by Weekday Graph Prep, include= FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 47) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
-  ggplot(., aes(x=weekday, y=n, group=1)) +
+  replace(., is.na(.), 0) -> dbp_weekDay
+
+wkdys[!(wkdys %in% dbp_weekDay$weekday)] -> missing_category_days
+is_empty(missing_category_days) -> test
+
+as.data.frame(dbp_weekDay) -> dbp_weekDay
+
+if(test == FALSE) {
+   add_row(dbp_weekDay, weekday = missing_category_days) -> dbp_weekDay
+}
+
+  ggplot(dbp_weekDay, aes(x=weekday, y=n, group = 1)) +
     geom_line(color="blue") +
     geom_point() +
     xlab("Day of Week") + ylab("Total Crimes")
@@ -1538,9 +1570,20 @@ flextable(we_larcenies_value) %>%
 ```{r WE Crime by Weekday Graph Prep, include= FALSE}
 monthCrimes19 %>%
   filter(., neighborhood == 48) %>%
-  group_by(weekday) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
-  ggplot(., aes(x=weekday, y=n, group=1)) +
+  replace(., is.na(.), 0) -> we_weekDay
+
+wkdys[!(wkdys %in% we_weekDay$weekday)] -> missing_category_days
+is_empty(missing_category_days) -> test
+
+as.data.frame(we_weekDay) -> we_weekDay
+
+if(test == FALSE) {
+   add_row(we_weekDay, weekday = missing_category_days) -> we_weekDay
+}
+
+  ggplot(we_weekDay, aes(x=weekday, y=n, group = 1)) +
     geom_line(color="blue") +
     geom_point() +
     xlab("Day of Week") + ylab("Total Crimes")
@@ -1599,7 +1642,7 @@ knitr::include_graphics(here("results", params$year, params$month, "we", "we_cri
 vp_dn_tm <- tm_shape(vp_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., neighborhood == 48) %>%
+  filter(., neighborhood == 49) %>%
   tm_shape() +
     tm_fill(col = "#9ecae1",
             alpha = .5) +
@@ -1607,7 +1650,7 @@ vp_dn_tm <- tm_shape(vp_tiles) +
                lwd = 2,
                lty = "dashed") +
   filter(monthCrimes19_sf,
-         neighborhood == 48) %>%
+         neighborhood == 49) %>%
   tm_shape() +
     tm_bubbles(size = .25,
                col = "dayNight",
@@ -1634,7 +1677,7 @@ knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_day
 vp_vlnt_tm <- tm_shape(vp_tiles) +
   tm_rgb() +
   nhoods_sf %>%
-  filter(., neighborhood == 48) %>%
+  filter(., neighborhood == 49) %>%
   tm_shape() +
     tm_fill(col = "#9ecae1",
             alpha = .5) +
@@ -1642,7 +1685,7 @@ vp_vlnt_tm <- tm_shape(vp_tiles) +
                lwd = 2,
                lty = "dashed") +
   filter(monthCrimes19_sf,
-         neighborhood == 48) %>%
+         neighborhood == 49) %>%
   tm_shape() +
     tm_bubbles(size = .25,
                col = "violent",
@@ -1667,28 +1710,28 @@ knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_vln
 
 ```{r VP Larceny Breakdown Prep, include = FALSE}
 larceny %>%
-  filter(., neighborhood == 48) %>%
+  filter(., neighborhood == 49) %>%
   group_by(weekday) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> vp_larcenies_weekDay
 
 larceny %>%
-  filter(., neighborhood == 48) %>%
+  filter(., neighborhood == 49) %>%
   group_by(dayNight) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> vp_larcenies_dayNight
 
 larceny %>%
-  filter(., neighborhood == 48) %>%
+  filter(., neighborhood == 49) %>%
   group_by(type) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> vp_larcenies_type
 
 larceny %>%
-  filter(., neighborhood == 48) %>%
+  filter(., neighborhood == 49) %>%
   group_by(value) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
@@ -1712,11 +1755,23 @@ flextable(vp_larcenies_value) %>%
 ## Visitation Park: Total Crimes by Days of the Week
 
 ```{r VP Crime by Weekday Graph Prep, include= FALSE}
+
 monthCrimes19 %>%
-  filter(., neighborhood == 48) %>%
-  group_by(weekday) %>%
+  filter(., neighborhood == 49) %>%
+  group_by(weekday, .drop = FALSE) %>%
   count() %>%
-  ggplot(., aes(x=weekday, y=n, group=1)) +
+  replace(., is.na(.), 0) -> vp_weekDay
+
+wkdys[!(wkdys %in% vp_weekDay$weekday)] -> missing_category_days
+is_empty(missing_category_days) -> test
+
+as.data.frame(vp_weekDay) -> vp_weekDay
+
+if(test == FALSE) {
+   add_row(vp_weekDay, weekday = missing_category_days) -> vp_weekDay
+}
+
+  ggplot(vp_weekDay, aes(x=weekday, y=n, group = 1)) +
     geom_line(color="blue") +
     geom_point() +
     xlab("Day of Week") + ylab("Total Crimes")
@@ -1732,7 +1787,7 @@ knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_cri
 
 ```{r VP Crime by Time of Day Graph Prep, include = FALSE }
 monthCrimes19 %>%
-  filter(., neighborhood == 48) %>%
+  filter(., neighborhood == 49) %>%
   group_by(dayNight) %>%
   count() %>%
   ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
@@ -1751,7 +1806,7 @@ knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_cri
 
 ```{r VP Crime by Category Weekday Graph Prep, include= FALSE}
 monthCrimes19 %>%
-  filter(., neighborhood == 48) %>%
+  filter(., neighborhood == 49) %>%
   group_by(crimeCatName) %>%
   ggplot(., aes(weekday)) +
     geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
