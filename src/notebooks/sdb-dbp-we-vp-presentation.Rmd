@@ -63,7 +63,9 @@ load(file = here("data", "basemap-files", "nbhd-boundaries.rda"))
 colkeys18 <- totalCrimes18$monthVar
 colkeys19 <- ytdCrimes19$monthVar
 colkeystotal <- c("Total")
-tmap_options()
+part1crimes <- c("Aggravated Assault", "Arson", "Burgalry", "Homicide", "Larceny", "Motor Vehicle Theft", "Robbery")
+wkdys <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+#tmap_options()
 ```
 
 ## Skinker DeBaliviere: Summary Notes
