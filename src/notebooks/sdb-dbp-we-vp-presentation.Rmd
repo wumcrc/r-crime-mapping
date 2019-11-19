@@ -9,10 +9,10 @@ output:
     reference_doc: wumc-template.pptx
 always_allow_html: yes
 params:
-  month: September
+  month: October 
   pastyear: 2018
   year: 2019
-  date: "2019-09-01"
+  date: "2019-10-01"
   pastdate: "2018-01-01"
 ---
 
@@ -48,6 +48,8 @@ library(viridis)      # color palettes
 library(flextable)   # exporting pretty tables
 library(htmltools)
 library(knitr)
+library(tibble)
+library(rlang)
 
 
 # load data
@@ -137,7 +139,7 @@ ytdCrimes19 %>%
   replace(., is.na(.), 0) -> sdb_2019
 ```
 
-```{r FPSE Total Crimes Flextable 2018, echo = FALSE}
+```{r SDB Total Crimes Flextable 2018, echo = FALSE}
 part1crimes[!(part1crimes %in% sdb_2018$crimeCatName)] -> missing_category
 is_empty(missing_category) -> test
 
@@ -344,7 +346,7 @@ ytdCrimes19 %>%
   replace(., is.na(.), 0) -> dbp_2019
 ```
 
-```{r FPSE Total Crimes Flextable 2018, echo = FALSE}
+```{r DBP Total Crimes Flextable 2018, echo = FALSE}
 part1crimes[!(part1crimes %in% dbp_2018$crimeCatName)] -> missing_category
 is_empty(missing_category) -> test
 
