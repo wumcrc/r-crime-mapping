@@ -107,7 +107,7 @@ sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)",
                     pct_chg_ytd, params$pastyear, tc_ytd18)
 sprint_7 <- sprintf("%s crime(s) against persons in %s", 
                     cap19_ytd, params$year)
-sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", 
+sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against persons)", 
                     pct_chg_ytd_cap, params$pastyear, cap18_ytd)
 ```
 
@@ -318,7 +318,7 @@ sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)",
                     pct_chg_ytd, params$pastyear, tc_ytd18)
 sprint_7 <- sprintf("%s crime(s) against persons in %s", 
                     cap19_ytd, params$year)
-sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", 
+sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against persons)", 
                     pct_chg_ytd_cap, params$pastyear, cap18_ytd)
 ```
 
@@ -856,7 +856,7 @@ sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)",
                     pct_chg_ytd, params$pastyear, tc_ytd18)
 sprint_7 <- sprintf("%s crime(s) against persons in %s", 
                     cap19_ytd, params$year)
-sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", 
+sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against persons)", 
                     pct_chg_ytd_cap, params$pastyear, cap18_ytd)
 ```
 
