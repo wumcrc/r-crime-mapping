@@ -1,6 +1,6 @@
 ---
 title: "Skinker DeBaliviere, DeBaliviere Place, West End, Visitation Park"
-subtitle: "Monthly Crime report: September 2019" 
+subtitle: "Monthly Crime report: October 2019" 
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
