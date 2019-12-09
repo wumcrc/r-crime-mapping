@@ -9,7 +9,7 @@ output:
     reference_doc: wumc-template.pptx
 always_allow_html: yes
 params:
-  month: October
+  month: November
   pastyear: 2018
   year: 2019
   date: "2019-11-01"
