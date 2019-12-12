@@ -11,10 +11,10 @@ params:
   pastyear: 2018
   year: 2019 
   ytd: "2019-01-01"
-  date: "2019-11-01"
+  date: "2019-10-01"
   pastdate: "2018-01-01"
-  pstdtmonth: "2018-11-01"
-  pstdtmonth2: "2018-11-30"
+  pstdtmonth: "2018-10-01"
+  pstdtmonth2: "2018-10-31"
 ---
 
 ```{r setup, include=FALSE}
@@ -42,7 +42,7 @@ library(lubridate)     # time data manipulation
 # spatial packages
 library(tmap)         # map layouts
 library(tmaptools)    # tools for handeling spatial 
-library(oldtmaptools) # deprecated toolds for spatial analysis
+#library(oldtmaptools) # deprecated toolds for spatial analysis
 library(sf)           # spatial data tools
 library(ceramic)      # download online imagery tiles
 library(compstatr)    # tools for STL crime data
