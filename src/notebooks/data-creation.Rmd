@@ -158,7 +158,8 @@ larceny <- mutate(larceny, "type" = ifelse(grepl("ALL OTHER", description), "All
                                     ifelse(grepl("MTR VEH PARTS", description), "Motor Vehicle Parts",
                                     ifelse(grepl("PURSE", description), "Purse Snatching",
                                     ifelse(grepl("SHOPLIFT", description), "Shoplifting",
-                                    ifelse(grepl("FRM PRSN", description), "From Person", NA))))))))))
+                                    ifelse(grepl("FRM PRSN", description), "From Person",
+                                    ifelse(grepl("PICKPOCKET", description), "Pickpocket", NA)))))))))))
 
 larceny <- mutate(larceny, "value" = ifelse(grepl("UNDER", description), "Under $500",
                                      ifelse(grepl("\\$500 - \\$24,999", description), "$500 - $24,999",
