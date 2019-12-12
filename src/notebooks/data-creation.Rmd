@@ -7,7 +7,7 @@ output:
   html_notebook: default
 always_allow_html: yes
 params: 
-  month: November
+  month: October
   pastyear: 2018
   year: 2019 
   ytd: "2019-01-01"

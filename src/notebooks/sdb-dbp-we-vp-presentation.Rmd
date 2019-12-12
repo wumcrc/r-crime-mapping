@@ -4,9 +4,7 @@ subtitle: "Monthly Crime report: October 2019"
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
-  powerpoint_presentation:
-    fig_width: 7
-    reference_doc: wumc-template.pptx
+  powerpoint_presentation
 always_allow_html: yes
 params:
   month: October

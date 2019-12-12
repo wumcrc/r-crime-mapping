@@ -4,9 +4,7 @@ subtitle: "Monthly Crime report: October 2019"
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
-  powerpoint_presentation:
-    fig_width: 7
-    reference_doc: wumc-template.pptx
+  powerpoint_presentation
 always_allow_html: yes
 params:
   month: October
@@ -275,7 +273,7 @@ tm_shape(fpse_tiles) +
 tmap_save(fpse_total_tm, file = here("results", params$year, params$month, "fpse", "fpse_total_tm.jpeg"), dpi = 500)
 ```
 
-```{r FPSE Total Crimes Knit, echo = FALSE}
+```{r FPSE Total Crimes Knit, echo = FALSE, out.width = "20%"}
 knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse_total_tm.jpeg"))
 ```
 
