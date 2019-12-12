@@ -1,16 +1,16 @@
 ---
 title: "Academy, Fountain Park, Lewis Place Place, Vandeventer"
-subtitle: "Monthly Crime report: October 2019" 
+subtitle: "Monthly Crime report: November 2019" 
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
   powerpoint_presentation
 always_allow_html: yes
 params:
-  month: October
+  month: November
   pastyear: 2018
   year: 2019
-  date: "2019-10-01"
+  date: "2019-11-01"
   pastdate: "2018-01-01"
 ---
 
@@ -1647,7 +1647,7 @@ vd_dn_tm <- tm_shape(vd_tiles) +
   filter(., neighborhood == 58) %>%
   tm_shape() +
     tm_fill(col = "#9ecae1",
-            avdha = .5) +
+            alpha = .5) +
     tm_borders(col = "black",
                lwd = 2,
                lty = "dashed") +
@@ -1682,7 +1682,7 @@ vd_vlnt_tm <- tm_shape(vd_tiles) +
   filter(., neighborhood == 58) %>%
   tm_shape() +
     tm_fill(col = "#9ecae1",
-            avdha = .5) +
+            alpha = .5) +
     tm_borders(col = "black",
                lwd = 2,
                lty = "dashed") +
@@ -1722,12 +1722,12 @@ vd_den_tm <- tm_shape(vd_tiles) +
   filter(., neighborhood == 58) %>%
   tm_shape() +
     tm_fill(col = NA,
-            avdha = .5) +
+            alpha = .5) +
     tm_borders(col = "black",
                lwd = 2,
                lty = "dashed") +
   tm_shape(vd_densities$polygons) +
-  tm_fill(col = "level", palette = "BuPu", avdha = .60,
+  tm_fill(col = "level", palette = "BuPu", alpha = .60,
     title = expression("Crimes per " * km^2)) +
   tm_credits("© Mapbox, © OpenStreetMap", position = c("left", "BOTTOM")) +
   tm_layout(
