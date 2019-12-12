@@ -83,10 +83,13 @@ cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 51 & ytdCrimes19$crime
 
 pct_chg_mth <- (tc19 - tc18)/tc18
 pct_chg_mth <- percent(pct_chg_mth)
+
 pct_chg_cap <- (cap19 - cap18)/cap18
 pct_chg_cap <- percent(pct_chg_cap)
+
 pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
 pct_chg_ytd <- percent(pct_chg_ytd)
+
 pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
 pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 
