@@ -7,14 +7,14 @@ output:
   html_notebook: default
 always_allow_html: yes
 params: 
-  month: September 
+  month: November
   pastyear: 2018
   year: 2019 
   ytd: "2019-01-01"
-  date: "2019-09-01"
+  date: "2019-11-01"
   pastdate: "2018-01-01"
-  pstdtmonth: "2018-09-01"
-  pstdtmonth2: "2018-09-30"
+  pstdtmonth: "2018-11-01"
+  pstdtmonth2: "2018-11-30"
 ---
 
 ```{r setup, include=FALSE}

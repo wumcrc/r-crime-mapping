@@ -155,8 +155,8 @@ ac_2018 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> ac_2018
 
 flextable(ac_2018) %>%
-  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(., digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 ```
 
@@ -176,8 +176,8 @@ ac_2019 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> ac_2019
 
 flextable(ac_2019) %>%
-  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 ```
 
@@ -362,8 +362,8 @@ fp_2018 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> fp_2018
 
 flextable(fp_2018) %>%
-  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
   autofit()
 ```
 
@@ -383,8 +383,8 @@ fp_2019 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> fp_2019
 
 flextable(fp_2019) %>%
-  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
   autofit()
 ```
 
@@ -569,8 +569,8 @@ lp_2018 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> lp_2018
 
 flextable(lp_2018) %>%
-  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
   autofit()
 ```
 
@@ -590,8 +590,8 @@ lp_2019 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> lp_2019
 
 flextable(lp_2019) %>%
-  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 ```
 
@@ -776,8 +776,8 @@ vd_2018 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> vd_2018
 
 flextable(vd_2018) %>%
-  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
   autofit()
 ```
 
@@ -797,8 +797,8 @@ vd_2019 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> vd_2019
 
 flextable(vd_2019) %>%
-  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
   autofit()
 ```
 

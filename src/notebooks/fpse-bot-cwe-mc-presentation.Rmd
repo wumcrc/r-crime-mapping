@@ -156,8 +156,8 @@ fpse_2018 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> fpse_2018
 
 flextable(fpse_2018) %>%
-  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 ```
 
@@ -177,13 +177,10 @@ fpse_2019 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> fpse_2019
 
 flextable(fpse_2019) %>%
-  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
   autofit()
 ```
-
-
-
 
 ## Forest Park Southeast: Summary Tables
 
@@ -237,7 +234,7 @@ flextable(fpse_crimeCat) %>%
   autofit()
 
 flextable(fpse_weekDay) %>%
-  colformat_num(., col_keys = c("Day of the Week", "Number of Crimes"), digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 
 flextable(fpse_violent) %>%
@@ -368,8 +365,8 @@ bot_2018 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> bot_2018
 
 flextable(bot_2018) %>%
-  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
   autofit()
 ```
 
@@ -389,8 +386,8 @@ bot_2019 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> bot_2019
 
 flextable(bot_2019) %>%
-  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(., digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 ```
 
@@ -446,7 +443,7 @@ flextable(bot_crimeCat) %>%
   autofit()
 
 flextable(bot_weekDay) %>%
-  colformat_num(., col_keys = c("Day of the Week", "Number of Crimes"), digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
   autofit()
 
 flextable(bot_violent) %>%
@@ -697,8 +694,8 @@ cwe_2018 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> cwe_2018
 
 flextable(cwe_2018) %>%
-  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(., digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 ```
 
@@ -718,8 +715,8 @@ cwe_2019 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> cwe_2019
 
 flextable(cwe_2019) %>%
-  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(., digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 ```
 
@@ -775,7 +772,7 @@ flextable(cwe_crimeCat) %>%
   autofit()
 
 flextable(cwe_weekDay) %>%
-  colformat_num(., col_keys = c("Day of the Week", "Number of Crimes"), digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 
 flextable(cwe_violent) %>%
@@ -903,8 +900,8 @@ mc_2018 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> mc_2018
 
 flextable(mc_2018) %>%
-  colformat_num(., col_keys = colkeys18, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(., digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 ```
 
@@ -924,8 +921,8 @@ mc_2019 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> mc_2019
 
 flextable(mc_2019) %>%
-  colformat_num(., col_keys = colkeys19, "total", digits = 0) %>%
-  colformat_num(., col_keys = colkeystotal, digits = 0) %>%
+  colformat_num(., digits = 0) %>%
+  colformat_num(., digits = 0) %>%
   autofit()
 ```
 
