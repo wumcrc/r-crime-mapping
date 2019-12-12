@@ -1,6 +1,6 @@
 ---
 title: "Skinker DeBaliviere, DeBaliviere Place, West End, Visitation Park"
-subtitle: "Monthly Crime report: November 2019" 
+subtitle: "Monthly Crime report: October 2019" 
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
@@ -9,10 +9,10 @@ output:
     reference_doc: wumc-template.pptx
 always_allow_html: yes
 params:
-  month: November
+  month: October
   pastyear: 2018
   year: 2019
-  date: "2019-11-01"
+  date: "2019-10-01"
   pastdate: "2018-01-01"
 ---
 
@@ -34,7 +34,7 @@ library(scales)
 # spatial packages
 library(tmap)         # map layouts
 library(tmaptools)    # tools for handeling spatial
-library(oldtmaptools) # deprecated toolds for spatial analysis
+#library(oldtmaptools) # deprecated toolds for spatial analysis
 library(sf)           # spatial data tools
 library(ceramic)      # download online imagery tiles
 library(compstatr)    # tools for STL crime data
