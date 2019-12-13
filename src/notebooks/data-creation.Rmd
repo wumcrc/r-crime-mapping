@@ -6,15 +6,15 @@ output:
   github_document: default
   html_notebook: default
 always_allow_html: yes
-params: 
+params:
   month: November
   pastyear: 2018
   year: 2019 
-  ytd: "2019-01-01"
-  date: "2019-11-01"
-  pastdate: "2018-01-01"
-  pstdtmonth: "2018-11-01"
-  pstdtmonth2: "2018-11-30"
+  ytd: "2019-01-01"                   # Compiles Year to Date Dataset for this year | Leave at January 1st 2019
+  date: "2019-11-01"                  # Pulls in the data for the most recent month | Change this each month
+  pastdate: "2018-01-01"              # Compiles Year to Date Dataset for previous year | Leave at January 1st 2018 
+  pstdtmonth: "2018-11-01"            # Compiles Data for the most recent month of the previous year | This is the first day of the month
+  pstdtmonth2: "2018-11-30"           # Compiles Data for the most recent month of the previous year | This is the last day of month | Must be the 30th or 31st
 ---
 
 ```{r setup, include=FALSE}
@@ -42,7 +42,6 @@ library(lubridate)     # time data manipulation
 # spatial packages
 library(tmap)         # map layouts
 library(tmaptools)    # tools for handeling spatial 
-#library(oldtmaptools) # deprecated toolds for spatial analysis
 library(sf)           # spatial data tools
 library(ceramic)      # download online imagery tiles
 library(compstatr)    # tools for STL crime data
@@ -52,8 +51,8 @@ library(raster)       # geograpic data analysis & modeling
 library(here)         # file path management
 library(janitor)      # tools for examining data
 
-dst2 <- c(7:15,27:29, 39:45,81,82,87,88)
-dst5 <- c(38,46:58,78)
+dst2 <- c(7:15,27:29, 39:45,81,82,87,88)      # These are the neighborhoods that make up Police District 2
+dst5 <- c(38,46:58,78)                        # These are the neighborhoods that make up Police District 5
 
 load(here("data/nbhd_pop10.rda"))
 ```
@@ -64,9 +63,9 @@ load(here("data/nbhd_pop10.rda"))
 ```{r Pull 2018 and 2019 Data}
 i <- cs_create_index()
 yearlist18 <- cs_get_data(year = params$pastyear, index = i)
-yearlist19 <- cs_get_data(year = params$year, index = i) # Constructs a table for finding a table of crime data
-cs_validate(yearlist18, year = 2018)
-cs_validate(yearlist19, year = 2019) # Identifies problems with SLMPD Data
+yearlist19 <- cs_get_data(year = params$year, index = i)        # Constructs a table for finding a table of crime data
+cs_validate(yearlist18, year = 2018)                            # Identifies problems with SLMPD Data
+cs_validate(yearlist19, year = 2019)                            # Identifies problems with SLMPD Data
 ```
 
 #### Standardize Data for Cleaning
@@ -113,29 +112,34 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 
 ```{r Creates 2019 Tidy Crime File}
 ytdCrimes19 <- ytdCrimes19 %>% 
-  cs_filter_count(., var = count) %>%
-  cs_filter_crime(., var = crime, "part 1") %>%
-  cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
-  cs_crime_cat(., var = crime, crimeCatName, "string") %>%
-  cs_crime(., var = crime, violent, "violent") %>%
-  cs_crime(., var = crime, property, "property") %>%
-  cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%
-  filter(district == 2 | district == 5) %>%
-  mutate(weekday = wday(dateOcc, label = TRUE)) %>%
+  cs_filter_count(., var = count) %>%                                                     # Removes Negative Counts
+  cs_filter_crime(., var = crime, "part 1") %>%                                           # Filters Part 1 Crimes
+  cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%                                # Creates numeric categorical variable of crimes
+  cs_crime_cat(., var = crime, crimeCatName, "string") %>%                                # Creates categorical variable of crimes | String
+  cs_crime(., var = crime, violent, "violent") %>%                                        # T/F Categorical Variable of Violent Crime
+  cs_crime(., var = crime, property, "property") %>%                                      # T/F Categorical Variable of Property Crime
+  cs_parse_date(., date_occur, dateVar = dateOcc, timeVar = timeOcc) %>%                  # Creates new time coded variables 
+  filter(district == 2 | district == 5) %>%                                               # Filters all district 2 & district 5 crime
+  mutate(weekday = wday(dateOcc, label = TRUE)) %>%                                       # Creates a variable of the weekday based on previously created date variable
   mutate(monthVar = dateOcc) %>%
   mutate(tod = timeOcc)
 
-ytdCrimes19$monthVar <- month(as.Date(ytdCrimes19$monthVar, format="%d/%m/%Y"), label = TRUE)
+ytdCrimes19$monthVar <- month(as.Date(ytdCrimes19$monthVar, 
+                                      format="%d/%m/%Y"), label = TRUE)                   # Pulls out the Month based on the Date | i.e 10/01/2018 = "October" 
 
-ytdCrimes19$neighborhood <- as.numeric(ytdCrimes19$neighborhood)
-ytdCrimes19$tod <- strptime(ytdCrimes19$tod, tz = "America/Chicago", "%H:%M")
+ytdCrimes19$neighborhood <- as.numeric(ytdCrimes19$neighborhood)                          # Formats the neighborhood variable as numeric
+ytdCrimes19$tod <- strptime(ytdCrimes19$tod, tz = "America/Chicago", "%H:%M")             # 
 ytdCrimes19$tod <- format(ytdCrimes19$tod, format = "%H%M%S")
 
 ytdCrimes19 <- ytdCrimes19 %>%
   filter(dateOcc >= as.Date(params$ytd)) %>%
-  mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
-  dplyr::select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup)  %>%
-  cs_missingXY(., varX = x_coord, varY = y_coord, newVar = missing) %>% 
+  mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", 
+                              "Night", "Day")) %>% 
+  dplyr::select(-dateTime, -tod, -flag_crime, 
+                -flag_administrative, -flag_unfounded, 
+                -flag_cleanup)  %>%
+  cs_missingXY(., varX = x_coord, 
+               varY = y_coord, newVar = missing) %>% 
   cs_replace0(., var = x_coord) %>%
   cs_replace0(., var = y_coord) %>% 
   filter(., missing == FALSE) 
