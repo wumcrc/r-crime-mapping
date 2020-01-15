@@ -128,29 +128,32 @@ ytdCrimes19$monthVar <- month(as.Date(ytdCrimes19$monthVar,
                                       format="%d/%m/%Y"), label = TRUE)                   # Pulls out the Month based on the Date | i.e 10/01/2018 = "October" 
 
 ytdCrimes19$neighborhood <- as.numeric(ytdCrimes19$neighborhood)                          # Formats the neighborhood variable as numeric
-ytdCrimes19$tod <- strptime(ytdCrimes19$tod, tz = "America/Chicago", "%H:%M")             # 
+ytdCrimes19$tod <- strptime(ytdCrimes19$tod, tz = "America/Chicago", "%H:%M")             # Strips & Reformats the structure of the time variable
 ytdCrimes19$tod <- format(ytdCrimes19$tod, format = "%H%M%S")
 
 ytdCrimes19 <- ytdCrimes19 %>%
-  filter(dateOcc >= as.Date(params$ytd)) %>%
+  filter(dateOcc >= as.Date(params$ytd)) %>%                                             # Filters data based on the date provided in the paramaters
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", 
                               "Night", "Day")) %>% 
   dplyr::select(-dateTime, -tod, -flag_crime, 
                 -flag_administrative, -flag_unfounded, 
-                -flag_cleanup)  %>%
+                -flag_cleanup)  %>%                                                      # Removes unneccessary variables from the database
   cs_missingXY(., varX = x_coord, 
-               varY = y_coord, newVar = missing) %>% 
+               varY = y_coord, newVar = missing) %>%                                     # Filters out incidents that cannot be spatially mapped
   cs_replace0(., var = x_coord) %>%
   cs_replace0(., var = y_coord) %>% 
   filter(., missing == FALSE) 
 
 monthCrimes19 <- ytdCrimes19 %>% 
-    filter(dateOcc >= as.Date(params$date))
+    filter(dateOcc >= as.Date(params$date))                                             # Filters dataset of crimes that happened in the month determined by the parameters
 ```
 
 ##### Larcenies 
 
 ```{r}
+# The following code filters out a dataset for an analysis of larcenies. It then adds a categorical variable based the type of larceny found in the description 
+# variable. It also adds another variable that categorizes the value of the larceny. 
+
 larceny <- monthCrimes19 %>% 
   filter(., crimeCatNum == 6)
 
