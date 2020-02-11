@@ -500,29 +500,29 @@ cap20_ytd <- nrow(ytdCrimes20[ytdCrimes20$neighborhood == 54 & ytdCrimes20$crime
 
 pct_chg_mth <- (tc20 - tc19)/tc19
 pct_chg_mth <- percent(pct_chg_mth)
-pct_chg_cap <- (cap20 - cap19)/cap19
-pct_chg_cap <- percent(pct_chg_cap)
+#pct_chg_cap <- (cap20 - cap19)/cap19
+#pct_chg_cap <- percent(pct_chg_cap)
 pct_chg_ytd <- (tc_ytdCurrent - tc_ytd19)/tc_ytd19
 pct_chg_ytd <- percent(pct_chg_ytd)
-pct_chg_ytd_cap <- (cap20_ytd - cap19_ytd)/cap19_ytd
-pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
+#pct_chg_ytd_cap <- (cap20_ytd - cap19_ytd)/cap19_ytd
+#pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 
 sprint_1 <- sprintf("%s total crimes in %s %s", 
                     tc20, params$month, params$year)
 sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
                     pct_chg_mth, params$month, params$pastyear, tc19)
-sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
-                    cap20, params$month, params$year)
-sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
-                    pct_chg_cap, params$month, params$pastyear, cap19)
+#sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
+                    #cap20, params$month, params$year)
+#sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
+                   # pct_chg_cap, params$month, params$pastyear, cap19)
 sprint_5 <- sprintf("%s total crimes in %s", 
                     tc_ytdCurrent, params$year)
 sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
                     pct_chg_ytd, params$pastyear, tc_ytd19)
-sprint_7 <- sprintf("%s crime(s) against persons in %s", 
-                    cap20_ytd, params$year)
-sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against persons)", 
-                    pct_chg_ytd_cap, params$pastyear, cap19_ytd)
+#sprint_7 <- sprintf("%s crime(s) against persons in %s", 
+                   # cap20_ytd, params$year)
+#sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against persons)", 
+                    #pct_chg_ytd_cap, params$pastyear, cap19_ytd)
 ```
 
 - **`r sprint_1`**
