@@ -1,17 +1,17 @@
 ---
 title: "Forest Park Southeast, Botanical Heights, Central West End, Medical Campus"
-subtitle: "Monthly Crime report: December 2019" 
+subtitle: "Monthly Crime report: January 2020" 
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
   powerpoint_presentation
 always_allow_html: yes
 params:
-  month: December
-  pastyear: 2018
-  year: 2019
-  date: "2019-12-01"
-  pastdate: "2018-01-01"
+  month: January
+  pastyear: 2019
+  year: 2020
+  date: "2020-01-01"
+  pastdate: "2019-01-01"
 ---
 
 ```{r setup, include=FALSE}
@@ -60,9 +60,9 @@ load(file = here("data", "basemap-files", "nbhd-boundaries.rda"))
 ```
 
 ```{r Set column name keys for flextable, include = FALSE }
-colkeys18 <- totalCrimes18$monthVar
-colkeys19 <- ytdCrimes19$monthVar
-colkeysdys <- totalCrimes18$weekday
+colkeys19 <- totalCrimes19$monthVar
+colkeys20 <- ytdCrimes20$monthVar
+colkeysdys <- totalCrimes19$weekday
 colkeystotal <- c("Total")
 part1crimes <- c("Aggravated Assault", "Arson", "Burgalry", "Homicide", "Larceny", "Motor Vehicle Theft", "Robbery")
 wkdys <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
@@ -72,41 +72,41 @@ wkdys <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 ## Forest Park Southeast: Summary Notes
 
 ```{r FPSE Summary Prep, include=FALSE}
-tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 39,])
 tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 39,])
-cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 39 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 39 & monthCrimes18$crimeCatNum == 3,])
+tc20 <- nrow(monthCrimes20[monthCrimes20$neighborhood == 39,])
 cap19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 39 & monthCrimes19$crimeCatNum == 4 | monthCrimes19$neighborhood == 39 & monthCrimes19$crimeCatNum == 3,])
+cap20 <- nrow(monthCrimes20[monthCrimes20$neighborhood == 39 & monthCrimes20$crimeCatNum == 4 | monthCrimes20$neighborhood == 39 & monthCrimes20$crimeCatNum == 3,])
 
-tc_ytd18 <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 39,])
-tc_ytdCurrent <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 39,])
-cap18_ytd <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 39 & ytdCrimes18$crimeCatNum == 4 | ytdCrimes18$neighborhood == 39 & ytdCrimes18$crimeCatNum == 3,])
+tc_ytd19 <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 39,])
+tc_ytdCurrent <- nrow(ytdCrimes20[ytdCrimes20$neighborhood == 39,])
 cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 39 & ytdCrimes19$crimeCatNum == 4 | ytdCrimes19$neighborhood == 39 & ytdCrimes19$crimeCatNum == 3,])
+cap20_ytd <- nrow(ytdCrimes20[ytdCrimes20$neighborhood == 39 & ytdCrimes20$crimeCatNum == 4 | ytdCrimes20$neighborhood == 39 & ytdCrimes20$crimeCatNum == 3,])
 
-pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- (tc20 - tc19)/tc19
 pct_chg_mth <- percent(pct_chg_mth)
-pct_chg_cap <- (cap19 - cap18)/cap18
+pct_chg_cap <- (cap20 - cap19)/cap19
 pct_chg_cap <- percent(pct_chg_cap)
-pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd19)/tc_ytd19
 pct_chg_ytd <- percent(pct_chg_ytd)
-pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- (cap20_ytd - cap19_ytd)/cap19_ytd
 pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 
 sprint_1 <- sprintf("%s total crimes in %s %s", 
-                    tc19, params$month, params$year)
+                    tc20, params$month, params$year)
 sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
-                    pct_chg_mth, params$month, params$pastyear, tc18)
+                    pct_chg_mth, params$month, params$pastyear, tc19)
 sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
-                    cap19, params$month, params$year)
+                    cap20, params$month, params$year)
 sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
-                    pct_chg_cap, params$month, params$pastyear, cap18)
+                    pct_chg_cap, params$month, params$pastyear, cap19)
 sprint_5 <- sprintf("%s total crimes in %s", 
                     tc_ytdCurrent, params$year)
 sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
-                    pct_chg_ytd, params$pastyear, tc_ytd18)
+                    pct_chg_ytd, params$pastyear, tc_ytd19)
 sprint_7 <- sprintf("%s crime(s) against persons in %s", 
-                    cap19_ytd, params$year)
+                    cap20_ytd, params$year)
 sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against persons)", 
-                    pct_chg_ytd_cap, params$pastyear, cap18_ytd)
+                    pct_chg_ytd_cap, params$pastyear, cap19_ytd)
 ```
 
 - **`r sprint_1`**
@@ -121,42 +121,21 @@ sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against pe
 ## Forest Park Southeast: Year to Year Comparison
 
 ```{r FPSE Year Comps Prep, include=FALSE}
-totalCrimes18 %>%
+totalCrimes19 %>%
   filter(., neighborhood == 39) %>%
   group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  replace(., is.na(.), 0)  -> fpse_2018
+  replace(., is.na(.), 0)  -> fpse_2019
 
-ytdCrimes19 %>%
+ytdCrimes20 %>%
   filter(., neighborhood == 39) %>%
   group_by(monthVar) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  replace(., is.na(.), 0) -> fpse_2019
-```
-
-```{r FPSE Total Crimes Flextable 2018, echo = FALSE}
-part1crimes[!(part1crimes %in% fpse_2018$crimeCatName)] -> missing_category
-is_empty(missing_category) -> test
-
-if(test == FALSE) {
-   add_row(fpse_2018, crimeCatName = missing_category) -> fpse_2018
-}
-
-fpse_2018 %>% 
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") %>%
-  rename(., "Part 1 Crimes" = crimeCatName) -> fpse_2018
-
-flextable(fpse_2018) %>%
-  colformat_num(.,  digits = 0) %>%
-  colformat_num(., digits = 0) %>%
-  autofit()
+  replace(., is.na(.), 0) -> fpse_2020
 ```
 
 ```{r FPSE Total Crimes Flextable 2019, echo = FALSE}
@@ -176,6 +155,27 @@ fpse_2019 %>%
 
 flextable(fpse_2019) %>%
   colformat_num(.,  digits = 0) %>%
+  colformat_num(., digits = 0) %>%
+  autofit()
+```
+
+```{r FPSE Total Crimes Flextable 2020, echo = FALSE}
+part1crimes[!(part1crimes %in% fpse_2020$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(fpse_2020, crimeCatName = missing_category) -> fpse_2020
+}
+
+fpse_2020 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> fpse_2020
+
+flextable(fpse_2020) %>%
+  colformat_num(.,  digits = 0) %>%
   colformat_num(.,  digits = 0) %>%
   autofit()
 ```
@@ -183,14 +183,14 @@ flextable(fpse_2019) %>%
 ## Forest Park Southeast: Summary Tables
 
 ```{r FPSE Tables Prep, include = FALSE}
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 39) %>%
   group_by(crimeCatName, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> fpse_crimeCat
 
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 39) %>%
   group_by(weekday, .drop = FALSE) %>%
   count() %>%
@@ -211,14 +211,14 @@ fpse_weekDay %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Day of the Week" = weekday) -> fpse_weekDay
 
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 39) %>%
   group_by(violent, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> fpse_violent
 
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 39) %>%
   group_by(dayNight, .drop = FALSE) %>%
   count() %>%
@@ -255,7 +255,7 @@ tm_shape(fpse_tiles) +
     tm_borders(col = "black",
                lwd = 2,
                lty = "dashed") +
-  filter(monthCrimes19_sf,
+  filter(monthCrimes20_sf,
          neighborhood == 39) %>%
   tm_shape() +
     tm_bubbles(size = .25,
@@ -280,41 +280,41 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 ## Botanical Heights: Summary Notes
 
 ```{r BOT Summary Prep, include=FALSE}
-tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 28,])
 tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 28,])
-cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 28 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 28 & monthCrimes18$crimeCatNum == 3,])
+tc20 <- nrow(monthCrimes20[monthCrimes20$neighborhood == 28,])
 cap19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 28 & monthCrimes19$crimeCatNum == 4 | monthCrimes19$neighborhood == 28 & monthCrimes19$crimeCatNum == 3,])
+cap20 <- nrow(monthCrimes20[monthCrimes20$neighborhood == 28 & monthCrimes20$crimeCatNum == 4 | monthCrimes20$neighborhood == 28 & monthCrimes20$crimeCatNum == 3,])
 
-tc_ytd18 <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 28,])
-tc_ytdCurrent <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 28,])
-cap18_ytd <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 28 & ytdCrimes18$crimeCatNum == 4 | ytdCrimes18$neighborhood == 28 & ytdCrimes18$crimeCatNum == 3,])
+tc_ytd19 <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 28,])
+tc_ytdCurrent <- nrow(ytdCrimes20[ytdCrimes20$neighborhood == 28,])
 cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 28 & ytdCrimes19$crimeCatNum == 4 | ytdCrimes19$neighborhood == 28 & ytdCrimes19$crimeCatNum == 3,])
+cap20_ytd <- nrow(ytdCrimes20[ytdCrimes20$neighborhood == 28 & ytdCrimes20$crimeCatNum == 4 | ytdCrimes20$neighborhood == 28 & ytdCrimes20$crimeCatNum == 3,])
 
-pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- (tc20 - tc19)/tc19
 pct_chg_mth <- percent(pct_chg_mth)
-# pct_chg_cap <- (cap19 - cap18)/cap18
+# pct_chg_cap <- (cap20 - cap19)/cap19
 # pct_chg_cap <- percent(pct_chg_cap)
-pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd19)/tc_ytd19
 pct_chg_ytd <- percent(pct_chg_ytd)
-pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- (cap20_ytd - cap19_ytd)/cap19_ytd
 pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 
 sprint_1 <- sprintf("%s total crimes in %s %s", 
-                    tc19, params$month, params$year)
+                    tc20, params$month, params$year)
 sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
-                    pct_chg_mth, params$month, params$pastyear, tc18)
+                    pct_chg_mth, params$month, params$pastyear, tc19)
 #sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
-                    #cap19, params$month, params$year)
+                    #cap20, params$month, params$year)
 #sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
-                    #pct_chg_cap, params$month, params$pastyear, cap18)
+                    #pct_chg_cap, params$month, params$pastyear, cap19)
 sprint_5 <- sprintf("%s total crimes in %s", 
                     tc_ytdCurrent, params$year)
 sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
-                    pct_chg_ytd, params$pastyear, tc_ytd18)
+                    pct_chg_ytd, params$pastyear, tc_ytd19)
 sprint_7 <- sprintf("%s crime(s) against persons in %s", 
-                    cap19_ytd, params$year)
+                    cap20_ytd, params$year)
 sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against persons)", 
-                    pct_chg_ytd_cap, params$pastyear, cap18_ytd)
+                    pct_chg_ytd_cap, params$pastyear, cap19_ytd)
 ```
 
 - **`r sprint_1`**
@@ -329,44 +329,23 @@ sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against pe
 ## Botanical Heights: Year to Year Comparison
 
 ```{r BOT Year Comps Prep, include=FALSE}
-totalCrimes18 %>%
+totalCrimes19 %>%
   filter(., neighborhood == 28) %>%
   group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  replace(., is.na(.), 0) -> bot_2018
+  replace(., is.na(.), 0) -> bot_2019
 
-ytdCrimes19 %>%
+ytdCrimes20 %>%
   filter(., neighborhood == 28) %>%
   group_by(monthVar) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  replace(., is.na(.), 0) -> bot_2019
+  replace(., is.na(.), 0) -> bot_2020
 ```
 
-
-```{r BOT Total Crimes Flextable 2018, echo = FALSE}
-part1crimes[!(part1crimes %in% bot_2018$crimeCatName)] -> missing_category
-is_empty(missing_category) -> test
-
-if(test == FALSE) {
-   add_row(bot_2018, crimeCatName = missing_category) -> bot_2018
-}
-
-bot_2018 %>% 
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") %>%
-  rename(., "Part 1 Crimes" = crimeCatName) -> bot_2018
-
-flextable(bot_2018) %>%
-  colformat_num(.,  digits = 0) %>%
-  colformat_num(.,  digits = 0) %>%
-  autofit()
-```
 
 ```{r BOT Total Crimes Flextable 2019, echo = FALSE}
 part1crimes[!(part1crimes %in% bot_2019$crimeCatName)] -> missing_category
@@ -384,6 +363,27 @@ bot_2019 %>%
   rename(., "Part 1 Crimes" = crimeCatName) -> bot_2019
 
 flextable(bot_2019) %>%
+  colformat_num(.,  digits = 0) %>%
+  colformat_num(.,  digits = 0) %>%
+  autofit()
+```
+
+```{r BOT Total Crimes Flextable 2020, echo = FALSE}
+part1crimes[!(part1crimes %in% bot_2020$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(bot_2020, crimeCatName = missing_category) -> bot_2020
+}
+
+bot_2020 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> bot_2020
+
+flextable(bot_2020) %>%
   colformat_num(., digits = 0) %>%
   colformat_num(., digits = 0) %>%
   autofit()
@@ -392,14 +392,14 @@ flextable(bot_2019) %>%
 ## Botanical Heights: Summary Tables
 
 ```{r BOT Tables Prep, include = FALSE}
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 28) %>%
   group_by(crimeCatName, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> bot_crimeCat
 
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 28) %>%
   group_by(weekday, .drop = FALSE) %>%
   count() %>%
@@ -420,7 +420,7 @@ bot_weekDay %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Day of the Week" = weekday) -> bot_weekDay
 
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 28) %>%
   group_by(violent, .drop = FALSE) %>%
   count() %>%
@@ -428,7 +428,7 @@ monthCrimes19 %>%
   rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> bot_violent
 
 
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 28) %>%
   group_by(dayNight, .drop = FALSE) %>%
   count() %>%
@@ -464,7 +464,7 @@ tm_shape(bot_tiles) +
     tm_borders(col = "black",
                lwd = 2,
                lty = "dashed") +
-  filter(monthCrimes19_sf,
+  filter(monthCrimes20_sf,
          neighborhood == 28) %>%
   tm_shape() +
     tm_bubbles(size = .25,
@@ -489,7 +489,7 @@ knitr::include_graphics(here("results", params$year, params$month, "bot", "bot_t
 ## Botanical Heights: Crime by Days of the Week
 
 ```{r BOT Crime by Weekday - Graph Prep, include = FALSE}
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 28) %>%
   group_by(weekday, .drop = FALSE) %>%
   count() %>%
@@ -587,21 +587,21 @@ dst_2_max_tot_nhd <- print(dst_2_maxT$NHD_NAME, max.levels = 0)
 dst_2_max_tot <- print(dst_2_maxT$crimeTotal, max.levels = 0)
 
 sprint_1 <- sprintf("%s total crimes in %s %s", 
-                    tc19, params$month, params$year)
+                    tc20, params$month, params$year)
 sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
-                    pct_chg_mth, params$month, params$pastyear, tc18)
+                    pct_chg_mth, params$month, params$pastyear, tc19)
 sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
-                    cap19, params$month, params$year)
+                    cap20, params$month, params$year)
 sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
-                    pct_chg_cap, params$month, params$pastyear, cap18)
+                    pct_chg_cap, params$month, params$pastyear, cap19)
 sprint_5 <- sprintf("%s total crimes in %s", 
                     tc_ytdCurrent, params$year)
 sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
-                    pct_chg_ytd, params$pastyear, tc_ytd18)
+                    pct_chg_ytd, params$pastyear, tc_ytd19)
 sprint_7 <- sprintf("%s crime(s) against persons in %s", 
-                    cap19_ytd, params$year)
-sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", 
-                    pct_chg_ytd_cap, params$pastyear, cap18_ytd)
+                    cap20_ytd, params$year)
+sprint_8 <- sprintf("%s change compared to this time in 2019 (%s crimes against persons)", 
+                    pct_chg_ytd_cap, params$pastyear, cap19_ytd)
 ```
 
 ## District 2: Density Map Explanation
@@ -618,33 +618,41 @@ There are 23 neighborhoods in District 2. The South Hampton neighborhood is spli
 ## Summary Notes: Central West End
 
 ```{r CWE Summary Notes Prep, include=FALSE}
-tc18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 38,])
 tc19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 38,])
-cap18 <- nrow(monthCrimes18[monthCrimes18$neighborhood == 38 & monthCrimes18$crimeCatNum == 4 | monthCrimes18$neighborhood == 38 & monthCrimes18$crimeCatNum == 3,])
+tc20 <- nrow(monthCrimes20[monthCrimes20$neighborhood == 38,])
 cap19 <- nrow(monthCrimes19[monthCrimes19$neighborhood == 38 & monthCrimes19$crimeCatNum == 4 | monthCrimes19$neighborhood == 38 & monthCrimes19$crimeCatNum == 3,])
+cap20 <- nrow(monthCrimes20[monthCrimes20$neighborhood == 38 & monthCrimes20$crimeCatNum == 4 | monthCrimes20$neighborhood == 38 & monthCrimes20$crimeCatNum == 3,])
 
-tc_ytd18 <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 38,])
-tc_ytdCurrent <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 38,])
-cap18_ytd <- nrow(ytdCrimes18[ytdCrimes18$neighborhood == 38 & ytdCrimes18$crimeCatNum == 4 | ytdCrimes18$neighborhood == 38 & ytdCrimes18$crimeCatNum == 3,])
+tc_ytd19 <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 38,])
+tc_ytdCurrent <- nrow(ytdCrimes20[ytdCrimes20$neighborhood == 38,])
 cap19_ytd <- nrow(ytdCrimes19[ytdCrimes19$neighborhood == 38 & ytdCrimes19$crimeCatNum == 4 | ytdCrimes19$neighborhood == 38 & ytdCrimes19$crimeCatNum == 3,])
+cap20_ytd <- nrow(ytdCrimes20[ytdCrimes20$neighborhood == 38 & ytdCrimes20$crimeCatNum == 4 | ytdCrimes20$neighborhood == 38 & ytdCrimes20$crimeCatNum == 3,])
 
-pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- (tc20 - tc19)/tc19
 pct_chg_mth <- percent(pct_chg_mth)
-pct_chg_cap <- (cap19 - cap18)/cap18
+pct_chg_cap <- (cap20 - cap19)/cap19
 pct_chg_cap <- percent(pct_chg_cap)
-pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd19)/tc_ytd19
 pct_chg_ytd <- percent(pct_chg_ytd)
-pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- (cap20_ytd - cap19_ytd)/cap19_ytd
 pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 
-sprint_1 <- sprintf("%s total crimes in September 2019", tc19)
-sprint_2 <- sprintf("%s change compared to September 2018 (%s total crimes)", pct_chg_mth, tc18)
-sprint_3 <- sprintf("%s crime(s) against persons in September 2019", cap19)
-sprint_4 <- sprintf("%s change compared to September 2018 (%s crimes against persons)", pct_chg_cap, cap18)
-sprint_5 <- sprintf("%s total crimes in 2019", tc_ytdCurrent)
-sprint_6 <- sprintf("%s change compared to this time in 2018 (%s total crimes)", pct_chg_ytd, tc_ytd18)
-sprint_7 <- sprintf("%s crime(s) against persons in 2019", cap19_ytd)
-sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against persons)", pct_chg_ytd_cap, cap18_ytd)
+sprint_1 <- sprintf("%s total crimes in %s %s", 
+                    tc20, params$month, params$year)
+sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
+                    pct_chg_mth, params$month, params$pastyear, tc19)
+sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
+                    cap20, params$month, params$year)
+sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
+                    pct_chg_cap, params$month, params$pastyear, cap19)
+sprint_5 <- sprintf("%s total crimes in %s", 
+                    tc_ytdCurrent, params$year)
+sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
+                    pct_chg_ytd, params$pastyear, tc_ytd19)
+sprint_7 <- sprintf("%s crime(s) against persons in %s", 
+                    cap20_ytd, params$year)
+sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against persons)", 
+                    pct_chg_ytd_cap, params$pastyear, cap19_ytd)
 ```
 
 - **`r sprint_1`**
@@ -659,42 +667,21 @@ sprint_8 <- sprintf("%s change compared to this time in 2018 (%s crimes against 
 ## Central West End: Year to Year Comparison
 
 ```{r CWE Year Comps Prep,include=FALSE}
-totalCrimes18 %>%
+totalCrimes19 %>%
   filter(., neighborhood == 38) %>%
   group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  replace(., is.na(.), 0) -> cwe_2018
+  replace(., is.na(.), 0) -> cwe_2019
 
-ytdCrimes19 %>%
+ytdCrimes20 %>%
   filter(., neighborhood == 38) %>%
   group_by(monthVar) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  replace(., is.na(.), 0) -> cwe_2019
-```
-
-```{r CWE Total Crimes Flextable 2018, echo = FALSE}
-part1crimes[!(part1crimes %in% cwe_2018$crimeCatName)] -> missing_category
-is_empty(missing_category) -> test
-
-if(test == FALSE) {
-   add_row(cwe_2018, crimeCatName = missing_category) -> cwe_2018
-}
-
-cwe_2018 %>% 
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") %>%
-  rename(., "Part 1 Crimes" = crimeCatName) -> cwe_2018
-
-flextable(cwe_2018) %>%
-  colformat_num(., digits = 0) %>%
-  colformat_num(., digits = 0) %>%
-  autofit()
+  replace(., is.na(.), 0) -> cwe_2020
 ```
 
 ```{r CWE Total Crimes Flextable 2019, echo = FALSE}
@@ -718,17 +705,38 @@ flextable(cwe_2019) %>%
   autofit()
 ```
 
+```{r CWE Total Crimes Flextable 2020, echo = FALSE}
+part1crimes[!(part1crimes %in% cwe_2020$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(cwe_2020, crimeCatName = missing_category) -> cwe_2020
+}
+
+cwe_2020 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> cwe_2020
+
+flextable(cwe_2020) %>%
+  colformat_num(., digits = 0) %>%
+  colformat_num(., digits = 0) %>%
+  autofit()
+```
+
 ## Central West End: Summary Tables
 
 ```{r CWE Tables Prep, include = FALSE}
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 38) %>%
   group_by(crimeCatName, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> cwe_crimeCat
 
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 38) %>%
   group_by(weekday, .drop = FALSE) %>%
   count() %>%
@@ -749,14 +757,14 @@ cwe_weekDay %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Day of the Week" = weekday) -> cwe_weekDay
 
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 38) %>%
   group_by(violent, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Crimes Against Persons" = violent) -> cwe_violent
 
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 38) %>%
   group_by(dayNight, .drop = FALSE) %>%
   count() %>%
@@ -793,7 +801,7 @@ tm_shape(cwe_tiles) +
     tm_borders(col = "black",
                lwd = 2,
                lty = "dashed") +
-  filter(monthCrimes19_sf,
+  filter(monthCrimes20_sf,
          neighborhood == 38) %>%
   tm_shape() +
     tm_bubbles(size = .25,
@@ -818,41 +826,41 @@ knitr::include_graphics(here("results", params$year, params$month, "cwe", "cwe_t
 ## Washington University Medical Campus: Summary Notes
 
 ```{r WUMC Summary Prep, include=FALSE}
-tc18 <- nrow(mc_crimes_month18)
 tc19 <- nrow(mc_crimes_month19)
-cap18 <- nrow(mc_crimes_month18[mc_crimes_month18$crimeCatNum == 4 | mc_crimes_month18$crimeCatNum == 3,])
+tc20 <- nrow(mc_crimes_month20)
 cap19 <- nrow(mc_crimes_month19[mc_crimes_month19$crimeCatNum == 4 | mc_crimes_month19$crimeCatNum == 3,])
+cap20 <- nrow(mc_crimes_month20[mc_crimes_month20$crimeCatNum == 4 | mc_crimes_month20$crimeCatNum == 3,])
 
-tc_ytd18 <- nrow(mc_crimes_ytd18)
-tc_ytdCurrent <- nrow(mc_crimes_ytd19)
-cap18_ytd <- nrow(mc_crimes_ytd18[mc_crimes_ytd18$crimeCatNum == 4 | mc_crimes_ytd18$crimeCatNum == 3,])
+tc_ytd19 <- nrow(mc_crimes_ytd19)
+tc_ytdCurrent <- nrow(mc_crimes_ytd20)
 cap19_ytd <- nrow(mc_crimes_ytd19[mc_crimes_ytd19$crimeCatNum == 4 | mc_crimes_ytd19$crimeCatNum == 3,])
+cap20_ytd <- nrow(mc_crimes_ytd20[mc_crimes_ytd20$crimeCatNum == 4 | mc_crimes_ytd20$crimeCatNum == 3,])
 
-pct_chg_mth <- (tc19 - tc18)/tc18
+pct_chg_mth <- (tc20 - tc19)/tc19
 pct_chg_mth <- percent(pct_chg_mth)
-pct_chg_cap <- (cap19 - cap18)/cap18
+pct_chg_cap <- (cap20 - cap19)/cap19
 pct_chg_cap <- percent(pct_chg_cap)
-pct_chg_ytd <- (tc_ytdCurrent - tc_ytd18)/tc_ytd18
+pct_chg_ytd <- (tc_ytdCurrent - tc_ytd19)/tc_ytd19
 pct_chg_ytd <- percent(pct_chg_ytd)
-pct_chg_ytd_cap <- (cap19_ytd - cap18_ytd)/cap18_ytd
+pct_chg_ytd_cap <- (cap20_ytd - cap19_ytd)/cap19_ytd
 pct_chg_ytd_cap <- percent(pct_chg_ytd_cap)
 
 sprint_1 <- sprintf("%s total crimes in %s %s", 
-                    tc19, params$month, params$year)
+                    tc20, params$month, params$year)
 sprint_2 <- sprintf("%s change compared to %s %s (%s total crimes)", 
-                    pct_chg_mth, params$month, params$pastyear, tc18)
+                    pct_chg_mth, params$month, params$pastyear, tc19)
 sprint_3 <- sprintf("%s crime(s) against persons in %s %s", 
-                    cap19, params$month, params$year)
+                    cap20, params$month, params$year)
 sprint_4 <- sprintf("%s change compared to %s %s (%s crimes against persons)", 
-                    pct_chg_cap, params$month, params$pastyear, cap18)
+                    pct_chg_cap, params$month, params$pastyear, cap19)
 sprint_5 <- sprintf("%s total crimes in %s", 
                     tc_ytdCurrent, params$year)
 sprint_6 <- sprintf("%s change compared to this time in %s (%s total crimes)", 
-                    pct_chg_ytd, params$pastyear, tc_ytd18)
+                    pct_chg_ytd, params$pastyear, tc_ytd19)
 sprint_7 <- sprintf("%s crime(s) against persons in %s", 
-                    cap19_ytd, params$year)
+                    cap20_ytd, params$year)
 sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against persons)", 
-                    pct_chg_ytd_cap, params$pastyear, cap18_ytd)
+                    pct_chg_ytd_cap, params$pastyear, cap19_ytd)
 ```
 
 - **`r sprint_1`**
@@ -867,40 +875,19 @@ sprint_8 <- sprintf("%s change compared to this time in %s (%s crimes against pe
 ## Washington University Medical Campus: Year to Year Comparison
 
 ```{r WUMC Year Comps Prep, include = FALSE}
-mc_crimes_total18 %>%
+mc_crimes_total19 %>%
   group_by(monthVar, .drop = FALSE) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  replace(., is.na(.), 0)-> mc_2018
+  replace(., is.na(.), 0)-> mc_2019
 
-mc_crimes_ytd19 %>%
+mc_crimes_ytd20 %>%
   group_by(monthVar) %>%
   count(crimeCatName) %>%
   rename(., "Number of Crimes" = n) %>%
   pivot_wider(names_from = monthVar, values_from = "Number of Crimes") %>%
-  replace(., is.na(.), 0) -> mc_2019
-```
-
-```{r WUMC Total Crimes Flextable 2018, echo = FALSE}
-part1crimes[!(part1crimes %in% mc_2018$crimeCatName)] -> missing_category
-is_empty(missing_category) -> test
-
-if(test == FALSE) {
-   add_row(mc_2018, crimeCatName = missing_category) -> mc_2018
-}
-
-mc_2018 %>% 
-  arrange(., crimeCatName) %>%
-  replace(., is.na(.), 0) %>%
-  adorn_totals(., "col", name = "Total") %>%
-  adorn_totals(., "row", name = "Total") %>%
-  rename(., "Part 1 Crimes" = crimeCatName) -> mc_2018
-
-flextable(mc_2018) %>%
-  colformat_num(., digits = 0) %>%
-  colformat_num(., digits = 0) %>%
-  autofit()
+  replace(., is.na(.), 0) -> mc_2020
 ```
 
 ```{r WUMC Total Crimes Flextable 2019, echo = FALSE}
@@ -924,16 +911,37 @@ flextable(mc_2019) %>%
   autofit()
 ```
 
+```{r WUMC Total Crimes Flextable 2020, echo = FALSE}
+part1crimes[!(part1crimes %in% mc_2020$crimeCatName)] -> missing_category
+is_empty(missing_category) -> test
+
+if(test == FALSE) {
+   add_row(mc_2020, crimeCatName = missing_category) -> mc_2020
+}
+
+mc_2020 %>% 
+  arrange(., crimeCatName) %>%
+  replace(., is.na(.), 0) %>%
+  adorn_totals(., "col", name = "Total") %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Part 1 Crimes" = crimeCatName) -> mc_2020
+
+flextable(mc_2020) %>%
+  colformat_num(., digits = 0) %>%
+  colformat_num(., digits = 0) %>%
+  autofit()
+```
+
 ## Washington University Medical Campus: Summary Tables
 
 ```{r WUMC Summary Tables Prep, include = FALSE}
-mc_crimes_month19 %>%
+mc_crimes_month20 %>%
   group_by(crimeCatName, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
   rename(., "Number of Crimes" = n, "Part 1 Crimes" = crimeCatName) -> mc_crimeCat
 
-mc_crimes_month19 %>%
+mc_crimes_month20 %>%
   group_by(dayNight, .drop = FALSE) %>%
   count() %>%
   adorn_totals(., "row", name = "Total") %>%
@@ -984,7 +992,7 @@ cwe_mc_tm <- tm_shape(mc_tiles) +
     tm_borders(col = "black",
                lwd = 1,
                lty = "solid") +
-  tm_shape(mc_crimes_month19_sf) +
+  tm_shape(mc_crimes_month20_sf) +
     tm_bubbles(size = .25,
                col = "crimeCatName",
                palette = "Set1",
@@ -1146,7 +1154,7 @@ fpse_dn_tm <- tm_shape(fpse_tiles) +
     tm_borders(col = "black",
                lwd = 2,
                lty = "dashed") +
-  filter(monthCrimes19_sf,
+  filter(monthCrimes20_sf,
          neighborhood == 39) %>%
   tm_shape() +
     tm_bubbles(size = .25,
@@ -1181,7 +1189,7 @@ fpse_vlnt_tm <- tm_shape(fpse_tiles) +
     tm_borders(col = "black",
                lwd = 2,
                lty = "dashed") +
-  filter(monthCrimes19_sf,
+  filter(monthCrimes20_sf,
          neighborhood == 39) %>%
   tm_shape() +
     tm_bubbles(size = .25,
@@ -1206,7 +1214,7 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 ## Forest Park Southeast: Crime Density Map
 
 ```{r FPSE Density Map Prep, include = FALSE}
-monthCrimes19_sf %>%
+monthCrimes20_sf %>%
   filter(neighborhood == 39) %>%
   smooth_map(., bandwidth = 0.5, style = "pretty",
   cover = fpse) -> fpse_densities
@@ -1242,7 +1250,7 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 ## Grove Community Improvement District: Total Crime Map
 
 ```{r Grove CID Total Crime Prep, include = FALSE}
-grove_crimes <- st_intersection(monthCrimes19_sf, grove_cid)
+grove_crimes <- st_intersection(monthCrimes20_sf, grove_cid)
 
 fpse_grove_tm <- tm_shape(grv_tiles) +
   tm_rgb() +
@@ -1327,7 +1335,7 @@ flextable(fpse_larcenies_value) %>%
 ## Forest Park Southeast: Total Crimes by Days of the Week
 
 ```{r FPSE Crime by Weekday Graph Prep, include= FALSE}
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 39) %>%
   group_by(weekday, .drop = FALSE) %>%
   count() %>%
@@ -1357,7 +1365,7 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 ## Forest Park Southeast: Crimes by Time of Day
 
 ```{r FPSE Crime by Time of Day Graph Prep, include = FALSE }
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 39) %>%
   group_by(dayNight, .drop = FALSE) %>%
   count() %>%
@@ -1376,7 +1384,7 @@ knitr::include_graphics(here("results", params$year, params$month, "fpse", "fpse
 ## Forest Park Southeast: Crimes by Day & Category
 
 ```{r FPSE Crime by Category Weekday Graph Prep, include= FALSE}
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 39) %>%
   group_by(crimeCatName, .drop = FALSE) %>%
   ggplot(., aes(weekday)) +
@@ -1408,7 +1416,7 @@ cwe_dn_tm <- tm_shape(cwe_tiles) +
     tm_borders(col = "black",
                lwd = 2,
                lty = "dashed") +
-  filter(monthCrimes19_sf,
+  filter(monthCrimes20_sf,
          neighborhood == 38) %>%
   tm_shape() +
     tm_bubbles(size = .25,
@@ -1443,7 +1451,7 @@ cwe_vlnt_tm <- tm_shape(cwe_tiles) +
     tm_borders(col = "black",
                lwd = 2,
                lty = "dashed") +
-  filter(monthCrimes19_sf,
+  filter(monthCrimes20_sf,
          neighborhood == 38) %>%
   tm_shape() +
     tm_bubbles(size = .25,
@@ -1468,7 +1476,7 @@ knitr::include_graphics(here("results", params$year, params$month, "cwe", "cwe_v
 ## Central West End: Crime Density Map
 
 ```{r CWE Density Map Prep, include = FALSE}
-monthCrimes19_sf %>%
+monthCrimes20_sf %>%
   filter(neighborhood == 38) %>%
   smooth_map(., bandwidth = 0.5, style = "pretty",
   cover = cwe) -> cwe_densities
@@ -1551,7 +1559,7 @@ flextable(cwe_larcenies_value) %>%
 ## Central West End: Total Crimes by Days of the Week
 
 ```{r CWE Crime by Weekday Graph Prep, include = FALSE}
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 38) %>%
   group_by(weekday, .drop = FALSE) %>%
   count() %>%
@@ -1581,7 +1589,7 @@ knitr::include_graphics(here("results", params$year, params$month, "cwe", "cwe_c
 ## Central West End: Crimes by Time of Day
 
 ```{r CWE Crime by Time of Day Graph Prep, include = FALSE }
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 38) %>%
   group_by(dayNight, .drop = FALSE) %>%
   count() %>%
@@ -1600,7 +1608,7 @@ knitr::include_graphics(here("results", params$year, params$month, "cwe", "cwe_c
 ## Central West End: Crimes by Day & Category
 
 ```{r CWE Crime by Category Weekday Graph Prep, include= FALSE}
-monthCrimes19 %>%
+monthCrimes20 %>%
   filter(., neighborhood == 38) %>%
   group_by(crimeCatName, .drop = FALSE) %>%
   ggplot(., aes(weekday)) +

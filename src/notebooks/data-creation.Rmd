@@ -7,14 +7,14 @@ output:
   html_notebook: default
 always_allow_html: yes
 params:
-  month: December
-  pastyear: 2018
-  year: 2019 
-  ytd: "2019-01-01"                   # Compiles Year to Date Dataset for this year | Leave at January 1st 2019
-  date: "2019-12-01"                  # Pulls in the data for the most recent month | Change this each month
-  pastdate: "2018-01-01"              # Compiles Year to Date Dataset for previous year | Leave at January 1st 2018 
-  pstdtmonth: "2018-12-01"            # Compiles Data for the most recent month of the previous year | This is the first day of the month
-  pstdtmonth2: "2018-12-31"           # Compiles Data for the most recent month of the previous year | This is the last day of month | Must be the 30th or 31st
+  month: January
+  pastyear: 2019
+  year: 2020 
+  ytd: "2020-01-01"                   # Compiles Year to Date Dataset for this year | Leave at January 1st 2020
+  date: "2020-01-01"                  # Pulls in the data for the most recent month | Change this each month
+  pastdate: "2019-01-01"              # Compiles Year to Date Dataset for previous year | Leave at January 1st 2018 
+  pstdtmonth: "2019-01-01"            # Compiles Data for the most recent month of the previous year | This is the first day of the month
+  pstdtmonth2: "2019-01-31"           # Compiles Data for the most recent month of the previous year | This is the last day of month | Must be the 30th or 31st
 ---
 
 ```{r setup, include=FALSE}
@@ -62,21 +62,21 @@ load(here("data/nbhd_pop10.rda"))
 
 ```{r Pull 2018 and 2019 Data}
 i <- cs_create_index()
-yearlist18 <- cs_get_data(year = params$pastyear, index = i)
-yearlist19 <- cs_get_data(year = params$year, index = i)        # Constructs a table for finding a table of crime data
-cs_validate(yearlist18, year = 2018)                            # Identifies problems with SLMPD Data
+yearlist19 <- cs_get_data(year = params$pastyear, index = i)
+yearlist20 <- cs_get_data(year = params$year, index = i)        # Constructs a table for finding a table of crime data
 cs_validate(yearlist19, year = 2019)                            # Identifies problems with SLMPD Data
+cs_validate(yearlist20, year = 2020)                            # Identifies problems with SLMPD Data
 ```
 
 #### Standardize Data for Cleaning
 
 ```{r Standardize 2018 and 2019 Data}
-totalCrimes18 <- cs_collapse(yearlist18)
-ytdCrimes19 <- cs_collapse(yearlist19) 
+totalCrimes19 <- cs_collapse(yearlist19)
+ytdCrimes20 <- cs_collapse(yearlist20) 
 ```
 
 ### Clean & Categorize Data 
-#### 2019
+#### 2020
 
 `cs_filter_count` removes negative counts. Negative counts, -1, in the count column means that the crime, or charge in this specific observation has either been deemed unfounded, or the crime has been up coded. We do not want to map this data. 
 
@@ -110,8 +110,8 @@ Many of the analyses we conduct include comparisons between violent & non-violen
 
 `monthCrimes` is an object that holds crimes for the current month of this year. 
 
-```{r Creates 2019 Tidy Crime File}
-ytdCrimes19 <- ytdCrimes19 %>% 
+```{r Creates 2020 Tidy Crime File}
+ytdCrimes20 <- ytdCrimes20 %>% 
   cs_filter_count(., var = count) %>%                                                     # Removes Negative Counts
   cs_filter_crime(., var = crime, "part 1") %>%                                           # Filters Part 1 Crimes
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%                                # Creates numeric categorical variable of crimes
@@ -124,14 +124,14 @@ ytdCrimes19 <- ytdCrimes19 %>%
   mutate(monthVar = dateOcc) %>%
   mutate(tod = timeOcc)
 
-ytdCrimes19$monthVar <- month(as.Date(ytdCrimes19$monthVar, 
+ytdCrimes20$monthVar <- month(as.Date(ytdCrimes20$monthVar, 
                                       format="%d/%m/%Y"), label = TRUE)                   # Pulls out the Month based on the Date | i.e 10/01/2018 = "October" 
 
-ytdCrimes19$neighborhood <- as.numeric(ytdCrimes19$neighborhood)                          # Formats the neighborhood variable as numeric
-ytdCrimes19$tod <- strptime(ytdCrimes19$tod, tz = "America/Chicago", "%H:%M")             # Strips & Reformats the structure of the time variable
-ytdCrimes19$tod <- format(ytdCrimes19$tod, format = "%H%M%S")
+ytdCrimes20$neighborhood <- as.numeric(ytdCrimes20$neighborhood)                          # Formats the neighborhood variable as numeric
+ytdCrimes20$tod <- strptime(ytdCrimes20$tod, tz = "America/Chicago", "%H:%M")             # Strips & Reformats the structure of the time variable
+ytdCrimes20$tod <- format(ytdCrimes20$tod, format = "%H%M%S")
 
-ytdCrimes19 <- ytdCrimes19 %>%
+ytdCrimes20 <- ytdCrimes20 %>%
   filter(dateOcc >= as.Date(params$ytd)) %>%                                             # Filters data based on the date provided in the paramaters
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", 
                               "Night", "Day")) %>% 
@@ -144,7 +144,7 @@ ytdCrimes19 <- ytdCrimes19 %>%
   cs_replace0(., var = y_coord) %>% 
   filter(., missing == FALSE) 
 
-monthCrimes19 <- ytdCrimes19 %>% 
+monthCrimes20 <- ytdCrimes20 %>% 
     filter(dateOcc >= as.Date(params$date))                                             # Filters dataset of crimes that happened in the month determined by the parameters
 ```
 
@@ -154,7 +154,7 @@ monthCrimes19 <- ytdCrimes19 %>%
 # The following code filters out a dataset for an analysis of larcenies. It then adds a categorical variable based the type of larceny found in the description 
 # variable. It also adds another variable that categorizes the value of the larceny. 
 
-larceny <- monthCrimes19 %>% 
+larceny <- monthCrimes20 %>% 
   filter(., crimeCatNum == 6)
 
 larceny <- mutate(larceny, "type" = ifelse(grepl("ALL OTHER", description), "All Other", 
@@ -175,8 +175,8 @@ larceny <- mutate(larceny, "value" = ifelse(grepl("UNDER", description), "Under 
 
 #### 2018
 
-```{r Total Crimes for 2018 Tidied}
-totalCrimes18 <- totalCrimes18 %>% 
+```{r Total Crimes for 2019 Tidied}
+totalCrimes19 <- totalCrimes19 %>% 
   cs_filter_count(., var = count) %>%
   cs_filter_crime(., var = crime, "part 1") %>%
   cs_crime_cat(., var = crime, crimeCatNum, "numeric") %>%
@@ -189,14 +189,14 @@ totalCrimes18 <- totalCrimes18 %>%
   mutate(monthVar = dateOcc) %>%
   mutate(tod = timeOcc) 
 
-totalCrimes18$monthVar <- month(as.Date(totalCrimes18$monthVar, format="%d/%m/%Y"), label = TRUE)
+totalCrimes19$monthVar <- month(as.Date(totalCrimes19$monthVar, format="%d/%m/%Y"), label = TRUE)
 
-totalCrimes18$neighborhood <- as.numeric(totalCrimes18$neighborhood)
+totalCrimes19$neighborhood <- as.numeric(totalCrimes19$neighborhood)
 
-totalCrimes18$tod <- strptime(totalCrimes18$tod, tz = "America/Chicago", "%H:%M")
-totalCrimes18$tod <- format(totalCrimes18$tod, format = "%H%M%S")
+totalCrimes19$tod <- strptime(totalCrimes19$tod, tz = "America/Chicago", "%H:%M")
+totalCrimes19$tod <- format(totalCrimes19$tod, format = "%H%M%S")
 
-totalCrimes18 <- totalCrimes18 %>%
+totalCrimes19 <- totalCrimes19 %>%
   mutate(., dayNight = ifelse(tod >= "180000" & tod < "600000", "Night", "Day")) %>% 
   dplyr::select(-dateTime, -tod, -flag_crime, -flag_administrative, -flag_unfounded, -flag_cleanup) %>%
   cs_missingXY(., varX = x_coord, varY = y_coord, newVar = missing) %>%
@@ -205,10 +205,10 @@ totalCrimes18 <- totalCrimes18 %>%
   filter(., missing == FALSE) %>% 
   filter(dateOcc >= as.Date(params$pastdate))
 
-monthCrimes18 <- totalCrimes18 %>% 
+monthCrimes19 <- totalCrimes19 %>% 
     filter(dateOcc >= as.Date(params$pstdtmonth) & dateOcc <= as.Date(params$pstdtmonth2))
 
-ytdCrimes18 <- totalCrimes18%>% 
+ytdCrimes19 <- totalCrimes19%>% 
     filter(dateOcc <= as.Date(params$pstdtmonth2))
 ```
 
@@ -236,34 +236,34 @@ save(med_campus, cortex, grove_cid, nhoods_sf, file = here("data", "basemap-file
 
 ```{r Create SF objects for 2018 & 2019 Crimes}
 # all crimes 
-totalCrimes18_sf <- cs_projectXY(totalCrimes18, varX = x_coord, varY = y_coord, crs = 102696)
-ytdCrimes18_sf <- cs_projectXY(ytdCrimes18, varX = x_coord, varY = y_coord, crs = 102696)
+totalCrimes19_sf <- cs_projectXY(totalCrimes19, varX = x_coord, varY = y_coord, crs = 102696)
 ytdCrimes19_sf <- cs_projectXY(ytdCrimes19, varX = x_coord, varY = y_coord, crs = 102696)
+ytdCrimes20_sf <- cs_projectXY(ytdCrimes20, varX = x_coord, varY = y_coord, crs = 102696)
 
-monthCrimes18_sf <- cs_projectXY(monthCrimes18, varX = x_coord, varY = y_coord, crs = 102696)
 monthCrimes19_sf <- cs_projectXY(monthCrimes19, varX = x_coord, varY = y_coord, crs = 102696)
+monthCrimes20_sf <- cs_projectXY(monthCrimes20, varX = x_coord, varY = y_coord, crs = 102696)
 
 larceny_sf <- cs_projectXY(larceny, varX = x_coord, varY = y_coord, crs = 102696)
 
 # med campus
-mc_crimes_month18_sf <- st_intersection(monthCrimes18_sf, med_campus) 
-mc_crimes_month18 <- mc_crimes_month18_sf  %>% 
-   as.data.frame() 
-
-mc_crimes_month19_sf <- st_intersection(monthCrimes19_sf, med_campus)
+mc_crimes_month19_sf <- st_intersection(monthCrimes19_sf, med_campus) 
 mc_crimes_month19 <- mc_crimes_month19_sf  %>% 
-   as.data.frame()
-
-mc_crimes_ytd18_sf <- st_intersection(ytdCrimes18_sf, med_campus) 
-mc_crimes_ytd18 <- mc_crimes_ytd18_sf %>% 
    as.data.frame() 
 
-mc_crimes_ytd19_sf <- st_intersection(ytdCrimes19_sf, med_campus)
-mc_crimes_ytd19 <- mc_crimes_ytd19_sf %>% 
+mc_crimes_month20_sf <- st_intersection(monthCrimes20_sf, med_campus)
+mc_crimes_month20 <- mc_crimes_month20_sf  %>% 
    as.data.frame()
 
-mc_crimes_total18_sf <- st_intersection(totalCrimes18_sf, med_campus)
-mc_crimes_total18 <- mc_crimes_total18_sf %>% 
+mc_crimes_ytd19_sf <- st_intersection(ytdCrimes19_sf, med_campus) 
+mc_crimes_ytd19 <- mc_crimes_ytd19_sf %>% 
+   as.data.frame() 
+
+mc_crimes_ytd20_sf <- st_intersection(ytdCrimes20_sf, med_campus)
+mc_crimes_ytd20 <- mc_crimes_ytd20_sf %>% 
+   as.data.frame()
+
+mc_crimes_total19_sf <- st_intersection(totalCrimes19_sf, med_campus)
+mc_crimes_total19 <- mc_crimes_total19_sf %>% 
    as.data.frame()
 
 mc_larcenies_sf <- st_intersection(larceny_sf, med_campus)
@@ -271,10 +271,10 @@ mc_larcenies <- mc_larcenies_sf %>%
    as.data.frame()
 
 # cortex
-ctx_crimes_sf <- st_intersection(monthCrimes19_sf, cortex)
+ctx_crimes_sf <- st_intersection(monthCrimes20_sf, cortex)
 
 # police districts 
-dst_2 <- monthCrimes19 %>% 
+dst_2 <- monthCrimes20 %>% 
   filter(., neighborhood %in% dst2) %>% 
   group_by(., neighborhood) %>%
   count() %>% 
@@ -283,7 +283,7 @@ dst_2 <- monthCrimes19 %>%
   mutate(., crimeRate = (crimeTotal/pop10)*1000) %>% 
   drop_na()
 
-dst_5 <- monthCrimes19 %>% 
+dst_5 <- monthCrimes20 %>% 
   filter(., neighborhood %in% dst5) %>% 
   group_by(., neighborhood) %>%
   count() %>% 
@@ -302,9 +302,9 @@ dst_5_pop_sf <- left_join(nhoods_sf, dst_5, by = "neighborhood") %>%
   drop_na()
 
 # Save
-save(totalCrimes18_sf, ytdCrimes18_sf, ytdCrimes19_sf, monthCrimes18_sf, monthCrimes19_sf, mc_crimes_month18_sf, mc_crimes_month19_sf, mc_crimes_ytd18_sf, mc_crimes_total18_sf, mc_crimes_ytd19_sf, mc_larcenies_sf, ctx_crimes_sf, dst_2_pop_sf, dst_5_pop_sf, file = here("data", "spatial-crime-data.rda"))
+save(totalCrimes19_sf, ytdCrimes19_sf, ytdCrimes20_sf, monthCrimes19_sf, monthCrimes20_sf, mc_crimes_month19_sf, mc_crimes_month20_sf, mc_crimes_ytd19_sf, mc_crimes_total19_sf, mc_crimes_ytd20_sf, mc_larcenies_sf, ctx_crimes_sf, dst_2_pop_sf, dst_5_pop_sf, file = here("data", "spatial-crime-data.rda"))
 
-save(ytdCrimes18, ytdCrimes19, monthCrimes18, monthCrimes19, totalCrimes18, larceny, mc_crimes_month18, mc_crimes_month19, mc_crimes_ytd18, mc_crimes_total18, mc_crimes_ytd19, mc_larcenies, dst_2, dst_5, file = here("data", "crime-data.rda"))
+save(ytdCrimes19, ytdCrimes20, monthCrimes19, monthCrimes20, totalCrimes19, larceny, mc_crimes_month19, mc_crimes_month20, mc_crimes_ytd19, mc_crimes_total19, mc_crimes_ytd20, mc_larcenies, dst_2, dst_5, file = here("data", "crime-data.rda"))
 
 ```
 ```{r}

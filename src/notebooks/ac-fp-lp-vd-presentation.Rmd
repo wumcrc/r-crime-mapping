@@ -1,17 +1,17 @@
 ---
 title: "Academy, Fountain Park, Lewis Place Place, Vandeventer"
-subtitle: "Monthly Crime report: December 2019" 
+subtitle: "Monthly Crime report: January 2020" 
 author: "Washington University Medical Center"
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
   powerpoint_presentation
 always_allow_html: yes
 params:
-  month: December
-  pastyear: 2018
-  year: 2019
-  date: "2019-12-01"
-  pastdate: "2018-01-01"
+  month: January
+  pastyear: 2019
+  year: 2020
+  date: "2020-01-01"
+  pastdate: "2019-01-01"
 ---
 
 ```{r setup, include=FALSE}
