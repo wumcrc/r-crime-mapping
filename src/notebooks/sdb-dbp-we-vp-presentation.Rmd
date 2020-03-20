@@ -7,11 +7,11 @@ output:
   powerpoint_presentation
 always_allow_html: yes
 params:
-  month: January
+  month: February
   pastyear: 2019
   year: 2020
-  date: "2020-01-01"
-  pastdate: "2019-01-01"
+  date: "2020-02-01"
+  pastdate: "2019-02-01"
 ---
 
 ```{r setup, include=FALSE}
@@ -889,11 +889,11 @@ tm_shape(vp_tiles) +
     legend.outside = TRUE,
     legend.position = c("right", "bottom")) -> vp_total_tm
 
-#tmap_save(vp_total_tm, file = here("results", params$year, params$month, "vp", "vp_total_tm.jpeg"), dpi = 500)
+tmap_save(vp_total_tm, file = here("results", params$year, params$month, "vp", "vp_total_tm.jpeg"), dpi = 500)
 ```
 
 ```{r VP Total Crimes Knit, echo = FALSE}
-#knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_total_tm.jpeg"))
+knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_total_tm.jpeg"))
 ```
 
 ## District 5: Crime Rates Map
@@ -1666,11 +1666,11 @@ vp_dn_tm <- tm_shape(vp_tiles) +
     legend.outside = TRUE,
     legend.position = c("right", "bottom"))
 
-#tmap_save(vp_dn_tm, file = here("results", params$year, params$month, "vp", "vp_day_night.jpeg"), dpi = 500)
+tmap_save(vp_dn_tm, file = here("results", params$year, params$month, "vp", "vp_day_night.jpeg"), dpi = 500)
 ```
 
 ```{r VP Day & Night Knit, echo = FALSE}
-#knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_day_night.jpeg"))
+knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_day_night.jpeg"))
 ```
 
 ## Visitation Park: Violent Crime Map
@@ -1701,124 +1701,124 @@ vp_vlnt_tm <- tm_shape(vp_tiles) +
     legend.outside = TRUE,
     legend.position = c("right", "bottom"))
 
-#tmap_save(vp_vlnt_tm, file = here("results", params$year, params$month, "vp", "vp_vlnt.jpeg"), dpi = 500)
+tmap_save(vp_vlnt_tm, file = here("results", params$year, params$month, "vp", "vp_vlnt.jpeg"), dpi = 500)
 ```
 
 ```{r VP Violent Crime Map Knit, echo = FALSE}
-#knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_vlnt.jpeg"))
+knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_vlnt.jpeg"))
 ```
 
 ## Visitation Park: Larceny Breakdown
 
 ```{r VP Larceny Breakdown Prep, include = FALSE}
-#larceny %>%
-#  filter(., neighborhood == 49) %>%
-#  group_by(weekday) %>%
-#  count() %>%
-#  adorn_totals(., "row", name = "Total") %>%
-#  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> vp_larcenies_weekDay
+larceny %>%
+  filter(., neighborhood == 49) %>%
+  group_by(weekday) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Day of the Week" = weekday) -> vp_larcenies_weekDay
 
-#larceny %>%
-#  filter(., neighborhood == 49) %>%
-#  group_by(dayNight) %>%
-#  count() %>%
-#  adorn_totals(., "row", name = "Total") %>%
-#  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> vp_larcenies_dayNight
+larceny %>%
+  filter(., neighborhood == 49) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Time of Day" = dayNight) -> vp_larcenies_dayNight
 
-#larceny %>%
-#  filter(., neighborhood == 49) %>%
-#  group_by(type) %>%
-#  count() %>%
-#  adorn_totals(., "row", name = "Total") %>%
-#  rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> vp_larcenies_type
+larceny %>%
+  filter(., neighborhood == 49) %>%
+  group_by(type) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Type of Larceny" = type) -> vp_larcenies_type
 
-#larceny %>%
-#  filter(., neighborhood == 49) %>%
-#  group_by(value) %>%
-#  count() %>%
-#  adorn_totals(., "row", name = "Total") %>%
-#  rename(., "Number of Crimes" = n, "Monetary" = value) -> vp_larcenies_value
+larceny %>%
+  filter(., neighborhood == 49) %>%
+  group_by(value) %>%
+  count() %>%
+  adorn_totals(., "row", name = "Total") %>%
+  rename(., "Number of Crimes" = n, "Monetary" = value) -> vp_larcenies_value
 ```
 
 ```{r VP Larceny Tables Knit, echo = FALSE}
-#flextable(vp_larcenies_weekDay) %>%
-#  autofit()
+flextable(vp_larcenies_weekDay) %>%
+  autofit()
 
-#flextable(vp_larcenies_dayNight) %>%
-#  autofit()
+flextable(vp_larcenies_dayNight) %>%
+  autofit()
 
-#flextable(vp_larcenies_type) %>%
-#  autofit()
+flextable(vp_larcenies_type) %>%
+  autofit()
 
-#flextable(vp_larcenies_value) %>%
-#  autofit()
+flextable(vp_larcenies_value) %>%
+  autofit()
 ```
 
 ## Visitation Park: Total Crimes by Days of the Week
 
 ```{r VP Crime by Weekday Graph Prep, include= FALSE}
 
-#monthCrimes20 %>%
-#  filter(., neighborhood == 49) %>%
-#  group_by(weekday, .drop = FALSE) %>%
-#  count() %>%
-#  replace(., is.na(.), 0) -> vp_weekDay
+monthCrimes20 %>%
+  filter(., neighborhood == 49) %>%
+  group_by(weekday, .drop = FALSE) %>%
+  count() %>%
+  replace(., is.na(.), 0) -> vp_weekDay
 
-#wkdys[!(wkdys %in% vp_weekDay$weekday)] -> missing_category_days
-#is_empty(missing_category_days) -> test
+wkdys[!(wkdys %in% vp_weekDay$weekday)] -> missing_category_days
+is_empty(missing_category_days) -> test
 
-#as.data.frame(vp_weekDay) -> vp_weekDay
+as.data.frame(vp_weekDay) -> vp_weekDay
 
-#if(test == FALSE) {
-#   add_row(vp_weekDay, weekday = missing_category_days) -> vp_weekDay
-#}
+if(test == FALSE) {
+   add_row(vp_weekDay, weekday = missing_category_days) -> vp_weekDay
+}
 
-#  ggplot(vp_weekDay, aes(x=weekday, y=n, group = 1)) +
-#    geom_line(color="blue") +
-#    geom_point() +
-#    xlab("Day of Week") + ylab("Total Crimes")
+  ggplot(vp_weekDay, aes(x=weekday, y=n, group = 1)) +
+    geom_line(color="blue") +
+    geom_point() +
+    xlab("Day of Week") + ylab("Total Crimes")
 
-#ggsave(here("results", params$year, params$month, "vp", "vp_crime_weekday_graph.jpeg"), dpi = 500)
+ggsave(here("results", params$year, params$month, "vp", "vp_crime_weekday_graph.jpeg"), dpi = 500)
 ```
 
 ```{r VP Crime by Weekday Graph Knit, echo = FALSE}
-#knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_crime_weekday_graph.jpeg"), dpi = 500)
+knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_crime_weekday_graph.jpeg"), dpi = 500)
 ```
 
 ## Visitation Park: Crimes by Time of Day
 
 ```{r VP Crime by Time of Day Graph Prep, include = FALSE }
-#monthCrimes20 %>%
-#  filter(., neighborhood == 49) %>%
-#  group_by(dayNight) %>%
-#  count() %>%
-#  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
-#    geom_bar(stat="identity", position=position_dodge(), colour="black") +
-#    xlab("Time of Day") + ylab("Total Crimes") +
-#    labs(fill = "Time")
+monthCrimes20 %>%
+  filter(., neighborhood == 49) %>%
+  group_by(dayNight) %>%
+  count() %>%
+  ggplot(., aes(x=dayNight, y=n, fill = dayNight)) +
+    geom_bar(stat="identity", position=position_dodge(), colour="black") +
+    xlab("Time of Day") + ylab("Total Crimes") +
+    labs(fill = "Time")
 
-#ggsave(here("results", params$year, params$month, "vp", "vp_crime_timeDay_graph.jpeg"), dpi = 500)
+ggsave(here("results", params$year, params$month, "vp", "vp_crime_timeDay_graph.jpeg"), dpi = 500)
 ```
 
 ```{r VP Crime by Time of Day Knit, echo = FALSE}
-#knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_crime_timeDay_graph.jpeg"), dpi = 500)
+knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_crime_timeDay_graph.jpeg"), dpi = 500)
 ```
 
 ## Visitation Park: Crimes by Day & Category
 
 ```{r VP Crime by Category Weekday Graph Prep, include= FALSE}
-#monthCrimes20 %>%
-#  filter(., neighborhood == 49) %>%
-#  group_by(crimeCatName) %>%
-#  ggplot(., aes(weekday)) +
-#    geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
-#    xlab("Day of Week") + ylab("Total Crimes") +
-#    labs(fill = "Part 1 Crimes") +
-#    scale_fill_brewer(palette = "Spectral")
+monthCrimes20 %>%
+  filter(., neighborhood == 49) %>%
+  group_by(crimeCatName) %>%
+  ggplot(., aes(weekday)) +
+    geom_bar(aes(fill = crimeCatName), position=position_dodge(), colour="black") +
+    xlab("Day of Week") + ylab("Total Crimes") +
+    labs(fill = "Part 1 Crimes") +
+    scale_fill_brewer(palette = "Spectral")
 
-#ggsave(here("results", params$year, params$month, "vp", "vp_crimeCat_weekday_graph.jpeg"), dpi = 500)
+ggsave(here("results", params$year, params$month, "vp", "vp_crimeCat_weekday_graph.jpeg"), dpi = 500)
 ```
 
 ```{r VP Crime by Category Weekday Graph Knit, echo = FALSE}
-#knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_crimeCat_weekday_graph.jpeg"), dpi = 500)
+knitr::include_graphics(here("results", params$year, params$month, "vp", "vp_crimeCat_weekday_graph.jpeg"), dpi = 500)
 ```

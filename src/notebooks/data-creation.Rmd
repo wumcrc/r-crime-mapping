@@ -7,14 +7,14 @@ output:
   html_notebook: default
 always_allow_html: yes
 params:
-  month: January
+  month: February
   pastyear: 2019
   year: 2020 
   ytd: "2020-01-01"                   # Compiles Year to Date Dataset for this year | Leave at January 1st 2020
-  date: "2020-01-01"                  # Pulls in the data for the most recent month | Change this each month
-  pastdate: "2019-01-01"              # Compiles Year to Date Dataset for previous year | Leave at January 1st 2018 
-  pstdtmonth: "2019-01-01"            # Compiles Data for the most recent month of the previous year | This is the first day of the month
-  pstdtmonth2: "2019-01-31"           # Compiles Data for the most recent month of the previous year | This is the last day of month | Must be the 30th or 31st
+  date: "2020-02-01"                  # Pulls in the data for the most recent month | Change this each month
+  pastdate: "2019-01-01"              # Compiles Year to Date Dataset for previous year | Leave at January 1st 2019 
+  pstdtmonth: "2019-02-01"            # Compiles Data for the most recent month of the previous year | This is the first day of the month
+  pstdtmonth2: "2019-02-28"           # Compiles Data for the most recent month of the previous year | This is the last day of month | Must be the 30th or 31st
 ---
 
 ```{r setup, include=FALSE}

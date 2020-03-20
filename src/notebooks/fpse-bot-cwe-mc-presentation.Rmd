@@ -7,7 +7,7 @@ output:
   powerpoint_presentation
 always_allow_html: yes
 params:
-  month: 
+  month: February
   pastyear: 2019
   year: 2020
   date: "2020-02-01"
@@ -602,6 +602,13 @@ sprint_7 <- sprintf("%s crime(s) against persons in %s",
                     cap20_ytd, params$year)
 sprint_8 <- sprintf("%s change compared to this time in 2019 (%s crimes against persons)", 
                     pct_chg_ytd_cap, params$pastyear, cap19_ytd)
+
+sprint_1 <- sprintf("The minimum number of crimes in one neighborhood was %s (%s)", dst_2_min_tot, dst_2_min_tot_nhd)
+sprint_2 <- sprintf("The maximum number of crimes in one neighborhood was %s (%s)", dst_2_max_tot, dst_2_max_tot_nhd)
+sprint_3 <- sprintf("The mean number of crimes in one neighborhood was %s", round(dst_2_total_mean, digits = 2))
+sprint_4 <- sprintf("The minimum rate of crimes in one neighborhood was %s (%s)", round(dst_2_min_rate, digits = 2), dst_2_min_rate_nhd)
+sprint_5 <- sprintf("The maximum rate of crimes in one neighborhood was %s (%s)", round(dst_2_max_rate, digits = 2), dst_2_max_rate_nhd)
+sprint_6 <- sprintf("The mean rate of crimes in one neighborhood was %s", round(dst_2_rate_mean, digits = 2))
 ```
 
 ## District 2: Density Map Explanation
