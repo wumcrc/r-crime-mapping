@@ -1,6 +1,6 @@
 # UPDATE
 
-**The code for our automated monthly crime reports is now located here: <https://github.com/wumcrc/monthly-crime-reports>.**
+**The code for automated monthly crime reports is located here: <https://github.com/wumcrc/monthly-crime-reports>.**
 
 ## R Crime Mapping - St. Louis neighborhoods
 
