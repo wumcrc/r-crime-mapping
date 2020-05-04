@@ -1,8 +1,8 @@
 # UPDATE
 
-The code for our automated monthly crime reports is now located here: <https://github.com/wumcrc/monthly-crime-reports>.
+**The code for our automated monthly crime reports is now located here: <https://github.com/wumcrc/monthly-crime-reports>.**
 
-# R Crime Mapping - St. Louis neighborhoods
+## R Crime Mapping - St. Louis neighborhoods
 
 This repository provides code for the analysis and visualization of SLMPD Crime Data at the multi-year level, and creates an output of historical crime data that can be analyzed in excel.
 
