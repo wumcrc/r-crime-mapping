@@ -1,10 +1,16 @@
-# Monthly Crime Data
+# UPDATE
 
-[Washington University Medical Center Redevelopment Corporation](http://wumcrc.com) is a partnership between BJC HealthCare and Washington University School of Medicine and works to improve the quality of life for the neighborhoods surrounding the medical campus. In order to achieve this goal in Forest Park Southeast and the Central West End , WUMCRC has invested millions of dollars toward regenerating the market for private investment in businesses and real estate, enhancing human and social service opportunities, and improving the level of physical and personal security.
+The code for our automated monthly crime reports is now located here: <https://github.com/wumcrc/monthly-crime-reports>.
 
-One way we work to improve the level of physical & personal security is the analysis and distribution of crime data. The original source of the crime data is found here: <http://slmpd.org/crimereports.shtml>. If you have questions regarding the crime data visit <http://slmpd.org/Crime/CrimeDataFrequentlyAskedQuestions.pdf>.
+# R Crime Mapping - St. Louis neighborhoods
 
-In it's original form the St. Louis Metropolitan Police Department (SLMPD) crime data is downloadable as a `csv` file. The data itself is also unorganized and challenging to work with. In an effort to simplify & reduce the time it takes to compile our reports, `r`, `tidyverse`, and `compstatr` are all packages that streamline and help our process. This project utilizes these resources for accessing and cleaning the data, with the eventual goal of automating the majority of our reports.
+This repository provides code for the analysis and visualization of SLMPD Crime Data at the multi-year level, and creates an output of historical crime data that can be analyzed in excel.
+
+## About SLMPD Crime Data
+
+The original source of the crime data is found here: <http://slmpd.org/crimereports.shtml>. If you have questions regarding the crime data visit <http://slmpd.org/Crime/CrimeDataFrequentlyAskedQuestions.pdf>.
+
+In it's original form, the St. Louis Metropolitan Police Department (SLMPD) crime data can be downloaded as a `csv` file. The raw data can be challenging to work with. In an effort to simplify & reduce the time it takes to compile our reports, `r`, `tidyverse`, and `compstatr` are all packages that streamline and help our process.
 
 ## Acknowledgements
 
@@ -12,7 +18,9 @@ In it's original form the St. Louis Metropolitan Police Department (SLMPD) crime
 
 ## Repository Contents
 
-*   `/notebook` - Base Files and Rendered Files for the __r-crime-mapping__ project.
+*   `/src` - Base Files and Rendered Files for the __r-crime-mapping__ project.
+*   `/src/multi-year-analysis`
+*   `/src/r-historic-data`
 *   `LICENSE`
 *   `README`
 
